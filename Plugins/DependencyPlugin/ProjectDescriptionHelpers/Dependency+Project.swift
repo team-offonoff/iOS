@@ -10,7 +10,7 @@ import ProjectDescription
 public extension Dep {
     
     struct Features {
-        public struct A {}
+        public struct Home {}
         public struct B {}
     }
     
@@ -46,8 +46,8 @@ public extension Dep.Features {
     static let RootFeature = TargetDependency.project(target: "RootFeature", path: .relativeToFeature("RootFeature"))
 }
 
-public extension Dep.Features.A {
-    static let Feature = Dep.Features.project(name: Dep.Features.name, group: "A")
+public extension Dep.Features.Home {
+    static let Feature = Dep.Features.project(name: Dep.Features.name, group: "Home")
 }
 
 public extension Dep.Features.B {

@@ -6,7 +6,7 @@ let project = Project.makeModule(
     name: "RootFeature",
     targets: [.unitTest, .staticFramework],
     internalDependencies: [
-        .Features.A.Feature,
+        .Features.Home.Feature,
         .Features.B.Feature
     ]
 )
