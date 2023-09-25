@@ -5,8 +5,8 @@ public extension Project {
         "CFBundleShortVersionString": "1.0.0",
         "CFBundleDevelopmentRegion": "ko",
         "CFBundleVersion": "1",
-        "CFBundleIdentifier": "com.sopt-stamp-iOS.release",
-        "CFBundleDisplayName": "SOPT",
+        "CFBundleIdentifier": "com.offonoff-AB.release",
+        "CFBundleDisplayName": "AB",
         "UILaunchStoryboardName": "LaunchScreen",
         "UIApplicationSceneManifest": [
             "UIApplicationSupportsMultipleScenes": false,
@@ -34,23 +34,16 @@ public extension Project {
         "App Transport Security Settings": ["Allow Arbitrary Loads": true],
         "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
         "ITSAppUsesNonExemptEncryption": false,
-        "UIUserInterfaceStyle": "Dark",
-        "NSPhotoLibraryUsageDescription": "미션과 관련된 사진을 업로드하기 위해 갤러리 권한이 필요합니다.",
-        "CFBundleURLTypes": [
-            [
-                "CFBundleTypeRole": "Editor",
-                "CFBundleURLName": "sopt-makers",
-                "CFBundleURLSchemes": ["sopt-makers"]
-            ]
-        ]
+//        "UIUserInterfaceStyle": "Dark",
+        "NSPhotoLibraryUsageDescription": "갤러리 권한 작성하기"
     ]
     
     static let demoInfoPlist: [String: InfoPlist.Value] = [
       "CFBundleShortVersionString": "1.0.0",
       "CFBundleDevelopmentRegion": "ko",
       "CFBundleVersion": "1",
-      "CFBundleIdentifier": "com.sopt-stamp-iOS.test",
-      "CFBundleDisplayName": "SOPT-Test",
+      "CFBundleIdentifier": "com.offonoff-AB.test",
+      "CFBundleDisplayName": "AB-Test",
       "UILaunchStoryboardName": "LaunchScreen",
       "UIApplicationSceneManifest": [
           "UIApplicationSupportsMultipleScenes": false,
@@ -78,14 +71,6 @@ public extension Project {
       "App Transport Security Settings": ["Allow Arbitrary Loads": true],
       "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
       "ITSAppUsesNonExemptEncryption": false,
-      "UIUserInterfaceStyle": "Dark",
-      "NSPhotoLibraryUsageDescription": "미션과 관련된 사진을 업로드하기 위해 갤러리 권한이 필요합니다.",
-      "CFBundleURLTypes": [
-          [
-              "CFBundleTypeRole": "Editor",
-              "CFBundleURLName": "sopt-makers",
-              "CFBundleURLSchemes": ["sopt-makers"]
-          ]
-      ]
+      "NSPhotoLibraryUsageDescription": "갤러리 권한"
   ]
 }
