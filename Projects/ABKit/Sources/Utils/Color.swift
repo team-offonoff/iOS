@@ -28,14 +28,16 @@ public struct Color{
     
     public static let homeBackground = UIColor(r: 36, g: 32, b: 54, alpha: 1)
     
-    public static let sub_purple = UIColor(r: 164, g: 111, b: 243)
-    public static let sub_navy2 = UIColor(r: 60, g: 52, b: 87)
+    public static let subPurple = UIColor(r: 164, g: 111, b: 243)
+    public static let subNavy2 = UIColor(r: 60, g: 52, b: 87)
+    
+    public static let transparent = UIColor.white.withAlphaComponent(0)
     
     public static let white = UIColor.white
-    public static let white_40 = white.withAlphaComponent(0.4)
-    public static let white_60 = white.withAlphaComponent(0.6)
-    public static let white_80 = white.withAlphaComponent(0.8)
+    public static let white40 = white.withAlphaComponent(0.4)
+    public static let white60 = white.withAlphaComponent(0.6)
+    public static let white80 = white.withAlphaComponent(0.8)
     
     public static let black = UIColor.black
-    public static let black_20 = black.withAlphaComponent(0.2)
+    public static let black20 = black.withAlphaComponent(0.2)
 }
