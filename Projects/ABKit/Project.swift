@@ -6,6 +6,6 @@ let project = Project.makeModule(
     name: "ABKit",
     targets: [.dynamicFramework],
     externalDependencies: [
-        .thirdPartyLibs
+        .core
     ]
 )

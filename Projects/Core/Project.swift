@@ -6,6 +6,6 @@ let project = Project.makeModule(
     name: "Core",
     targets: [.unitTest, .dynamicFramework],
     internalDependencies: [
-//        .Features.FeatureDependency
+        .thirdPartyLibs
     ]
 )
