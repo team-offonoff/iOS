@@ -22,11 +22,7 @@ open class BaseStackView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open func style(){
-    }
+    open func style() { }
     
-    open func hierarchy(){
-        
-    }
-    
+    open func hierarchy() { }
 }
