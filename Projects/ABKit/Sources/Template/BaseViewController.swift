@@ -7,8 +7,9 @@
 //
 
 import UIKit
-import Core
 import SnapKit
+
+import Core
 
 open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: UIViewController {
     
