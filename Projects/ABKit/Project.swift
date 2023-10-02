@@ -7,5 +7,6 @@ let project = Project.makeModule(
     targets: [.dynamicFramework],
     externalDependencies: [
         .core
-    ]
+    ],
+    hasResources: true
 )
