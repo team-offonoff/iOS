@@ -6,10 +6,9 @@
 //  Copyright © 2023 AB. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 public protocol TypoCase{
-    var font: FontType { get }
-    var size: CGFloat { get }
+    var font: UIFont { get }
     var lineHeight: CGFloat? { get }
 }

@@ -9,18 +9,40 @@
 import UIKit
 
 public struct Typo{
-    //기본 - Pretendard
-    public static func font(type: FontType, size: CGFloat) -> UIFont{
-        guard let font = UIFont(name: "Pretendard-\(type)", size: size) else {
-            return UIFont()
-        }
-        return font
+    
+    public enum FontFamily {
+        case pretendard
+        case monteserrat
+    }
+
+    public enum FontType {
+        case regular
+        case bold
+        case semibold
+    }
+
+    public static func font(family: FontFamily, type: FontType, size: CGFloat) -> UIFont {
+        let fontConvertible: ABKitFontConvertible = {
+            switch family {
+            case .pretendard:       return pretendardFont(type: type)
+            case .monteserrat:      return montserratFont(type: type)
+            }
+        }()
+        return fontConvertible.font(size: size)
     }
     
-    public static func font(type: TypoCase) -> UIFont{
-        guard let font = UIFont(name: "Pretendard-\(type.font)", size: type.size) else {
-            return UIFont()
+    private static func pretendardFont(type: FontType) -> ABKitFontConvertible{
+        switch type {
+        case .regular:      return ABKitFontFamily.Pretendard.regular
+        case .bold:         return ABKitFontFamily.Pretendard.bold
+        case .semibold:     return ABKitFontFamily.Pretendard.semiBold
         }
-        return font
+    }
+    
+    private static func montserratFont(type: FontType) -> ABKitFontConvertible{
+        switch type {
+        case .bold:         return ABKitFontFamily.Montserrat.bold
+        default:            fatalError()
+        }
     }
 }
