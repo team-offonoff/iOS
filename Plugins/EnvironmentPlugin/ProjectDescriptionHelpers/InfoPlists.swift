@@ -5,7 +5,7 @@ public extension Project {
         "CFBundleShortVersionString": "1.0.0",
         "CFBundleDevelopmentRegion": "ko",
         "CFBundleVersion": "1",
-        "CFBundleIdentifier": "com.offonoff-AB.release",
+        "CFBundleIdentifier": "\(Environment.bundlePrefix).release",
         "CFBundleDisplayName": "AB",
         "UILaunchStoryboardName": "LaunchScreen",
         "UIApplicationSceneManifest": [
@@ -38,7 +38,7 @@ public extension Project {
       "CFBundleShortVersionString": "1.0.0",
       "CFBundleDevelopmentRegion": "ko",
       "CFBundleVersion": "1",
-      "CFBundleIdentifier": "com.offonoff-AB.test",
+      "CFBundleIdentifier": "\(Environment.bundlePrefix).test",
       "CFBundleDisplayName": "AB-Test",
       "UILaunchStoryboardName": "LaunchScreen",
       "UIApplicationSceneManifest": [
