@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RootFeature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -19,12 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: scene)
         window?.windowScene = scene
         
-//        let tabBarDIContainer = TabBarDIContainer()
-//        let tabBarCoordinator = tabBarDIContainer.makeTabBarCoordinator()
-//        tabBarCoordinator.start()
-        let viewController = UIViewController()
-        viewController.view.backgroundColor = .white
-        window?.rootViewController = viewController
+        let tabCoordinator = DefaultTabCoordinator(window: window)
+        tabCoordinator.start()
         
         window?.overrideUserInterfaceStyle = .light
         window?.makeKeyAndVisible()
@@ -57,6 +54,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
-
 }
