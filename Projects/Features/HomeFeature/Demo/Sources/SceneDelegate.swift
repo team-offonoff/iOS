@@ -1,13 +1,13 @@
 //
 //  SceneDelegate.swift
-//  AB
+//  HomeFeatureDemo
 //
-//  Created by 박소윤 on 2023/09/25.
+//  Created by 박소윤 on 2023/10/03.
 //  Copyright © 2023 AB. All rights reserved.
 //
 
 import UIKit
-import RootFeature
+import HomeFeature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -20,8 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: scene)
         window?.windowScene = scene
         
-        let tabCoordinator = DefaultTabCoordinator(window: window)
-        tabCoordinator.start()
+        let homeCoordinator = DefaultHomeCoordinator(window: window)
+        homeCoordinator.start()
         
         window?.overrideUserInterfaceStyle = .light
         window?.makeKeyAndVisible()
@@ -55,3 +55,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 }
+

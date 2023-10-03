@@ -10,12 +10,11 @@ import UIKit
 
 open class BaseStackView: UIStackView {
     
-    public init(axis: NSLayoutConstraint.Axis, spacing: CGFloat){
+    public init(){
         super.init(frame: .zero)
-        self.axis = axis
-        self.spacing = spacing
         style()
         hierarchy()
+        layout()
     }
     
     public required init(coder: NSCoder) {
@@ -25,4 +24,6 @@ open class BaseStackView: UIStackView {
     open func style() { }
     
     open func hierarchy() { }
+    
+    open func layout() { }
 }

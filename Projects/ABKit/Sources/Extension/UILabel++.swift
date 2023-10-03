@@ -46,7 +46,7 @@ public extension UILabel{
      */
     
     func setTypo(_ typo: TypoCase) {
-        let font = Typo.font(type: typo)
+        let font = typo.font
         if let lineHeight = typo.lineHeight {
             setTypo(font, lineSpacing: lineHeight)
         } else {

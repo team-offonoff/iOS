@@ -9,6 +9,8 @@
 import UIKit
 import SnapKit
 
+import Combine
+
 import Core
 
 open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: UIViewController {
@@ -17,6 +19,8 @@ open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: U
     
     public let headerView: H
     public let mainView: M
+    
+    public var cancellables: Set<AnyCancellable> = []
     
     public init(headerView: H, mainView: M){
         self.headerView = headerView
@@ -73,7 +77,6 @@ open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: U
         mainView.snp.makeConstraints{
             $0.top.equalTo(headerView.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
-//            $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
     

@@ -5,7 +5,7 @@ public extension Project {
         "CFBundleShortVersionString": "1.0.0",
         "CFBundleDevelopmentRegion": "ko",
         "CFBundleVersion": "1",
-        "CFBundleIdentifier": "com.offonoff-AB.release",
+        "CFBundleIdentifier": "\(Environment.bundlePrefix).release",
         "CFBundleDisplayName": "AB",
         "UILaunchStoryboardName": "LaunchScreen",
         "UIApplicationSceneManifest": [
@@ -23,9 +23,10 @@ public extension Project {
             "Item 0": "Pretendard-Black.otf",
             "Item 1": "Pretendard-Bold.otf",
             "Item 2": "Pretendard-ExtraBold.otf",
-            "Item 5": "Pretendard-Medium.otf",
-            "Item 6": "Pretendard-Regular.otf",
-            "Item 7": "Pretendard-SemiBold.otf",
+            "Item 3": "Pretendard-Medium.otf",
+            "Item 4": "Pretendard-Regular.otf",
+            "Item 5": "Pretendard-SemiBold.otf",
+            "Item 6": "Montserrat-Bold.ttf"
         ],
         "App Transport Security Settings": ["Allow Arbitrary Loads": true],
         "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
@@ -37,7 +38,7 @@ public extension Project {
       "CFBundleShortVersionString": "1.0.0",
       "CFBundleDevelopmentRegion": "ko",
       "CFBundleVersion": "1",
-      "CFBundleIdentifier": "com.offonoff-AB.test",
+      "CFBundleIdentifier": "\(Environment.bundlePrefix).test",
       "CFBundleDisplayName": "AB-Test",
       "UILaunchStoryboardName": "LaunchScreen",
       "UIApplicationSceneManifest": [
@@ -52,16 +53,13 @@ public extension Project {
           ]
       ],
       "UIAppFonts": [
-          // FIXME: - 폰트 추가 후 수정
-          //                "Item 0": "Pretendard-Black.otf",
-          //                "Item 1": "Pretendard-Bold.otf",
-          //                "Item 2": "Pretendard-ExtraBold.otf",
-          //                "Item 3": "Pretendard-ExtraLight.otf",
-          //                "Item 4": "Pretendard-Light.otf",
-          //                "Item 5": "Pretendard-Medium.otf",
-          //                "Item 6": "Pretendard-Regular.otf",
-          //                "Item 7": "Pretendard-SemiBold.otf",
-          //                "Item 8": "Pretendard-Thin.otf"
+        "Item 0": "Pretendard-Black.otf",
+        "Item 1": "Pretendard-Bold.otf",
+        "Item 2": "Pretendard-ExtraBold.otf",
+        "Item 3": "Pretendard-Medium.otf",
+        "Item 4": "Pretendard-Regular.otf",
+        "Item 5": "Pretendard-SemiBold.otf",
+        "Item 6": "Montserrat-Bold.ttf"
       ],
       "App Transport Security Settings": ["Allow Arbitrary Loads": true],
       "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
