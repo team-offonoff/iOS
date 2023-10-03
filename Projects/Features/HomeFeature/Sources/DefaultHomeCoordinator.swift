@@ -11,7 +11,14 @@ import FeatureDependency
 
 public class DefaultHomeCoordinator: HomeCoordinator {
     
+    private var window: UIWindow?
     private let navigationController: UINavigationController
+    
+    public init(window: UIWindow?){
+        self.window = window
+        self.navigationController = UINavigationController()
+        self.window?.rootViewController = navigationController
+    }
     
     public init(navigationController: UINavigationController){
         self.navigationController = navigationController

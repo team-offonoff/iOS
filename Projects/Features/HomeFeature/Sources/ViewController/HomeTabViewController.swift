@@ -45,7 +45,6 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         viewModel.canBottomSheetMovePublisher
             .receive(on: RunLoop.main)
             .sink{ canMove in
-                print(canMove)
                 self.mainView.chatBottomSheetFrame.isUserInteractionEnabled = canMove
             }.store(in: &cancellables)
     }
