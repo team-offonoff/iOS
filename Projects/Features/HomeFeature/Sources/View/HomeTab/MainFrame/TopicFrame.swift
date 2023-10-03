@@ -1,0 +1,174 @@
+//
+//  TopicFrame.swift
+//  HomeFeature
+//
+//  Created by 박소윤 on 2023/09/26.
+//  Copyright © 2023 AB. All rights reserved.
+//
+
+import Foundation
+import UIKit
+import ABKit
+
+extension HomeTabView {
+    
+    //MARK: - Topic
+    
+    final class TopicFrame: BaseView {
+        
+        private let timerHeight = 37
+        
+        private let realTimeTitleLabel: UILabel = {
+            let label = UILabel()
+            label.text = "실시간 인기 토픽"
+            label.setTypo(Pretendard.regular20)
+            label.textColor = Color.subPurple
+            return label
+        }()
+        
+        let titleLabel: UILabel = {
+            let label = UILabel()
+            label.text = "10년 전 또는 후로 갈 수 있다면?"
+            label.numberOfLines = 0
+            label.textColor = Color.white
+            label.setTypo(Pretendard.semibold24)
+            label.textAlignment = .center
+            label.lineBreakMode = .byWordWrapping
+            return label
+        }()
+        
+        lazy var willNotShowButton: UIButton = {
+            let attributedString = NSMutableAttributedString(string: "이런 토픽은 안볼래요")
+            attributedString.addAttributes([
+                .underlineStyle: NSUnderlineStyle.single.rawValue,
+                .font: Typo.font(family: .pretendard, type: .regular, size: 13),
+                .foregroundColor: Color.white40,
+                .underlineColor: Color.white40
+            ] ,range: NSRange(location: 0, length: attributedString.length)
+            )
+            var configuration = UIButton.Configuration.plain()
+            configuration.attributedTitle = AttributedString(attributedString)
+            configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+            return UIButton(configuration: configuration)
+        }()
+        
+        lazy var nextButton: UIButton = {
+            let button = UIButton()
+            button.setImage(Image.homeArrow, for: .normal)
+            return button
+        }()
+        
+        let timer: TimerTag = TimerTag()
+        
+        override func hierarchy() {
+            addSubviews([realTimeTitleLabel, titleLabel, willNotShowButton, nextButton, timer])
+        }
+        
+        override func layout() {
+            realTimeTitleLabel.snp.makeConstraints{
+                $0.top.equalToSuperview()
+                $0.centerX.equalToSuperview()
+            }
+            titleLabel.snp.makeConstraints{
+                $0.top.equalTo(realTimeTitleLabel.snp.bottom).offset(12)
+                $0.centerX.equalToSuperview()
+//                $0.trailing.lessThanOrEqualTo(nextButton.snp.leading)
+                $0.leading.equalToSuperview().offset(102)
+            }
+            willNotShowButton.snp.makeConstraints{
+                $0.top.equalTo(titleLabel.snp.bottom).offset(4)
+                $0.centerX.equalToSuperview()
+            }
+            nextButton.snp.makeConstraints{
+                $0.trailing.equalToSuperview().inset(12)
+                $0.centerY.equalTo(titleLabel)
+                $0.width.height.equalTo(40)
+            }
+            timer.snp.makeConstraints{
+                $0.top.equalTo(willNotShowButton.snp.bottom).offset(37)
+                $0.centerX.equalToSuperview()
+                $0.bottom.equalToSuperview()
+            }
+        }
+    }
+    
+    class TimerTag: BaseView {
+        
+        private var highlightFlag: Bool = false
+        
+        private let height: CGFloat = 37
+        
+        private let stackView: UIStackView = UIStackView(axis: .horizontal, spacing: 6)
+        private let hourLabel: UILabel = UILabel()
+        private let minuteLabel: UILabel = UILabel()
+        private let secondLabel: UILabel = UILabel()
+        private let colon1Label: UILabel = UILabel()
+        private let colon2Label: UILabel = UILabel()
+        
+        private lazy var textLabels: [UILabel] = [hourLabel, colon1Label, minuteLabel,  colon2Label, secondLabel]
+        
+        override func style() {
+            layer.cornerRadius = height/2
+            setColorDefault()
+            setColonText()
+            setLabelsFont()
+            binding(data: "")
+        }
+        
+        private func setColonText(){
+            [colon1Label, colon2Label].forEach{
+                $0.text = ":"
+            }
+        }
+        
+        private func setLabelsFont(){
+            textLabels.forEach{
+                $0.setTypo(Typo.font(family: .monteserrat, type: .bold, size: 15))
+            }
+        }
+        
+        override func hierarchy() {
+            addSubview(stackView)
+            stackView.addArrangedSubviews(textLabels)
+        }
+        
+        override func layout() {
+            self.snp.makeConstraints{
+                $0.height.equalTo(height)
+            }
+            stackView.snp.makeConstraints{
+                $0.top.bottom.equalToSuperview().inset(8)
+                $0.leading.trailing.equalToSuperview().inset(15)
+            }
+        }
+        
+        func binding(data: Any){
+            let shouldHightlight: Bool = true  //TODO: 남은 시간 1시간 미만 연산
+            if shouldHightlight && !highlightFlag {
+                defer{
+                    highlightFlag = true
+                }
+                setColorHighlight()
+            }
+            hourLabel.text = "00"
+            minuteLabel.text = "00"
+            secondLabel.text = "00"
+        }
+        
+        private func setColorDefault(){
+            backgroundColor = Color.subNavy2
+            setTimeTextColor(Color.white40)
+        }
+        
+        private func setColorHighlight(){
+            backgroundColor = Color.subPurple
+            setTimeTextColor(Color.subNavy2)
+        }
+        
+        private func setTimeTextColor(_ color: UIColor){
+            textLabels.forEach{
+                $0.textColor = color
+            }
+        }
+    }
+}
