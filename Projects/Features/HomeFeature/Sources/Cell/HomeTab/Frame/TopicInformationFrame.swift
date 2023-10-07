@@ -10,21 +10,13 @@ import Foundation
 import UIKit
 import ABKit
 
-extension HomeTabView {
+extension HomeTopicCollectionViewCell {
     
     //MARK: - Topic
     
-    final class TopicFrame: BaseView {
+    final class TopicInformationFrame: BaseView {
         
         private let timerHeight = 37
-        
-        private let realTimeTitleLabel: UILabel = {
-            let label = UILabel()
-            label.text = "실시간 인기 토픽"
-            label.setTypo(Pretendard.regular20)
-            label.textColor = Color.subPurple
-            return label
-        }()
         
         let titleLabel: UILabel = {
             let label = UILabel()
@@ -52,37 +44,22 @@ extension HomeTabView {
             return UIButton(configuration: configuration)
         }()
         
-        lazy var nextButton: UIButton = {
-            let button = UIButton()
-            button.setImage(Image.homeArrow, for: .normal)
-            return button
-        }()
-        
         let timer: TimerTag = TimerTag()
         
         override func hierarchy() {
-            addSubviews([realTimeTitleLabel, titleLabel, willNotShowButton, nextButton, timer])
+            addSubviews([titleLabel, willNotShowButton, timer])
         }
         
         override func layout() {
-            realTimeTitleLabel.snp.makeConstraints{
-                $0.top.equalToSuperview()
-                $0.centerX.equalToSuperview()
-            }
             titleLabel.snp.makeConstraints{
-                $0.top.equalTo(realTimeTitleLabel.snp.bottom).offset(12)
+                $0.top.equalToSuperview()
+                $0.height.equalTo(68)
                 $0.centerX.equalToSuperview()
-//                $0.trailing.lessThanOrEqualTo(nextButton.snp.leading)
                 $0.leading.equalToSuperview().offset(102)
             }
             willNotShowButton.snp.makeConstraints{
                 $0.top.equalTo(titleLabel.snp.bottom).offset(4)
                 $0.centerX.equalToSuperview()
-            }
-            nextButton.snp.makeConstraints{
-                $0.trailing.equalToSuperview().inset(12)
-                $0.centerY.equalTo(titleLabel)
-                $0.width.height.equalTo(40)
             }
             timer.snp.makeConstraints{
                 $0.top.equalTo(willNotShowButton.snp.bottom).offset(37)

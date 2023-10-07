@@ -10,7 +10,7 @@ import UIKit
 import ABKit
 import Core
 
-extension HomeTabView {
+extension HomeTopicCollectionViewCell {
 
     final class SelectionFrame: BaseStackView {
         

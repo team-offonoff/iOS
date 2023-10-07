@@ -9,7 +9,7 @@
 import UIKit
 import ABKit
 
-extension HomeTabView {
+extension HomeTopicCollectionViewCell {
 
     final class UserFrame: BaseView {
         

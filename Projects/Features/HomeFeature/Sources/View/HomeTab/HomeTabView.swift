@@ -2,48 +2,54 @@
 //  HomeTabView.swift
 //  HomeFeature
 //
-//  Created by 박소윤 on 2023/09/25.
+//  Created by 박소윤 on 2023/10/03.
 //  Copyright © 2023 AB. All rights reserved.
 //
 
-import ABKit
 import UIKit
+import ABKit
 
-final public class HomeTabView: BaseView {
+final class HomeTabView: BaseView {
     
-    let topicFrame: TopicFrame = TopicFrame()
-    let selectionFrame: SelectionFrame = SelectionFrame()
-    let userFrame: UserFrame = UserFrame()
+    private let titleFrame: TitleFrame = TitleFrame()
+    private let scrollFrame: ScrollFrame = ScrollFrame()
+    private let buttonFrame: ButtonFrame = ButtonFrame()
     let chatBottomSheetFrame: HomeChatBottomSheetView = HomeChatBottomSheetView()
     
-    public override func style() {
-        [self, topicFrame, selectionFrame, userFrame].forEach{
-            $0.backgroundColor = Color.transparent
+    override func hierarchy() {
+        addSubviews([titleFrame, scrollFrame, buttonFrame, chatBottomSheetFrame])
+    }
+    
+    override func layout() {
+        titleFrame.snp.makeConstraints{
+            $0.top.leading.trailing.equalToSuperview()
+        }
+        scrollFrame.snp.makeConstraints{
+            $0.top.equalTo(titleFrame.snp.bottom).offset(12)
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+        buttonFrame.snp.makeConstraints{
+            $0.top.equalTo(titleFrame.snp.bottom).offset(26)
+            $0.leading.trailing.equalToSuperview()
         }
     }
     
-    public override func hierarchy() {
-        addSubviews([topicFrame, selectionFrame, userFrame, chatBottomSheetFrame])
-    }
-    
-    public override func layout() {
-        topicFrame.snp.makeConstraints{
-            $0.top.equalToSuperview().offset(2)
-            $0.leading.trailing.equalToSuperview()
-        }
-        selectionFrame.snp.makeConstraints{
-            $0.top.equalTo(topicFrame.snp.bottom).offset(37)
-            $0.leading.trailing.equalToSuperview()
-        }
-        userFrame.snp.makeConstraints{
-            $0.top.equalTo(selectionFrame.snp.bottom).offset(49)
-            $0.leading.trailing.equalToSuperview()
-        }
-        setBottomSheetFrameLayout()
-    }
-    
-    public override func initialize() {
+    override func initialize() {
+        addMoveButtonTarget()
         setPanGestureRecognizer()
+    }
+    
+    private func addMoveButtonTarget(){
+        buttonFrame.nextButton.addTarget(self, action: #selector(moveNextTopic), for: .touchUpInside)
+        buttonFrame.previousButton.addTarget(self, action: #selector(movePreviousTopic), for: .touchUpInside)
+    }
+    
+    @objc private func moveNextTopic(){
+        scrollFrame.moveNext()
+    }
+    
+    @objc private func movePreviousTopic(){
+        scrollFrame.movePrevious()
     }
     
     //MARK: - BottomSheet
@@ -56,12 +62,16 @@ final public class HomeTabView: BaseView {
     private let BOTTOM_SHEET_TOP_PADDING: CGFloat = 2
     
     private var originalPoint: CGPoint = CGPoint()
+    private var shouldSetBottomSheetLayout: Bool = true
     private var defaultY: CGFloat!
     private var state: BottomSheetViewState = .normal
     
     private func setBottomSheetFrameLayout(){
+        
+        guard let cell = scrollFrame.collectionView.cellForItem(at: [0,0]) as? HomeTopicCollectionViewCell else { fatalError() }
+        
         chatBottomSheetFrame.snp.makeConstraints{
-            $0.top.equalTo(userFrame.snp.bottom).offset(20)
+            $0.top.equalTo(cell.userFrame.snp.bottom).offset(20)
             $0.height.equalTo(self).offset(-BOTTOM_SHEET_TOP_PADDING)
             $0.leading.trailing.equalToSuperview()
         }
@@ -78,6 +88,9 @@ final public class HomeTabView: BaseView {
         let translation = recognizer.translation(in: chatBottomSheetFrame)
         switch recognizer.state {
         case .began:
+            if defaultY == nil {
+                defaultY = chatBottomSheetFrame.frame.minY
+            }
             originalPoint = chatBottomSheetFrame.frame.origin
         case .changed:
             chatBottomSheetFrame.frame.origin = CGPoint(y: originalPoint.y + translation.y)
@@ -108,9 +121,11 @@ final public class HomeTabView: BaseView {
     }
     
     func setBottomSheetDefaultY(){
-        if defaultY == nil {
-            defaultY = chatBottomSheetFrame.frame.minY
+        if !shouldSetBottomSheetLayout { return }
+        defer{
+            shouldSetBottomSheetLayout = false
         }
+        setBottomSheetFrameLayout()
     }
 }
 

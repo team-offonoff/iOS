@@ -83,12 +83,8 @@ extension HomeChatBottomSheetView.ChatHeaderFrame {
             addArrangedSubviews([titleLabel, countLabel])
         }
         
-        func binding(data: Int){
-            countLabel.text = convertCount(data)
-        }
-        
-        private func convertCount(_ num: Int) -> String{
-            return "\(num)"
+        func binding(data count: String){
+            countLabel.text = count
         }
     }
 }
