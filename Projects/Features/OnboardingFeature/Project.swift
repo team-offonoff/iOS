@@ -3,7 +3,7 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.makeModule(
-    name: "BFeature",
+    name: "OnboardingFeature",
     targets: [.unitTest, .staticFramework, .demo],
     internalDependencies: [
         .Features.FeatureDependency
