@@ -1,11 +1,12 @@
 //
 //  AppDelegate.swift
-//  AB
+//  OnboardingFeatureDemo
 //
-//  Created by 박소윤 on 2023/09/25.
+//  Created by 박소윤 on 2023/10/12.
 //  Copyright © 2023 AB. All rights reserved.
 //
 
+import Foundation
 import UIKit
 import KakaoSDKCommon
 import Core
@@ -33,5 +34,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
-}
 
+}
