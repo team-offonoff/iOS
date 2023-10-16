@@ -10,8 +10,8 @@ import ProjectDescription
 public extension Dep {
     
     struct Features {
+        public struct Onboarding {}
         public struct Home {}
-        public struct B {}
     }
     
     struct Modules {}
@@ -50,6 +50,6 @@ public extension Dep.Features.Home {
     static let Feature = Dep.Features.project(name: Dep.Features.name, group: "Home")
 }
 
-public extension Dep.Features.B {
-    static let Feature = Dep.Features.project(name: Dep.Features.name, group: "B")
+public extension Dep.Features.Onboarding {
+    static let Feature = Dep.Features.project(name: Dep.Features.name, group: "Onboarding")
 }

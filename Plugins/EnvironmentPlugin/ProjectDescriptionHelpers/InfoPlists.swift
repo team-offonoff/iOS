@@ -2,11 +2,25 @@ import ProjectDescription
 
 public extension Project {
     static let appInfoPlist: [String: InfoPlist.Value] = [
+        
+        //KEY 관리
+        "KAKAO_APP_KEY": "$(KAKAO_APP_KEY)",
+        
         "CFBundleShortVersionString": "1.0.0",
         "CFBundleDevelopmentRegion": "ko",
         "CFBundleVersion": "1",
         "CFBundleIdentifier": "\(Environment.bundlePrefix).release",
         "CFBundleDisplayName": "AB",
+        "CFBundleURLTypes": [
+            [
+                "CFBundleTypeRole": "Editor",
+                "CFBundleURLSchemes": ["kakao$(KAKAO_APP_KEY)"]
+            ]
+        ],
+        "LSApplicationQueriesSchemes": [
+            "kakaokompassauth",  //카카오톡으로 로그인
+            "kakaolink"
+        ],
         "UILaunchStoryboardName": "LaunchScreen",
         "UIApplicationSceneManifest": [
             "UIApplicationSupportsMultipleScenes": false,
