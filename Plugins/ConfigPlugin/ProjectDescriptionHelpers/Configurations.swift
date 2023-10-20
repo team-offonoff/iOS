@@ -3,10 +3,10 @@ import ProjectDescription
 
 public struct XCConfig {
     private struct Path {
-        static var framework: ProjectDescription.Path { .relativeToRoot("xcconfigs/targets/iOS-Framework.xcconfig") }
-        static var demo: ProjectDescription.Path { .relativeToRoot("xcconfigs/targets/iOS-Demo.xcconfig") }
-        static var tests: ProjectDescription.Path { .relativeToRoot("xcconfigs/targets/iOS-Tests.xcconfig") }
-        static func project(_ config: String) -> ProjectDescription.Path { .relativeToRoot("xcconfigs/projects/Project-\(config).xcconfig") }
+        static var framework: ProjectDescription.Path { .relativeToRoot("configs/targets/iOS-Framework.xcconfig") }
+        static var demo: ProjectDescription.Path { .relativeToRoot("configs/targets/iOS-Demo.xcconfig") }
+        static var tests: ProjectDescription.Path { .relativeToRoot("configs/targets/iOS-Tests.xcconfig") }
+        static func project(_ config: String) -> ProjectDescription.Path { .relativeToRoot("configs/projects/Project-\(config).xcconfig") }
     }
     
     public static let framework: [Configuration] = [
