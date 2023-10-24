@@ -1,3 +1,4 @@
+branch = main
 [submodule "configs"]
 	path = configs
 	url = https://github.com/team-offonoff/iOS-Config.git

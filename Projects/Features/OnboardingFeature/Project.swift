@@ -4,8 +4,8 @@ import DependencyPlugin
 
 let project = Project.makeModule(
     name: "OnboardingFeature",
-    targets: [.unitTest, .staticFramework, .demo],
-    internalDependencies: [
+    targets: [.unitTest, .staticFramework, .demo, .interface],
+    interfaceDependencies: [
         .Features.FeatureDependency
     ]
 )
