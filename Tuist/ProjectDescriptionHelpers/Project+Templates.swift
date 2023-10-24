@@ -10,6 +10,7 @@ public extension Project {
         targets: Set<FeatureTarget> = Set([.staticFramework, .unitTest, .demo]),
         packages: [Package] = [],
         internalDependencies: [TargetDependency] = [],  // 모듈간 의존성
+        interfaceDependencies: [TargetDependency] = [], // Feature Interface 의존성
         externalDependencies: [TargetDependency] = [],  // 외부 라이브러리 의존성
         dependencies: [TargetDependency] = [],
         hasResources: Bool = false
@@ -54,12 +55,34 @@ public extension Project {
             
             projectTargets.append(target)
         }
+        
+        // MARK: - Feature Interface
+        
+        if targets.contains(.interface) {
+            let settings = baseSettings
+            
+            let target = Target(
+                name: "\(name)Interface",
+                platform: platform,
+                product:.framework,
+                bundleId: "\(Environment.bundlePrefix).\(name)Interface",
+                deploymentTarget: deploymentTarget,
+                infoPlist: nil,
+                sources: ["Interface/**/*.swift"],
+                dependencies: interfaceDependencies,
+                settings: .settings(base: settings, configurations: XCConfig.framework)
+            )
+            
+            projectTargets.append(target)
+        }
 
         // MARK: - Framework
         
         if targets.contains(where: { $0.hasFramework }) {
 
-            let deps: [TargetDependency] = []
+            let deps: [TargetDependency] = targets.contains(.interface)
+            ? [.target(name: "\(name)Interface")]
+            : []
             let settings = baseSettings
             
             let target = Target(

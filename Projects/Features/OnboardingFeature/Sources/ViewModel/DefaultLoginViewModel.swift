@@ -92,7 +92,7 @@ final class DefaultLoginViewModel: LoginViewModel {
         var scopes = [String]()
         
 //        if (user.kakaoAccount?.profileNeedsAgreement == true) { scopes.append("profile") }
-        if (user.kakaoAccount?.emailNeedsAgreement == true) { scopes.append("account_email") }
+//        if (user.kakaoAccount?.emailNeedsAgreement == true) { scopes.append("account_email") }
 //        if (user.kakaoAccount?.birthdayNeedsAgreement == true) { scopes.append("birthday") }
 //        if (user.kakaoAccount?.birthyearNeedsAgreement == true) { scopes.append("birthyear") }
 //        if (user.kakaoAccount?.genderNeedsAgreement == true) { scopes.append("gender") }

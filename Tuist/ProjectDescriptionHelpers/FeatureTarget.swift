@@ -3,7 +3,7 @@ import ProjectDescription
 
 public enum FeatureTarget {
     case app    // iOSApp
-//    case interface  // Feature Interface
+    case interface  // Feature Interface
     case dynamicFramework
     case staticFramework
     case unitTest   // Unit Test
