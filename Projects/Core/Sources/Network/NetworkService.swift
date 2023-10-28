@@ -20,7 +20,7 @@ public final class NetworkService {
     }
 
     private var token: String? {
-        ""//UserManager.shared.accessToken
+        UserManager.shared.accessToken
     }
     
     private var baseUrlComponents: URLComponents? {
