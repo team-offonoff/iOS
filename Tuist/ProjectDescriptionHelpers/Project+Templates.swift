@@ -67,7 +67,7 @@ public extension Project {
                 product:.framework,
                 bundleId: "\(Environment.bundlePrefix).\(name)Interface",
                 deploymentTarget: deploymentTarget,
-                infoPlist: nil,
+                infoPlist: .default,
                 sources: ["Interface/**/*.swift"],
                 dependencies: interfaceDependencies,
                 settings: .settings(base: settings, configurations: XCConfig.framework)
