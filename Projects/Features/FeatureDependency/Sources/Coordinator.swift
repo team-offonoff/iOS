@@ -10,5 +10,6 @@ import Foundation
 import UIKit
 
 public protocol Coordinator: AnyObject {
+    init(window: UIWindow?)
     func start()
 }

@@ -7,8 +7,8 @@
 //
 
 import UIKit
-
 import FeatureDependency
+import HomeFeatureInterface
 import HomeFeature
 
 public class DefaultTabCoordinator: TabCoordinator {
@@ -20,7 +20,7 @@ public class DefaultTabCoordinator: TabCoordinator {
     private let newTabNavigationController: UINavigationController
     private let userTabNavigationController: UINavigationController
     
-    public init(
+    required public init(
         window: UIWindow?
     ){
         self.window = window

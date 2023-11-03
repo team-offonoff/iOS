@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import FeatureDependency
+import HomeFeatureInterface
 import Combine
 
 final class DefaultHomeTabViewModel: HomeTabViewModel {

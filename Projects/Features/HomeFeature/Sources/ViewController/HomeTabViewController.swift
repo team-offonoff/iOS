@@ -7,11 +7,10 @@
 //
 
 import Foundation
-
 import ABKit
 import UIKit
-
 import FeatureDependency
+import HomeFeatureInterface
 
 final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, DefaultHomeCoordinator>{
     

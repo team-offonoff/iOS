@@ -7,14 +7,14 @@
 //
 
 import UIKit
-import FeatureDependency
+import HomeFeatureInterface
 
 public class DefaultHomeCoordinator: HomeCoordinator {
     
     private var window: UIWindow?
     private let navigationController: UINavigationController
     
-    public init(window: UIWindow?){
+    required public init(window: UIWindow?){
         self.window = window
         self.navigationController = UINavigationController()
         self.window?.rootViewController = navigationController
