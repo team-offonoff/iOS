@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 public final class NetworkService {
     
@@ -26,37 +27,50 @@ public final class NetworkService {
     private var baseUrlComponents: URLComponents? {
         URLComponents(string: baseURL)
     }
-
-    public func dataTask<DTO: Decodable>(request: URLRequest) async throws -> NetworkResult<DTO> {
+    
+    public func dataTask<DTO: Decodable>(request: URLRequest) -> NetworkResultPublisher<DTO?> {
         
-        var request = request
-        if let token = token {
-            request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        } else {
-            print("There is no jwt token")
-        }
-
-        let (data, response) = try await URLSession.shared.data(for: request)
         print("🌐 " + (request.httpMethod ?? "") + ": " + String(request.url?.absoluteString ?? ""))
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            print("NetworkError.exceptionParseFailed")
-            throw NetworkError.exceptionParseFailed
-        }
-
-        guard let dto = try? JSONDecoder().decode(NetworkRespone<DTO>.self, from: data) else {
-            print("NetworkError.jsonParseFailed")
-            throw NetworkError.jsonParseFailed
-        }
-
-        guard let serviceCode = NetworkServiceCode(rawValue: dto.code) else {
-            print("NetworkError.exceptionParseFailed")
-            throw NetworkError.exceptionParseFailed
-        }
-
-        print("✅ status: \(httpResponse.statusCode)")
-        print("👀 data: \(dto)")
         
-        return (code: serviceCode, data: dto.data)
+        return URLSession.shared.dataTaskPublisher(for: requestWithToken())
+            .tryMap{ data, response in
+                
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    print("NetworkError.exceptionParseFailed")
+                    throw NetworkError.exceptionParseFailed
+                }
+                print("✅ status: \(httpResponse.statusCode)")
+                
+                if httpResponse.statusCode == 200 {
+                    if data.isEmpty {
+                        return (.success, nil, nil)
+                    }
+                    return (.success, try decode(data, DTO.self), nil)
+                }
+                else {
+                    let error = try decode(data, NetworkErrorRespone.self)
+                    return (NetworkServiceCode(rawValue: error.code) ?? .fail, nil, error.content)
+                }
+            }
+            .replaceError(with: (.fail, nil, nil))
+            .eraseToAnyPublisher()
+        
+        func requestWithToken() -> URLRequest{
+            var request = request
+            if let token = token{
+                request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            }
+            return request
+        }
+        
+        func decode<T: Decodable>(_ data: Data, _ type: T.Type) throws -> T{
+            guard let dto = try? JSONDecoder().decode(type.self, from: data) else {
+                print("NetworkError.jsonParseFailed")
+                throw NetworkError.jsonParseFailed
+            }
+            print("👀 data: \(dto)")
+            return dto
+        }
     }
 }
+

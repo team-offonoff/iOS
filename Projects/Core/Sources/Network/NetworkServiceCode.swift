@@ -10,4 +10,6 @@ import Foundation
 
 public enum NetworkServiceCode: String {
     case success
+    case fail
+    case invalidField = "INVALID_FIELD"
 }
