@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Core
+import SnapKit
 
 open class BaseCollectionViewCell: UICollectionViewCell, CellReuseable{
 

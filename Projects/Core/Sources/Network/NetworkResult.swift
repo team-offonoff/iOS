@@ -7,5 +7,7 @@
 //
 
 import Foundation
+import Combine
 
-public typealias NetworkResult<DTO: Decodable> = (code: NetworkServiceCode, data: DTO)
+public typealias NetworkResultPublisher<DTO: Decodable>
+    = AnyPublisher<(code: NetworkServiceCode, data: DTO, error: NetworkErrorRespone.ErrorContent?), Never>

@@ -9,7 +9,7 @@
 import Foundation
 import KakaoSDKUser
 import AuthenticationServices
-import FeatureDependency
+import OnboardingFeatureInterface
 import Domain
 import Combine
 

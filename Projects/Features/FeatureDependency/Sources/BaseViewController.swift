@@ -1,25 +1,22 @@
 //
 //  BaseViewController.swift
-//  ABKit
+//  FeatureDependency
 //
-//  Created by 박소윤 on 2023/09/25.
+//  Created by 박소윤 on 2023/10/26.
 //  Copyright © 2023 AB. All rights reserved.
 //
 
 import UIKit
 import SnapKit
-
 import Combine
-
-import Core
+import ABKit
 
 open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: UIViewController {
-    
-    public weak var coordinator: C?
     
     public let headerView: H
     public let mainView: M
     
+    public weak var coordinator: C?
     public var cancellables: Set<AnyCancellable> = []
     
     public init(headerView: H, mainView: M){
@@ -68,10 +65,6 @@ open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: U
         headerView.popButton.addTarget(self, action: #selector(popViewController), for: .touchUpInside)
     }
     
-    @objc open func popViewController(){
-        navigationController?.popViewController(animated: true)
-    }
-    
     private func setMainView(){
         view.addSubview(mainView)
         mainView.snp.makeConstraints{
@@ -81,6 +74,10 @@ open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: U
     }
     
     //MARK: Override Template func
+    
+    @objc open func popViewController(){
+        navigationController?.popViewController(animated: true)
+    }
     
     open func style(){
         
@@ -94,3 +91,4 @@ open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: U
 
     }
 }
+

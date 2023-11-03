@@ -8,8 +8,21 @@
 
 import Foundation
 
-struct NetworkRespone<DTO: Decodable>: Decodable {
+public struct NetworkErrorRespone: Decodable {
     let code: String
-    let message: String
-    let data: DTO
+    let content: ErrorContent
+}
+
+extension NetworkErrorRespone {
+    
+    enum CodingKeys: String, CodingKey {
+        case code = "abCode"
+        case content = "errorContent"
+    }
+    
+    public struct ErrorContent: Decodable {
+        let message: String
+        let hint: String
+        let httpCode: Int
+    }
 }

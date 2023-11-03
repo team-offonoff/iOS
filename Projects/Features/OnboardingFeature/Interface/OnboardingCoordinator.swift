@@ -6,8 +6,7 @@
 //  Copyright © 2023 AB. All rights reserved.
 //
 
-import Foundation
-import Core
+import FeatureDependency
 
 public protocol OnboardingCoordinator: Coordinator {
 
