@@ -6,6 +6,6 @@ let project = Project.makeModule(
     name: "Domain",
     targets: [.unitTest, .dynamicFramework],
     internalDependencies: [
-        .data
+        .core
     ]
 )
