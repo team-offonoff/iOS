@@ -10,7 +10,7 @@ import Foundation
 
 extension URLComponents {
     
-    func toURLRequest(method: HTTPMethod, httpBody: Data? = nil, contentType: String = "application/json") -> URLRequest? {
+    public func toURLRequest(method: HTTPMethod, httpBody: Data? = nil, contentType: String = "application/json") -> URLRequest? {
         
         guard let url = url else { return nil }
 

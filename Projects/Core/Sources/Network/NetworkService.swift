@@ -24,7 +24,7 @@ public final class NetworkService {
         UserManager.shared.accessToken
     }
     
-    private var baseUrlComponents: URLComponents? {
+    public var baseUrlComponents: URLComponents? {
         URLComponents(string: baseURL)
     }
     
