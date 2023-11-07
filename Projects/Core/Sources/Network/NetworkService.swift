@@ -28,7 +28,7 @@ public final class NetworkService {
         URLComponents(string: baseURL)
     }
     
-    public func dataTask<DTO: Decodable>(request: URLRequest) -> NetworkResultPublisher<DTO?> {
+    public func dataTask<DTO: Decodable>(request: URLRequest, type: DTO.Type) -> NetworkResultPublisher<DTO?> {
         
         print("🌐 " + (request.httpMethod ?? "") + ": " + String(request.url?.absoluteString ?? ""))
         

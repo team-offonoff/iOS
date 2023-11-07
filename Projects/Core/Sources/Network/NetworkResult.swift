@@ -9,5 +9,5 @@
 import Foundation
 import Combine
 
-public typealias NetworkResultPublisher<DTO: Decodable>
+public typealias NetworkResultPublisher<DTO>
     = AnyPublisher<(code: NetworkServiceCode, data: DTO, error: NetworkErrorRespone.ErrorContent?), Never>
