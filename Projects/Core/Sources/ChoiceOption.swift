@@ -1,5 +1,5 @@
 //
-//  Choice.swift
+//  ChoiceOption.swift
 //  Core
 //
 //  Created by 박소윤 on 2023/09/26.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum Choice{
-    case a
-    case b
+public enum ChoiceOption: String{
+    case A = "CHOICE_A"
+    case B = "CHOICE_B"
 }
