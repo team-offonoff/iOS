@@ -123,21 +123,22 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         //MARK: helper method
         
         func remainTime() -> Int {
-            let remain = topics[currentTopic.row].deadline - Int(Date.now.timeIntervalSince1970)
-            return remain < 0 ? 0 : remain
+            topics[currentTopic.row].deadline - Int(Date.now.timeIntervalSince1970)
         }
         
         func publishTimer() {
             timerSubject.send(
                 TimerInfo(
-                    time: timeFormat(remainTime()),
+                    time: timeFormat(),
                     isHighlight: remainTime() < hourUnit
                 )
             )
         }
         
-        func timeFormat(_ time: Int) -> Time {
-            Time(
+        func timeFormat() -> Time {
+            var time = remainTime()
+            if time < 0 { time = 0 }
+            return Time(
                 hour: time / hourUnit,
                 minute: time % hourUnit / 60,
                 second: time % 60
