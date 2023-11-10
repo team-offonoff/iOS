@@ -10,6 +10,8 @@ import Foundation
 
 import UIKit
 import ABKit
+import Domain
+import FeatureDependency
 
 extension HomeTabView {
     
@@ -34,8 +36,10 @@ extension HomeTabView {
             return collectionView
         }()
         
+        let buttonFrame: ButtonFrame = ButtonFrame()
+        
         override func hierarchy() {
-            addSubview(collectionView)
+            addSubviews([collectionView, buttonFrame])
         }
         
         override func layout() {

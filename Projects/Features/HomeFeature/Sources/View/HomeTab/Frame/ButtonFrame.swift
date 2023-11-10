@@ -11,7 +11,7 @@ import Foundation
 import UIKit
 import ABKit
 
-extension HomeTabView {
+extension HomeTabView.ScrollFrame {
     
     final class ButtonFrame: BaseView {
         
