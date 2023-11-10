@@ -11,13 +11,12 @@ import ABKit
 
 final class HomeTabView: BaseView {
     
-    private let titleFrame: TitleFrame = TitleFrame()
-    private let scrollFrame: ScrollFrame = ScrollFrame()
-    private let buttonFrame: ButtonFrame = ButtonFrame()
-    let chatBottomSheetFrame: HomeChatBottomSheetView = HomeChatBottomSheetView()
+    let titleFrame: TitleFrame = TitleFrame()
+    let scrollFrame: ScrollFrame = ScrollFrame()
+    let chatBottomSheet: HomeChatBottomSheetView = HomeChatBottomSheetView()
     
     override func hierarchy() {
-        addSubviews([titleFrame, scrollFrame, buttonFrame, chatBottomSheetFrame])
+        addSubviews([titleFrame, scrollFrame, chatBottomSheet])
     }
     
     override func layout() {
@@ -28,28 +27,10 @@ final class HomeTabView: BaseView {
             $0.top.equalTo(titleFrame.snp.bottom).offset(12)
             $0.leading.trailing.bottom.equalToSuperview()
         }
-        buttonFrame.snp.makeConstraints{
-            $0.top.equalTo(titleFrame.snp.bottom).offset(26)
-            $0.leading.trailing.equalToSuperview()
-        }
     }
     
     override func initialize() {
-        addMoveButtonTarget()
         setPanGestureRecognizer()
-    }
-    
-    private func addMoveButtonTarget(){
-        buttonFrame.nextButton.addTarget(self, action: #selector(moveNextTopic), for: .touchUpInside)
-        buttonFrame.previousButton.addTarget(self, action: #selector(movePreviousTopic), for: .touchUpInside)
-    }
-    
-    @objc private func moveNextTopic(){
-        scrollFrame.moveNext()
-    }
-    
-    @objc private func movePreviousTopic(){
-        scrollFrame.movePrevious()
     }
     
     //MARK: - BottomSheet
@@ -70,7 +51,7 @@ final class HomeTabView: BaseView {
         
         guard let cell = scrollFrame.collectionView.cellForItem(at: [0,0]) as? HomeTopicCollectionViewCell else { fatalError() }
         
-        chatBottomSheetFrame.snp.makeConstraints{
+        chatBottomSheet.snp.makeConstraints{
             $0.top.equalTo(cell.userFrame.snp.bottom).offset(20)
             $0.height.equalTo(self).offset(-BOTTOM_SHEET_TOP_PADDING)
             $0.leading.trailing.equalToSuperview()
@@ -81,19 +62,19 @@ final class HomeTabView: BaseView {
         let viewPan = UIPanGestureRecognizer(target: self, action: #selector(viewPanned))
         viewPan.delaysTouchesBegan = false
         viewPan.delaysTouchesEnded = false
-        chatBottomSheetFrame.addGestureRecognizer(viewPan)
+        chatBottomSheet.addGestureRecognizer(viewPan)
     }
     
     @objc private func viewPanned(_ recognizer: UIPanGestureRecognizer){
-        let translation = recognizer.translation(in: chatBottomSheetFrame)
+        let translation = recognizer.translation(in: chatBottomSheet)
         switch recognizer.state {
         case .began:
             if defaultY == nil {
-                defaultY = chatBottomSheetFrame.frame.minY
+                defaultY = chatBottomSheet.frame.minY
             }
-            originalPoint = chatBottomSheetFrame.frame.origin
+            originalPoint = chatBottomSheet.frame.origin
         case .changed:
-            chatBottomSheetFrame.frame.origin = CGPoint(y: originalPoint.y + translation.y)
+            chatBottomSheet.frame.origin = CGPoint(y: originalPoint.y + translation.y)
             if abs(translation.y) >= 60 {
                 if state == .normal && translation.y <= 0{
                     state = .expanded
@@ -114,7 +95,7 @@ final class HomeTabView: BaseView {
             UIView.animate(
                 withDuration: 0.27,
                 animations: {
-                    self.chatBottomSheetFrame.frame.origin = movePoint
+                    self.chatBottomSheet.frame.origin = movePoint
                 })
         default:    return
         }
