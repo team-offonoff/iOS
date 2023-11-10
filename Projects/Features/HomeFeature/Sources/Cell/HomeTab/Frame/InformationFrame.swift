@@ -87,14 +87,16 @@ extension HomeTopicCollectionViewCell {
         override func style() {
             layer.cornerRadius = height/2
             setColorDefault()
-            setColonText()
+            setText()
             setLabelsFont()
-            binding(data: "")
         }
         
-        private func setColonText(){
+        private func setText(){
             [colon1Label, colon2Label].forEach{
                 $0.text = ":"
+            }
+            [hourLabel, minuteLabel, secondLabel].forEach{
+                $0.text = "00"
             }
         }
         
