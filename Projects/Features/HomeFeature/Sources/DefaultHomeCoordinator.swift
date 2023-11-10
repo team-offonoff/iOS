@@ -8,11 +8,15 @@
 
 import UIKit
 import HomeFeatureInterface
+import Domain
+import Data
 
 public class DefaultHomeCoordinator: HomeCoordinator {
     
     private var window: UIWindow?
     private let navigationController: UINavigationController
+    
+    private let topicRepository: TopicRepository = DefaultTopicRepository()
     
     required public init(window: UIWindow?){
         self.window = window
@@ -25,8 +29,17 @@ public class DefaultHomeCoordinator: HomeCoordinator {
     }
     
     public func start() {
-        let viewController = HomeTabViewController()
+        
+        let viewController = HomeTabViewController(viewModel: getHomeTabViewModel())
         viewController.coordinator = self
         navigationController.pushViewController(viewController, animated: true)
+        
+        func getHomeTabViewModel() -> HomeTabViewModel {
+            DefaultHomeTabViewModel(fetchTopicsUseCase: getFetchTopicsUseCase())
+        }
+        
+        func getFetchTopicsUseCase() -> any FetchTopicsUseCase {
+            DefaultFetchTopicsUseCase(repository: topicRepository)
+        }
     }
 }
