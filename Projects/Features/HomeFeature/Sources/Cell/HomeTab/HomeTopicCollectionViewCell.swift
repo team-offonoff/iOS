@@ -11,21 +11,21 @@ import UIKit
 
 class HomeTopicCollectionViewCell: BaseCollectionViewCell{
     
-    let topicInformationFrame: TopicInformationFrame = TopicInformationFrame()
-    let selectionFrame: SelectionFrame = SelectionFrame()
+    private let informationFrame: InformationFrame = InformationFrame()
+    private let selectionFrame: SelectionFrame = SelectionFrame()
     let userFrame: UserFrame = UserFrame()
     
     override func hierarchy() {
-        baseView.addSubviews([topicInformationFrame, selectionFrame, userFrame])
+        baseView.addSubviews([informationFrame, selectionFrame, userFrame])
     }
     
     override func layout() {
-        topicInformationFrame.snp.makeConstraints{
+        informationFrame.snp.makeConstraints{
             $0.top.equalToSuperview().offset(2)
             $0.leading.trailing.equalToSuperview()
         }
         selectionFrame.snp.makeConstraints{
-            $0.top.equalTo(topicInformationFrame.snp.bottom).offset(37)
+            $0.top.equalTo(informationFrame.snp.bottom).offset(37)
             $0.leading.trailing.equalToSuperview()
         }
         userFrame.snp.makeConstraints{

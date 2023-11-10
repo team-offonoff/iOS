@@ -9,18 +9,18 @@
 import Foundation
 import UIKit
 import ABKit
+import FeatureDependency
 
 extension HomeTopicCollectionViewCell {
     
     //MARK: - Topic
     
-    final class TopicInformationFrame: BaseView {
+    final class InformationFrame: BaseView {
         
         private let timerHeight = 37
         
         let titleLabel: UILabel = {
             let label = UILabel()
-            label.text = "10년 전 또는 후로 갈 수 있다면?"
             label.numberOfLines = 0
             label.textColor = Color.white
             label.setTypo(Pretendard.semibold24)
