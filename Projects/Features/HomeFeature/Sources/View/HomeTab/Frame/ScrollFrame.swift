@@ -15,14 +15,7 @@ import FeatureDependency
 
 extension HomeTabView {
     
-    final class ScrollFrame: BaseView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-        
-        private var currentIndexPath: IndexPath = IndexPath(row: 0, section: 0){
-            didSet {
-                collectionView.scrollToItem(at: currentIndexPath, at: .left, animated: true)
-            }
-        }
-        private var topics: [String] = [String](repeating: "", count: 3)
+    final class ScrollFrame: BaseView {
         
         let collectionView: UICollectionView = {
             let flowLayout = UICollectionViewFlowLayout()
@@ -46,39 +39,23 @@ extension HomeTabView {
             collectionView.snp.makeConstraints{
                 $0.top.leading.trailing.bottom.equalToSuperview()
             }
+            buttonFrame.snp.makeConstraints{
+                $0.top.equalToSuperview().offset(26)
+                $0.leading.trailing.equalToSuperview()
+            }
         }
         
-        override func initialize() {
-            collectionView.delegate = self
-            collectionView.dataSource = self
+        func setDelegate(to delegate: UIViewController) {
+            collectionView.delegate = delegate as? UICollectionViewDelegate
+            collectionView.dataSource = delegate as? UICollectionViewDataSource
         }
         
-        func binding(data: [String]) {
-            
+        func reloadTopics(){
+            collectionView.reloadData()
         }
         
-        func moveNext(){
-            if currentIndexPath.row + 1 >= topics.count { return }
-            currentIndexPath.row += 1
-        }
-        
-        func movePrevious(){
-            if currentIndexPath.row - 1 < 0 { return }
-            currentIndexPath.row -= 1
-        }
-        
-        //MARK: CollcetionView Delegate
-        
-        func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-            topics.count
-        }
-        
-        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            return collectionView.dequeueReusableCell(for: indexPath, cellType: HomeTopicCollectionViewCell.self)
-        }
-        
-        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-            CGSize(width: Device.width, height: collectionView.frame.height)
+        func move(to indexPath: IndexPath) {
+            collectionView.scrollToItem(at: indexPath, at: .left, animated: true)
         }
     }
 }
