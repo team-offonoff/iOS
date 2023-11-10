@@ -8,8 +8,10 @@
 
 import ABKit
 import UIKit
+import Domain
+import FeatureDependency
 
-class HomeTopicCollectionViewCell: BaseCollectionViewCell{
+class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
     private let informationFrame: InformationFrame = InformationFrame()
     private let selectionFrame: SelectionFrame = SelectionFrame()
@@ -32,5 +34,15 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell{
             $0.top.equalTo(selectionFrame.snp.bottom).offset(49)
             $0.leading.trailing.equalToSuperview()
         }
+    }
+    
+    func binding(data: Topic) {
+        informationFrame.titleLabel.text = data.title
+        selectionFrame.aFrame.contentLabel.text = data.choices.first(where: { $0.option == .A })?.content.text
+        selectionFrame.bFrame.contentLabel.text = data.choices.first(where: { $0.option == .B })?.content.text
+    }
+    
+    func binding(timer: TimerInfo) {
+        informationFrame.timer.binding(data: timer)
     }
 }

@@ -121,17 +121,16 @@ extension HomeTopicCollectionViewCell {
             }
         }
         
-        func binding(data: Any){
-            let shouldHightlight: Bool = true  //TODO: 남은 시간 1시간 미만 연산
-            if shouldHightlight && !highlightFlag {
+        func binding(data: TimerInfo){
+            if data.isHighlight && !highlightFlag {
                 defer{
                     highlightFlag = true
                 }
                 setColorHighlight()
             }
-            hourLabel.text = "00"
-            minuteLabel.text = "00"
-            secondLabel.text = "00"
+            hourLabel.text = data.time.hour.doubleDigitFormat
+            minuteLabel.text = data.time.minute.doubleDigitFormat
+            secondLabel.text = data.time.second.doubleDigitFormat
         }
         
         private func setColorDefault(){
