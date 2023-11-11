@@ -41,6 +41,7 @@ final class DefaultLoginViewModel: LoginViewModel {
                 } else {
                     print("loginWithKakaoTalk() success.")
                     self.requestKakaoUserInformation()
+                    print("kakao token:",oauthToken?.idToken)
                 }
             }
         } else {
@@ -50,6 +51,7 @@ final class DefaultLoginViewModel: LoginViewModel {
                 } else {
                     print("loginWithKakaoAccount() success.")
                     self.requestKakaoUserInformation()
+                    print("kakao token:",oauthToken?.idToken)
                 }
             }
         }
@@ -91,8 +93,10 @@ final class DefaultLoginViewModel: LoginViewModel {
     private func makeKakaoRequestScopes(user: User) -> [String] {
         var scopes = [String]()
         
+        //카카오 이메일 동의 필수
+        
 //        if (user.kakaoAccount?.profileNeedsAgreement == true) { scopes.append("profile") }
-//        if (user.kakaoAccount?.emailNeedsAgreement == true) { scopes.append("account_email") }
+        if (user.kakaoAccount?.emailNeedsAgreement == true) { scopes.append("account_email") }
 //        if (user.kakaoAccount?.birthdayNeedsAgreement == true) { scopes.append("birthday") }
 //        if (user.kakaoAccount?.birthyearNeedsAgreement == true) { scopes.append("birthyear") }
 //        if (user.kakaoAccount?.genderNeedsAgreement == true) { scopes.append("gender") }
@@ -108,7 +112,7 @@ final class DefaultLoginViewModel: LoginViewModel {
     func makeAppleRequest() -> ASAuthorizationAppleIDRequest {
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
-        request.requestedScopes = [.fullName, .email]
+        request.requestedScopes = [.email] //애플 로그인은 이름 제외, 이메일만 동의.
         return request
     }
     
