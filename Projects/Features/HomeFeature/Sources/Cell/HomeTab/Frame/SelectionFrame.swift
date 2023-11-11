@@ -14,8 +14,8 @@ extension HomeTopicCollectionViewCell {
 
     final class SelectionFrame: BaseStackView {
         
-        let aFrame: ChoiceFrame = ChoiceFrame(choice: .a)
-        let bFrame: ChoiceFrame = ChoiceFrame(choice: .b)
+        let aFrame: ChoiceFrame = ChoiceFrame(choice: .A)
+        let bFrame: ChoiceFrame = ChoiceFrame(choice: .B)
         
         override func style() {
             axis = .horizontal
@@ -38,9 +38,9 @@ extension HomeTopicCollectionViewCell {
     
     final class ChoiceFrame: BaseView {
         
-        private let choice: Choice
+        private let choice: ChoiceOption
         
-        init(choice: Choice){
+        init(choice: ChoiceOption){
             self.choice = choice
             super.init()
         }
@@ -56,10 +56,8 @@ extension HomeTopicCollectionViewCell {
             return label
         }()
         
-        private let informationLabel: UILabel = {
+        let contentLabel: UILabel = {
             let label = UILabel()
-            label.text = "10년 전 과거로 가기"
-//            label.text = "냥냥냥냥냥냥냥냥\n냥냥냥냥냥냥냥냥\n냥냥냥냥냥냥냥냥"
             label.textColor = Color.white
             label.numberOfLines = 0
             label.setTypo(Pretendard.semibold20)
@@ -68,31 +66,31 @@ extension HomeTopicCollectionViewCell {
         
         override func style() {
             choiceLabel.text = choice.title
-            informationLabel.textAlignment = choice.textAlignment
+            contentLabel.textAlignment = choice.textAlignment
             backgroundColor = choice.backgroundColor
             layer.cornerRadius = 188/2
             layer.maskedCorners = choice.cornerRadiusPosition
         }
         
         override func hierarchy() {
-            addSubviews([choiceLabel, informationLabel])
+            addSubviews([choiceLabel, contentLabel])
         }
         
         override func layout() {
             choiceLabel.snp.makeConstraints{
                 $0.centerY.equalToSuperview()
             }
-            informationLabel.snp.makeConstraints{
+            contentLabel.snp.makeConstraints{
                 $0.centerY.equalToSuperview()
             }
-            choice == .a ? setALayout() : setBLayout()
+            choice == .A ? setALayout() : setBLayout()
         }
         
         private func setALayout(){
             choiceLabel.snp.makeConstraints{
                 $0.trailing.equalToSuperview().inset(14)
             }
-            informationLabel.snp.makeConstraints{
+            contentLabel.snp.makeConstraints{
                 $0.leading.equalToSuperview().offset(32)
                 $0.trailing.equalTo(choiceLabel.snp.leading).offset(-36)
             }
@@ -102,45 +100,41 @@ extension HomeTopicCollectionViewCell {
             choiceLabel.snp.makeConstraints{
                 $0.leading.equalToSuperview().offset(14)
             }
-            informationLabel.snp.makeConstraints{
+            contentLabel.snp.makeConstraints{
                 $0.trailing.equalToSuperview().inset(32)
                 $0.leading.equalTo(choiceLabel.snp.trailing).offset(36)
             }
         }
-        
-        func binding(data: String) {
-            
-        }
     }
 }
     
-fileprivate extension Choice {
+fileprivate extension ChoiceOption {
     
     var title: String {
         switch self {
-        case .a:        return "A"
-        case .b:        return "B"
+        case .A:        return "A"
+        case .B:        return "B"
         }
     }
     
     var backgroundColor: UIColor {
         switch self {
-        case .a:        return UIColor(r: 208, g: 67, b: 118)
-        case .b:        return UIColor(r: 20, g: 150, b: 170)
+        case .A:        return UIColor(r: 208, g: 67, b: 118)
+        case .B:        return UIColor(r: 20, g: 150, b: 170)
         }
     }
     
     var cornerRadiusPosition: CACornerMask {
         switch self {
-        case .a:        return [.layerMaxXMaxYCorner, .layerMaxXMinYCorner]
-        case .b:        return [.layerMinXMaxYCorner, .layerMinXMinYCorner]
+        case .A:        return [.layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+        case .B:        return [.layerMinXMaxYCorner, .layerMinXMinYCorner]
         }
     }
     
     var textAlignment: NSTextAlignment {
         switch self {
-        case .a:        return .right
-        case .b:        return .left
+        case .A:        return .right
+        case .B:        return .left
         }
     }
 }

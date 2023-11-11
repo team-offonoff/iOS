@@ -9,18 +9,18 @@
 import Foundation
 import UIKit
 import ABKit
+import FeatureDependency
 
 extension HomeTopicCollectionViewCell {
     
     //MARK: - Topic
     
-    final class TopicInformationFrame: BaseView {
+    final class InformationFrame: BaseView {
         
         private let timerHeight = 37
         
         let titleLabel: UILabel = {
             let label = UILabel()
-            label.text = "10년 전 또는 후로 갈 수 있다면?"
             label.numberOfLines = 0
             label.textColor = Color.white
             label.setTypo(Pretendard.semibold24)
@@ -87,14 +87,16 @@ extension HomeTopicCollectionViewCell {
         override func style() {
             layer.cornerRadius = height/2
             setColorDefault()
-            setColonText()
+            setText()
             setLabelsFont()
-            binding(data: "")
         }
         
-        private func setColonText(){
+        private func setText(){
             [colon1Label, colon2Label].forEach{
                 $0.text = ":"
+            }
+            [hourLabel, minuteLabel, secondLabel].forEach{
+                $0.text = "00"
             }
         }
         
@@ -119,17 +121,16 @@ extension HomeTopicCollectionViewCell {
             }
         }
         
-        func binding(data: Any){
-            let shouldHightlight: Bool = true  //TODO: 남은 시간 1시간 미만 연산
-            if shouldHightlight && !highlightFlag {
+        func binding(data: TimerInfo){
+            if data.isHighlight && !highlightFlag {
                 defer{
                     highlightFlag = true
                 }
                 setColorHighlight()
             }
-            hourLabel.text = "00"
-            minuteLabel.text = "00"
-            secondLabel.text = "00"
+            hourLabel.text = data.time.hour.doubleDigitFormat
+            minuteLabel.text = data.time.minute.doubleDigitFormat
+            secondLabel.text = data.time.second.doubleDigitFormat
         }
         
         private func setColorDefault(){
