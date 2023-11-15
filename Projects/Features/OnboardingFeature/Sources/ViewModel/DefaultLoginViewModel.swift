@@ -20,7 +20,7 @@ final class DefaultLoginViewModel: LoginViewModel {
     private let loginUseCase: any LoginUseCase
     
     init(
-        loginUseCase: any LoginUseCase = DefaultLoginUseCase()
+        loginUseCase: any LoginUseCase
     ){
         self.loginUseCase = loginUseCase
         bind()
