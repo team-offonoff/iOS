@@ -7,20 +7,18 @@
 //
 
 import Foundation
-
 import UIKit
 import ABKit
-
 import FeatureDependency
 import OnboardingFeatureInterface
 import AuthenticationServices
 
 class LoginViewController: BaseViewController<BaseHeaderView, LoginView, DefaultOnboardingCoordinator> {
     
-    private let viewModel: LoginViewModel
+    private let viewModel: any LoginViewModel
     
-    init(){
-        self.viewModel = DefaultLoginViewModel()
+    init(viewModel: any LoginViewModel){
+        self.viewModel = viewModel
         super.init(headerView: BaseHeaderView(), mainView: LoginView())
     }
     
