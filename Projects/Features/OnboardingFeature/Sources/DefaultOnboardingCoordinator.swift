@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import OnboardingFeatureInterface
+import Domain
+import Data
 
 public class DefaultOnboardingCoordinator: OnboardingCoordinator {
     
@@ -26,8 +28,21 @@ public class DefaultOnboardingCoordinator: OnboardingCoordinator {
     }
     
     public func start() {
-        let viewController = LoginViewController()
+        
+        let viewController = LoginViewController(viewModel: getViewModel())
         viewController.coordinator = self
         navigationController.pushViewController(viewController, animated: true)
+        
+        func getViewModel() -> LoginViewModel {
+            DefaultLoginViewModel(loginUseCase: getLoginUseCase())
+        }
+        
+        func getLoginUseCase() -> any LoginUseCase {
+            DefaultLoginUseCase(repository: getOAuthRepository())
+        }
+        
+        func getOAuthRepository() -> OAuthRepository {
+            DefaultOAuthRepository()
+        }
     }
 }
