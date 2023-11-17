@@ -45,4 +45,14 @@ public class DefaultOnboardingCoordinator: OnboardingCoordinator {
             DefaultOAuthRepository()
         }
     }
+    
+    public func startSignUp() {
+        let viewController = SignUpViewController(viewModel: getViewModel())
+        viewController.coordinator = self
+        navigationController.pushViewController(viewController, animated: true)
+        
+        func getViewModel() -> SignUpViewModel {
+            DefaultSignUpViewModel()
+        }
+    }
 }
