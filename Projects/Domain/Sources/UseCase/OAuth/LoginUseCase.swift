@@ -10,7 +10,7 @@ import Foundation
 import Core
 
 public protocol LoginUseCase: UseCase {
-    func execute(request: LoginUseCaseRequestValue) //-> NetworkResultPublisher<Any?>
+    func execute(request: LoginUseCaseRequestValue) -> NetworkResultPublisher<User?>
 }
 
 public final class DefaultLoginUseCase: LoginUseCase {
@@ -21,11 +21,11 @@ public final class DefaultLoginUseCase: LoginUseCase {
         self.repository = repository
     }
     
-    public func execute(request: LoginUseCaseRequestValue) {
-        
+    public func execute(request: LoginUseCaseRequestValue) -> NetworkResultPublisher<User?> {
+        repository.login(request: request)
     }
 }
 
 public struct LoginUseCaseRequestValue {
-    
+    public let idToken: String
 }
