@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum Gender: String {
+public enum Gender: String, CaseIterable {
     case man = "남성"
     case woman = "여성"
 }
