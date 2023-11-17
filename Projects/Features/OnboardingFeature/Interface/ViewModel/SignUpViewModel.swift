@@ -18,14 +18,17 @@ public struct SignUpViewModelInputValue {
     
     public init(
         nicknamePublisher: AnyPublisher<String, Never>,
-        birthdayPublisher: AnyPublisher<String, Never>
+        birthdayPublisher: AnyPublisher<String, Never>,
+        genderPublisher: AnyPublisher<Gender, Never>
     ) {
         self.nicknamePublisher = nicknamePublisher
         self.birthdayPublisher = birthdayPublisher
+        self.genderPublisher = genderPublisher
     }
-    
+
     public let nicknamePublisher: AnyPublisher<String, Never>
     public let birthdayPublisher: AnyPublisher<String, Never>
+    public let genderPublisher: AnyPublisher<Gender, Never>
 }
 
 public protocol SignUpViewModelOutput {
