@@ -41,14 +41,8 @@ public protocol JobSelectable {
     func selectJob(_: Job)
 }
 
-public protocol GenderSelectable {
-    var selectedGender: CurrentValueSubject<Gender?, Never> { get }
-    func selectGender(_: Gender)
-}
-
 public protocol SignUpViewModel:
     SignUpViewModelInput,
     SignUpViewModelOutput,
-    JobSelectable,
-    GenderSelectable {
+    JobSelectable {
 }
