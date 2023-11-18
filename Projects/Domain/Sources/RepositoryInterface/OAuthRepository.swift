@@ -10,5 +10,5 @@ import Foundation
 import Core
 
 public protocol OAuthRepository: Repository{
-
+    func login(request: LoginUseCaseRequestValue) -> NetworkResultPublisher<User?>
 }
