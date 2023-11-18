@@ -15,7 +15,7 @@ import Combine
 
 final class DefaultLoginViewModel: LoginViewModel {
     
-    @Published private var kakaoUser: User?
+    @Published private var kakaoUser: KakaoSDKUser.User?
     
     private let loginUseCase: any LoginUseCase
     
@@ -90,7 +90,7 @@ final class DefaultLoginViewModel: LoginViewModel {
         }
     }
     
-    private func makeKakaoRequestScopes(user: User) -> [String] {
+    private func makeKakaoRequestScopes(user: KakaoSDKUser.User) -> [String] {
         var scopes = [String]()
         
         //카카오 이메일 동의 필수
