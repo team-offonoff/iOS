@@ -14,9 +14,6 @@ import Data
 
 public class DefaultOnboardingCoordinator: OnboardingCoordinator {
     
-    private var window: UIWindow?
-    private let navigationController: UINavigationController
-    
     required public init(window: UIWindow?){
         self.window = window
         self.navigationController = UINavigationController()
@@ -27,12 +24,19 @@ public class DefaultOnboardingCoordinator: OnboardingCoordinator {
         self.navigationController = navigationController
     }
     
+    private var window: UIWindow?
+    private var sceneDelegate: UISceneDelegate? {
+        UIApplication.shared.connectedScenes.first?.delegate
+    }
+    
+    private let navigationController: UINavigationController
+    
     public func start() {
         
         let viewController = LoginViewController(viewModel: getViewModel())
         viewController.coordinator = self
         navigationController.pushViewController(viewController, animated: true)
-        
+
         func getViewModel() -> LoginViewModel {
             DefaultLoginViewModel(loginUseCase: getLoginUseCase())
         }
@@ -47,6 +51,7 @@ public class DefaultOnboardingCoordinator: OnboardingCoordinator {
     }
     
     public func startSignUp() {
+        
         let viewController = SignUpViewController(viewModel: getViewModel())
         viewController.coordinator = self
         navigationController.pushViewController(viewController, animated: true)
@@ -54,5 +59,9 @@ public class DefaultOnboardingCoordinator: OnboardingCoordinator {
         func getViewModel() -> SignUpViewModel {
             DefaultSignUpViewModel()
         }
+    }
+    
+    public func startHome() {
+        (sceneDelegate as? OnboardingSceneDelegate)?.sceneMoveToRootFeature()
     }
 }
