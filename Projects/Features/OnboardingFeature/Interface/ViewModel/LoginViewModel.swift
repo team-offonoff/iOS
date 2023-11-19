@@ -18,7 +18,7 @@ public protocol KakaoLoginDelegate {
 
 public protocol AppleLoginDelegate {
     func startAppleLogin(credential:ASAuthorizationAppleIDCredential)
-    func makeAppleRequest() -> ASAuthorizationAppleIDRequest
+    func makeAppleRequests() -> [ASAuthorizationAppleIDRequest]
 }
 
 public protocol LoginViewModelInput: KakaoLoginDelegate, AppleLoginDelegate {

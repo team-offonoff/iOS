@@ -109,11 +109,11 @@ final class DefaultLoginViewModel: LoginViewModel {
     
     //MARK: Apple Login
     
-    func makeAppleRequest() -> ASAuthorizationAppleIDRequest {
+    func makeAppleRequests() -> [ASAuthorizationAppleIDRequest] {
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
         request.requestedScopes = [.email] //애플 로그인은 이름 제외, 이메일만 동의.
-        return request
+        return [request]
     }
     
     func startAppleLogin(credential: ASAuthorizationAppleIDCredential) {
