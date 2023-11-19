@@ -7,10 +7,27 @@
 //
 
 import Foundation
+import KakaoSDKAuth
+import KakaoSDKUser
 import AuthenticationServices
+import Combine
 
-public protocol LoginViewModel {
+public protocol KakaoLoginDelegate {
     func startKakaoLogin()
+}
+
+public protocol AppleLoginDelegate {
     func startAppleLogin(credential:ASAuthorizationAppleIDCredential)
     func makeAppleRequest() -> ASAuthorizationAppleIDRequest
+}
+
+public protocol LoginViewModelInput: KakaoLoginDelegate, AppleLoginDelegate {
+
+}
+
+public protocol LoginViewModelOutput {
+}
+
+public protocol LoginViewModel: LoginViewModelInput, LoginViewModelOutput {
+
 }
