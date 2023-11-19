@@ -14,10 +14,10 @@ public struct User {
         newMember: Bool,
         accessToken: String)
     {
-        self.newMember = newMember
+        self.isNewMember = newMember
         self.accessToken = accessToken
     }
     
-    public let newMember: Bool?
+    public let isNewMember: Bool?
     public let accessToken: String?
 }
