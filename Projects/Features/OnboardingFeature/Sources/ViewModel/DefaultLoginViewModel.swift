@@ -63,7 +63,7 @@ final class DefaultLoginViewModel: LoginViewModel {
                 print(error)
             } else {
                 if let user = user {
-                    let scopes = self.makeKakaoRequestScopes(user: user)
+                    let scopes = makeKakaoRequestScopes(user: user)
                     if scopes.count > 0 {
                         print("사용자에게 추가 동의를 받아야 합니다.")
                         //scope 목록을 전달하여 카카오 로그인 요청
@@ -88,23 +88,12 @@ final class DefaultLoginViewModel: LoginViewModel {
                 }
             }
         }
-    }
-    
-    private func makeKakaoRequestScopes(user: KakaoSDKUser.User) -> [String] {
-        var scopes = [String]()
         
-        //카카오 이메일 동의 필수
-        
-//        if (user.kakaoAccount?.profileNeedsAgreement == true) { scopes.append("profile") }
-        if (user.kakaoAccount?.emailNeedsAgreement == true) { scopes.append("account_email") }
-//        if (user.kakaoAccount?.birthdayNeedsAgreement == true) { scopes.append("birthday") }
-//        if (user.kakaoAccount?.birthyearNeedsAgreement == true) { scopes.append("birthyear") }
-//        if (user.kakaoAccount?.genderNeedsAgreement == true) { scopes.append("gender") }
-//        if (user.kakaoAccount?.phoneNumberNeedsAgreement == true) { scopes.append("phone_number") }
-//        if (user.kakaoAccount?.ageRangeNeedsAgreement == true) { scopes.append("age_range") }
-//        if (user.kakaoAccount?.ciNeedsAgreement == true) { scopes.append("account_ci") }
-        
-        return scopes
+        func makeKakaoRequestScopes(user: KakaoSDKUser.User) -> [String] {
+            var scopes = [String]()
+            if (user.kakaoAccount?.emailNeedsAgreement == true) { scopes.append("account_email") }
+            return scopes
+        }
     }
     
     //MARK: Apple Login
