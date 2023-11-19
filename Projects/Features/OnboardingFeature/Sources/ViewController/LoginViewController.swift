@@ -43,7 +43,19 @@ class LoginViewController: BaseViewController<BaseHeaderView, LoginView, Default
     }
     
     override func bind() {
+        viewModel.moveHome
+            .receive(on: RunLoop.main)
+            .sink{ [weak self] _ in
+                self?.coordinator?.startHome()
+            }
+            .store(in: &cancellables)
         
+        viewModel.moveSignUp
+            .receive(on: RunLoop.main)
+            .sink{ [weak self] _ in
+                self?.coordinator?.startSignUp()
+            }
+            .store(in: &cancellables)
     }
     
     @objc private func startKakaoLogin(){
