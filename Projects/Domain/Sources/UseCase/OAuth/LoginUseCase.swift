@@ -27,5 +27,10 @@ public final class DefaultLoginUseCase: LoginUseCase {
 }
 
 public struct LoginUseCaseRequestValue {
+    
+    public init(idToken: String) {
+        self.idToken = idToken
+    }
+    
     public let idToken: String
 }
