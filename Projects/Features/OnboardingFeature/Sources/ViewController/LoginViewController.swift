@@ -26,23 +26,20 @@ class LoginViewController: BaseViewController<BaseHeaderView, LoginView, Default
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var appleAuthorizationController: ASAuthorizationController?
+    private lazy var appleAuthorizationController: ASAuthorizationController = {
+        let authorizationController = ASAuthorizationController(authorizationRequests: viewModel.makeAppleRequests())
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        return authorizationController
+    }()
     
     override func initialize() {
         addButtonFrameElementsTarget()
-        generateAppleAuthorizationController()
     }
     
     private func addButtonFrameElementsTarget(){
         mainView.buttonFrame.kakaoLoginButton.addTarget(self, action: #selector(startKakaoLogin), for: .touchUpInside)
         mainView.buttonFrame.appleLoginButton.addTarget(self, action: #selector(startAppleLogin), for: .touchUpInside)
-    }
-    
-    private func generateAppleAuthorizationController(){
-        let request = viewModel.makeAppleRequest()
-        appleAuthorizationController = ASAuthorizationController(authorizationRequests: [request])
-        appleAuthorizationController?.delegate = self
-        appleAuthorizationController?.presentationContextProvider = self
     }
     
     override func bind() {
@@ -54,7 +51,7 @@ class LoginViewController: BaseViewController<BaseHeaderView, LoginView, Default
     }
     
     @objc private func startAppleLogin(){
-        appleAuthorizationController?.performRequests()
+        appleAuthorizationController.performRequests()
     }
     
 }
@@ -69,8 +66,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             viewModel.startAppleLogin(credential: appleIDCredential)
-        default:
-            return
+        default: return
         }
     }
 }
