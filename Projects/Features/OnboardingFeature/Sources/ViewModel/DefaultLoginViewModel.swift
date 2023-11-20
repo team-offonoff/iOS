@@ -77,70 +77,69 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
     //MARK: Kakao Login
     
     func startKakaoLogin() {
+        
         if UserApi.isKakaoTalkLoginAvailable() {
-            UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
-                if let error = error {
-                    print(error)
-                } else {
-                    print("loginWithKakaoTalk() success.")
-                    self.requestKakaoUserInformation()
-                }
-            }
-        } else {
-            UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
-                if let error = error {
-                    print(error)
-                } else {
-                    print("loginWithKakaoAccount() success.")
-                    self.requestKakaoUserInformation()
-                }
-            }
+            loginWithKakaoTalk()
         }
-    }
-    
-    private func requestKakaoUserInformation(){
-        UserApi.shared.me() { (user, error) in
+        else {
+            loginWithKakaoAccount()
+        }
+        
+        //MARK: Helper method
+        
+        func loginWithKakaoTalk() {
+            UserApi.shared.loginWithKakaoTalk(completion: loginCompletion(_:_:))
+        }
+        
+        func loginWithKakaoAccount() {
+            UserApi.shared.loginWithKakaoAccount(completion: loginCompletion(_:_:))
+        }
+        
+        func loginCompletion(_ oauthToken: OAuthToken?, _ error: Error?) {
             if let error = error {
                 print(error)
+            } else {
+                userInformation()
             }
-            else {
-                if let user = user {
-                    let scopes = makeKakaoRequestScopes(user: user)
-                    if scopes.count > 0 {
-                        print("사용자에게 추가 동의를 받아야 합니다.")
-                        //scope 목록을 전달하여 카카오 로그인 요청
-                        UserApi.shared.loginWithKakaoAccount(scopes: scopes) { (oauthToken, error) in
-                            if let error = error {
-                                print(error)
-                            }
-                            else {
-                                UserApi.shared.me() { (user, error) in
-                                    if let error = error {
-                                        print(error)
-                                    }
-                                    else {
-                                        print("me() success.")
-                                        guard let oauthToken = oauthToken, let user = user else { return }
-                                        self.kakaoUser = (oauthToken, user)
-                                    }
+        }
+        
+        func userInformation() {
+            
+            UserApi.shared.me() { (user, error) in
+                
+                if let error = error {
+                    print(error)
+                }
+                else {
+                    loginWithRequestScope()
+                }
+                
+                func loginWithRequestScope() {
+                    UserApi.shared.loginWithKakaoAccount(scopes: requestScopes()) { (oauthToken, error) in
+                        if let error = error {
+                            print(error)
+                        }
+                        else {
+                            UserApi.shared.me() { (user, error) in
+                                if let error = error {
+                                    print(error)
+                                }
+                                else {
+                                    guard let oauthToken = oauthToken, let user = user else { return }
+                                    print("me() success.")
+                                    self.kakaoUser = (oauthToken, user)
                                 }
                             }
                         }
                     }
-                    /*
-                     else {
-                     print("사용자의 추가 동의가 필요하지 않습니다.")
-                     self.kakaoUser = user
-                     }
-                     */
+                }
+                
+                func requestScopes() -> [String] {
+                    var scopes = [String]()
+                    if (user?.kakaoAccount?.emailNeedsAgreement == true) { scopes.append("account_email") }
+                    return scopes
                 }
             }
-        }
-        
-        func makeKakaoRequestScopes(user: KakaoSDKUser.User) -> [String] {
-            var scopes = [String]()
-            if (user.kakaoAccount?.emailNeedsAgreement == true) { scopes.append("account_email") }
-            return scopes
         }
     }
     
