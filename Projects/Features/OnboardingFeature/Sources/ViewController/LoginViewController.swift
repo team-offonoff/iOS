@@ -26,11 +26,15 @@ class LoginViewController: BaseViewController<BaseHeaderView, LoginView, Default
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var appleAuthorizationController: ASAuthorizationController?
+    private lazy var appleAuthorizationController: ASAuthorizationController = {
+        let authorizationController = ASAuthorizationController(authorizationRequests: viewModel.makeAppleRequests())
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        return authorizationController
+    }()
     
     override func initialize() {
         addButtonFrameElementsTarget()
-        generateAppleAuthorizationController()
     }
     
     private func addButtonFrameElementsTarget(){
@@ -38,15 +42,20 @@ class LoginViewController: BaseViewController<BaseHeaderView, LoginView, Default
         mainView.buttonFrame.appleLoginButton.addTarget(self, action: #selector(startAppleLogin), for: .touchUpInside)
     }
     
-    private func generateAppleAuthorizationController(){
-        let request = viewModel.makeAppleRequest()
-        appleAuthorizationController = ASAuthorizationController(authorizationRequests: [request])
-        appleAuthorizationController?.delegate = self
-        appleAuthorizationController?.presentationContextProvider = self
-    }
-    
     override func bind() {
+        viewModel.moveHome
+            .receive(on: RunLoop.main)
+            .sink{ [weak self] _ in
+                self?.coordinator?.startHome()
+            }
+            .store(in: &cancellables)
         
+        viewModel.moveSignUp
+            .receive(on: RunLoop.main)
+            .sink{ [weak self] _ in
+                self?.coordinator?.startSignUp()
+            }
+            .store(in: &cancellables)
     }
     
     @objc private func startKakaoLogin(){
@@ -54,7 +63,7 @@ class LoginViewController: BaseViewController<BaseHeaderView, LoginView, Default
     }
     
     @objc private func startAppleLogin(){
-        appleAuthorizationController?.performRequests()
+        appleAuthorizationController.performRequests()
     }
     
 }
@@ -69,8 +78,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             viewModel.startAppleLogin(credential: appleIDCredential)
-        default:
-            return
+        default: return
         }
     }
 }

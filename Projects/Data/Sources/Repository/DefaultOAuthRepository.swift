@@ -15,4 +15,21 @@ public final class DefaultOAuthRepository: OAuthRepository {
     private let networkService: NetworkService = NetworkService.shared
     
     public init() { }
+    
+    public func login(request: LoginUseCaseRequestValue) -> NetworkResultPublisher<User?> {
+        
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = "/oauth/kakao/authorize"
+        
+        guard let requestBody = try? JSONEncoder().encode(makeDTO()),
+              let urlRequest = urlComponents?.toURLRequest(method: .post, httpBody: requestBody) else {
+            fatalError("json encoding or url parsing error")
+        }
+        
+        return dataTask(request: urlRequest, responseType: LoginResponseDTO.self)
+        
+        func makeDTO() -> LoginRequestDTO {
+            .init(idToken: request.idToken)
+        }
+    }
 }

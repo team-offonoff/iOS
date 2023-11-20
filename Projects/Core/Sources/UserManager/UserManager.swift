@@ -19,4 +19,10 @@ public class UserManager {
     
     @UserDefault(key: "refreshToken", defaultValue: nil)
     public var refreshToken: String?
+    
+    @UserDefault(key: "email", defaultValue: nil)
+    public var email: String?
+    
+    @UserDefault(key: "idToken", defaultValue: nil)
+    public var idToken: String?
 }

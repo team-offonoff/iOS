@@ -9,12 +9,15 @@
 import UIKit
 import KakaoSDKAuth
 import RootFeature
-
 import OnboardingFeature
+import OnboardingFeatureInterface
+import FeatureDependency
 
-class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+class SceneDelegate: UIResponder, UIWindowSceneDelegate, OnboardingSceneDelegate {
 
     var window: UIWindow?
+    
+    private var coordinator: Coordinator?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
@@ -23,8 +26,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: scene)
         window?.windowScene = scene
         
-        let tabCoordinator = DefaultOnboardingCoordinator(window: window)
-        tabCoordinator.start()
+        coordinator = DefaultOnboardingCoordinator(window: window)
+        coordinator?.start()
         
         window?.overrideUserInterfaceStyle = .light
         window?.makeKeyAndVisible()
@@ -64,5 +67,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 _ = AuthController.handleOpenUrl(url: url)
             }
         }
+    }
+    
+    public func sceneMoveToRootFeature() {
+        coordinator = DefaultTabCoordinator(window: window)
+        coordinator?.start()
     }
 }
