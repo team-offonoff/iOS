@@ -44,6 +44,7 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
             .flatMap{ idToken in
                 self.loginUseCase.execute(request: .init(idToken: idToken))
             }
+            .share()
         
         // response success
         response
@@ -70,6 +71,11 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
         // response fail
         let failResponse = response
             .filter{ $0.code != .success }
+            .sink{
+                print("fail:", $0)
+            }
+            .store(in: &cancellable)
+         
         
     }
     
