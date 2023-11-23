@@ -130,31 +130,31 @@ public extension Project {
         
         // MARK: - Unit Tests
         
-//        if targets.contains(.unitTest) {
-//            let deps: [TargetDependency] = targets.contains(.demo)
-//            ? [.target(name: name), .target(name: "\(name)Demo")] : [.target(name: name)]
-//
-//            let target = Target(
-//                name: "\(name)Tests",
-//                platform: platform,
-//                product: .unitTests,
-//                bundleId: "\(Environment.bundlePrefix).\(name)Tests",
-//                deploymentTarget: deploymentTarget,
-//                infoPlist: .default,
-//                sources: ["Tests/Sources/**/*.swift"],
-//                resources: [.glob(pattern: "Tests/Resources/**", excluding: [])],
-//                dependencies: [
-//                    deps,
-//                    [
-////                        .SPM.Nimble,
-////                        .SPM.Quick
-//                    ]
-//                ].flatMap { $0 },
-//                settings: .settings(base: SettingsDictionary().setCodeSignManual(), configurations: XCConfig.tests)
-//            )
-//
-//            projectTargets.append(target)
-//        }
+        if targets.contains(.unitTest) {
+            let deps: [TargetDependency] = targets.contains(.demo)
+            ? [.target(name: name), .target(name: "\(name)Demo")] : [.target(name: name)]
+
+            let target = Target(
+                name: "\(name)Tests",
+                platform: platform,
+                product: .unitTests,
+                bundleId: "\(Environment.bundlePrefix).\(name)Tests",
+                deploymentTarget: deploymentTarget,
+                infoPlist: .default,
+                sources: ["Tests/**/*.swift"],
+                resources: [], //[.glob(pattern: "Tests/Resources/**", excluding: [])],
+                dependencies: [
+                    deps,
+                    [
+//                        .SPM.Nimble,
+//                        .SPM.Quick
+                    ]
+                ].flatMap { $0 },
+                settings: .settings(base: SettingsDictionary().setCodeSignManual(), configurations: XCConfig.tests)
+            )
+
+            projectTargets.append(target)
+        }
         
         // MARK: - Schemes
         
