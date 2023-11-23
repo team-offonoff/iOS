@@ -23,7 +23,6 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
     ){
         self.loginUseCase = loginUseCase
         super.init()
-        bind()
     }
     
     let moveHome: PassthroughSubject<Void, Never> = PassthroughSubject()
