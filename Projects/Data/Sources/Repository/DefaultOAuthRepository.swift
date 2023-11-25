@@ -21,9 +21,11 @@ public final class DefaultOAuthRepository: OAuthRepository {
         var urlComponents = networkService.baseUrlComponents
         urlComponents?.path = "/oauth/kakao/authorize"
         
-        guard let requestBody = try? JSONEncoder().encode(makeDTO()),
-              let urlRequest = urlComponents?.toURLRequest(method: .post, httpBody: requestBody) else {
-            fatalError("json encoding or url parsing error")
+        guard let requestBody = try? JSONEncoder().encode(makeDTO()) else {
+            fatalError("json parsing error")
+        }
+        guard let urlRequest = urlComponents?.toURLRequest(method: .post, httpBody: requestBody) else {
+            fatalError("url parsing error")
         }
         
         return dataTask(request: urlRequest, responseType: LoginResponseDTO.self)

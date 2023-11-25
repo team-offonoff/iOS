@@ -23,13 +23,12 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
     ){
         self.loginUseCase = loginUseCase
         super.init()
-        bind()
     }
     
     let moveHome: PassthroughSubject<Void, Never> = PassthroughSubject()
     let moveSignUp: PassthroughSubject<Void, Never> = PassthroughSubject()
     
-    @Published private var kakaoUser: (oauthToken: KakaoSDKAuth.OAuthToken, user: KakaoSDKUser.User)?
+    @Published private var kakaoUser: (oauthToken: KakaoSDKAuth.OAuthToken?, user: KakaoSDKUser.User?) = (nil, nil)
     
     private let loginUseCase: any LoginUseCase
     
@@ -40,25 +39,26 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
     private func bindKakaoLogin() {
         
         let response = $kakaoUser
-            .compactMap{ $0?.oauthToken.idToken }
+            .filter{ $0.oauthToken != nil && $0.user != nil }
+            .compactMap{ $0.oauthToken?.idToken }
             .flatMap{ idToken in
                 self.loginUseCase.execute(request: .init(idToken: idToken))
             }
+            .share()
         
         // response success
         response
             .filter{ $0.code == .success }
-            .compactMap{ $0 }
             .compactMap{ $0.data }
             .sink{ [weak self] in
-                
+
                 guard let isNewMember = $0.isNewMember,
                       let accessToken = $0.accessToken else { return }
-                
+
                 UserManager.shared.accessToken = accessToken
-                UserManager.shared.idToken = self?.kakaoUser?.oauthToken.idToken
-                UserManager.shared.email = self?.kakaoUser?.user.kakaoAccount?.email
-                
+                UserManager.shared.idToken = self?.kakaoUser.oauthToken?.idToken
+                UserManager.shared.email = self?.kakaoUser.user?.kakaoAccount?.email
+
                 if isNewMember {
                     self?.moveSignUp.send(())
                 }
@@ -71,6 +71,11 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
         // response fail
         let failResponse = response
             .filter{ $0.code != .success }
+            .sink{
+                print("fail:", $0)
+            }
+            .store(in: &cancellable)
+         
         
     }
     
@@ -99,6 +104,9 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
             if let error = error {
                 print(error)
             } else {
+                if let oauthToken = oauthToken {
+                    kakaoUser.oauthToken = oauthToken
+                }
                 userInformation()
             }
         }
@@ -125,9 +133,9 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
                                     print(error)
                                 }
                                 else {
-                                    guard let oauthToken = oauthToken, let user = user else { return }
                                     print("me() success.")
-                                    self.kakaoUser = (oauthToken, user)
+                                    guard let user = user else { return }
+                                    self.kakaoUser.user = user
                                 }
                             }
                         }
