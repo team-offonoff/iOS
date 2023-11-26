@@ -8,15 +8,20 @@
 
 import Foundation
 import Domain
+import Core
 
 struct LoginResponseDTO: Decodable, Domainable {
     
     let newMember: Bool
-    let accessToken: String
+    let memberId: Int
+    let joinStatus: String
+    let accessToken: String?
     
     func toDomain() -> User {
         .init(
-            newMember: newMember,
+            isNewMember: newMember,
+            memberId: memberId,
+            joinStatus: JoinStatus(rawValue: joinStatus),
             accessToken: accessToken
         )
     }
