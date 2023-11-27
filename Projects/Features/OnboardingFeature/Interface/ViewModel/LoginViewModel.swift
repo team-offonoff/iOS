@@ -26,8 +26,8 @@ public protocol LoginViewModelInput: KakaoLoginDelegate, AppleLoginDelegate {
 }
 
 public protocol LoginViewModelOutput {
-    var moveHome: PassthroughSubject<Void, Never> { get }
-    var moveSignUp: PassthroughSubject<Void, Never> { get }
+    var moveHome: (() -> Void)? { get set }
+    var moveSignUp: (() -> Void)? { get set }
 }
 
 public protocol LoginViewModel: LoginViewModelInput, LoginViewModelOutput {

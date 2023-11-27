@@ -15,7 +15,7 @@ import AuthenticationServices
 
 class LoginViewController: BaseViewController<BaseHeaderView, LoginView, DefaultOnboardingCoordinator> {
     
-    private let viewModel: any LoginViewModel
+    private var viewModel: any LoginViewModel
     
     init(viewModel: any LoginViewModel){
         self.viewModel = viewModel
@@ -43,19 +43,16 @@ class LoginViewController: BaseViewController<BaseHeaderView, LoginView, Default
     }
     
     override func bind() {
-        viewModel.moveHome
-            .receive(on: RunLoop.main)
-            .sink{ [weak self] _ in
+        viewModel.moveHome = {
+            DispatchQueue.main.async { [weak self] in
                 self?.coordinator?.startHome()
             }
-            .store(in: &cancellables)
-        
-        viewModel.moveSignUp
-            .receive(on: RunLoop.main)
-            .sink{ [weak self] _ in
+        }
+        viewModel.moveSignUp = {
+            DispatchQueue.main.async { [weak self] in
                 self?.coordinator?.startSignUp()
             }
-            .store(in: &cancellables)
+        }
     }
     
     @objc private func startKakaoLogin(){
