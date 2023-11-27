@@ -25,8 +25,8 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
         super.init()
     }
     
-    let moveHome: PassthroughSubject<Void, Never> = PassthroughSubject()
-    let moveSignUp: PassthroughSubject<Void, Never> = PassthroughSubject()
+    var moveHome: (() -> Void)?
+    var moveSignUp: (() -> Void)?
     
     @Published private var kakaoUser: (oauthToken: KakaoSDKAuth.OAuthToken?, user: KakaoSDKUser.User?) = (nil, nil)
     
@@ -60,10 +60,10 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
                 UserManager.shared.email = self?.kakaoUser.user?.kakaoAccount?.email
 
                 if isNewMember {
-                    self?.moveSignUp.send(())
+                    self?.moveSignUp?()
                 }
                 else {
-                    self?.moveHome.send(())
+                    self?.moveHome?()
                 }
             }
             .store(in: &cancellable)
