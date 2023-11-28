@@ -22,6 +22,8 @@ public struct Image{
     public static let tabUser = UIImage.load(name: "tab_mypage")
     
     //MARK: Home
+    public static let slide = UIImage.load(name: "slide")
+    public static let dot = UIImage.load(name: "dot")
     public static let homeArrow = UIImage.load(name: "home_arrow")
     public static let homeAlarmOn = UIImage.load(name: "home_alarm_on")
     public static let homeAlarmOff = UIImage.load(name: "home_alarm_off")
