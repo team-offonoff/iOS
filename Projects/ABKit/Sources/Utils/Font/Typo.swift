@@ -17,6 +17,7 @@ public struct Typo{
 
     public enum FontType {
         case regular
+        case medium
         case bold
         case semibold
     }
@@ -34,6 +35,7 @@ public struct Typo{
     private static func pretendardFont(type: FontType) -> ABKitFontConvertible{
         switch type {
         case .regular:      return ABKitFontFamily.Pretendard.regular
+        case .medium:      return ABKitFontFamily.Pretendard.medium
         case .bold:         return ABKitFontFamily.Pretendard.bold
         case .semibold:     return ABKitFontFamily.Pretendard.semiBold
         }
@@ -41,7 +43,7 @@ public struct Typo{
     
     private static func montserratFont(type: FontType) -> ABKitFontConvertible{
         switch type {
-        case .bold:         return ABKitFontFamily.Montserrat.bold
+        case .medium:       return ABKitFontFamily.Montserrat.medium
         default:            fatalError()
         }
     }
