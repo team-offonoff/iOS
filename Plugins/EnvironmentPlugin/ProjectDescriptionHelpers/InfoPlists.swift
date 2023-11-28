@@ -43,7 +43,7 @@ public extension Project {
             "Item 3": "Pretendard-Medium.otf",
             "Item 4": "Pretendard-Regular.otf",
             "Item 5": "Pretendard-SemiBold.otf",
-            "Item 6": "Montserrat-Bold.ttf"
+            "Item 6": "Montserrat-Medium.ttf"
         ],
         "App Transport Security Settings": ["Allow Arbitrary Loads": true],
         "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
@@ -83,7 +83,7 @@ public extension Project {
             "Item 3": "Pretendard-Medium.otf",
             "Item 4": "Pretendard-Regular.otf",
             "Item 5": "Pretendard-SemiBold.otf",
-            "Item 6": "Montserrat-Bold.ttf"
+            "Item 6": "Montserrat-Medium.ttf"
         ],
         "App Transport Security Settings": ["Allow Arbitrary Loads": true],
         "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
