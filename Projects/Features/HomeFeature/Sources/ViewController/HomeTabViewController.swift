@@ -34,7 +34,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
     private let viewModel: any HomeTabViewModel
     
     override func viewDidAppear(_ animated: Bool) {
-        mainView.setBottomSheetDefaultY()
+//        mainView.setBottomSheetDefaultY()
         viewModel.startTimer()
     }
     
@@ -100,10 +100,10 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
     }
     
     private func bindBottomSheetMove(){
-        viewModel.canBottomSheetMovePublisher
-            .receive(on: RunLoop.main)
-            .assign(to: \.isUserInteractionEnabled, on: mainView.chatBottomSheet)
-            .store(in: &cancellables)
+//        viewModel.canBottomSheetMovePublisher
+//            .receive(on: RunLoop.main)
+//            .assign(to: \.isUserInteractionEnabled, on: mainView.chatBottomSheet)
+//            .store(in: &cancellables)
     }
     
     private func bindTimer(){
