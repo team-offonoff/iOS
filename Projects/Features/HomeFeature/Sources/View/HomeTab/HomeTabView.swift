@@ -11,30 +11,26 @@ import ABKit
 
 final class HomeTabView: BaseView {
     
-    let titleFrame: TitleFrame = TitleFrame()
     let scrollFrame: ScrollFrame = ScrollFrame()
-    let chatBottomSheet: HomeChatBottomSheetView = HomeChatBottomSheetView()
     
     override func hierarchy() {
-        addSubviews([titleFrame, scrollFrame, chatBottomSheet])
+        addSubviews([scrollFrame])
     }
     
     override func layout() {
-        titleFrame.snp.makeConstraints{
-            $0.top.leading.trailing.equalToSuperview()
-        }
         scrollFrame.snp.makeConstraints{
-            $0.top.equalTo(titleFrame.snp.bottom).offset(12)
+            $0.top.equalToSuperview()
             $0.leading.trailing.bottom.equalToSuperview()
         }
     }
     
+    /*
     override func initialize() {
         setPanGestureRecognizer()
     }
     
     //MARK: - BottomSheet
-    
+
     enum BottomSheetViewState {
         case expanded
         case normal
@@ -51,11 +47,11 @@ final class HomeTabView: BaseView {
         
         guard let cell = scrollFrame.collectionView.cellForItem(at: [0,0]) as? HomeTopicCollectionViewCell else { fatalError() }
         
-        chatBottomSheet.snp.makeConstraints{
-            $0.top.equalTo(cell.userFrame.snp.bottom).offset(20)
-            $0.height.equalTo(self).offset(-BOTTOM_SHEET_TOP_PADDING)
-            $0.leading.trailing.equalToSuperview()
-        }
+//        chatBottomSheet.snp.makeConstraints{
+//            $0.top.equalTo(cell.userFrame.snp.bottom).offset(20)
+//            $0.height.equalTo(self).offset(-BOTTOM_SHEET_TOP_PADDING)
+//            $0.leading.trailing.equalToSuperview()
+//        }
     }
     
     private func setPanGestureRecognizer(){
@@ -108,6 +104,7 @@ final class HomeTabView: BaseView {
         }
         setBottomSheetFrameLayout()
     }
+     */
 }
 
 private extension CGPoint {

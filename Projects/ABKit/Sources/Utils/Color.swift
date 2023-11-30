@@ -34,6 +34,7 @@ public struct Color{
     public static let transparent = UIColor.white.withAlphaComponent(0)
     
     public static let white = UIColor.white
+    public static let white20 = white.withAlphaComponent(0.2)
     public static let white40 = white.withAlphaComponent(0.4)
     public static let white60 = white.withAlphaComponent(0.6)
     public static let white80 = white.withAlphaComponent(0.8)

@@ -40,7 +40,7 @@ extension HomeTabView {
                 $0.top.leading.trailing.bottom.equalToSuperview()
             }
             buttonFrame.snp.makeConstraints{
-                $0.top.equalToSuperview().offset(26)
+                $0.top.equalToSuperview().offset(63)
                 $0.leading.trailing.equalToSuperview()
             }
         }

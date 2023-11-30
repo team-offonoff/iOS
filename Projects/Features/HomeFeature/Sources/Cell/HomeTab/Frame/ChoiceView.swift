@@ -1,5 +1,5 @@
 //
-//  SelectionFrame.swift
+//  ChoiceView.swift
 //  HomeFeature
 //
 //  Created by 박소윤 on 2023/09/26.
@@ -12,31 +12,7 @@ import Core
 
 extension HomeTopicCollectionViewCell {
 
-    final class SelectionFrame: BaseStackView {
-        
-        let aFrame: ChoiceFrame = ChoiceFrame(choice: .A)
-        let bFrame: ChoiceFrame = ChoiceFrame(choice: .B)
-        
-        override func style() {
-            axis = .horizontal
-            spacing = 0
-        }
-        
-        override func hierarchy() {
-            addArrangedSubviews([aFrame, bFrame])
-        }
-        
-        override func layout() {
-            self.snp.makeConstraints{
-                $0.height.equalTo(188)
-            }
-            aFrame.snp.makeConstraints{
-                $0.width.equalTo(bFrame)
-            }
-        }
-    }
-    
-    final class ChoiceFrame: BaseView {
+    final class ChoiceView: BaseView {
         
         private let choice: ChoiceOption
         
@@ -51,16 +27,18 @@ extension HomeTopicCollectionViewCell {
         
         private let choiceLabel: UILabel = {
             let label = UILabel()
-            label.textColor = Color.white40
-            label.setTypo(Pretendard.regular20)
+            label.textColor = Color.white20
+            label.setTypo(Typo.font(family: .pretendard, type: .bold, size: 200))
             return label
         }()
         
         let contentLabel: UILabel = {
             let label = UILabel()
+            label.text = "10년 전 과거로 돌아가기"
+            label.setTypo(Pretendard.semibold20)
             label.textColor = Color.white
             label.numberOfLines = 0
-            label.setTypo(Pretendard.semibold20)
+            label.lineBreakMode = .byWordWrapping
             return label
         }()
         
@@ -68,8 +46,9 @@ extension HomeTopicCollectionViewCell {
             choiceLabel.text = choice.title
             contentLabel.textAlignment = choice.textAlignment
             backgroundColor = choice.backgroundColor
-            layer.cornerRadius = 188/2
+            layer.cornerRadius = 148/2
             layer.maskedCorners = choice.cornerRadiusPosition
+            layer.masksToBounds = true
         }
         
         override func hierarchy() {
@@ -77,32 +56,27 @@ extension HomeTopicCollectionViewCell {
         }
         
         override func layout() {
-            choiceLabel.snp.makeConstraints{
-                $0.centerY.equalToSuperview()
+            self.snp.makeConstraints{
+                $0.height.equalTo(148)
             }
             contentLabel.snp.makeConstraints{
-                $0.centerY.equalToSuperview()
+                $0.centerY.centerX.equalToSuperview()
+                $0.leading.equalToSuperview().inset(44)
             }
             choice == .A ? setALayout() : setBLayout()
         }
         
         private func setALayout(){
             choiceLabel.snp.makeConstraints{
-                $0.trailing.equalToSuperview().inset(14)
-            }
-            contentLabel.snp.makeConstraints{
-                $0.leading.equalToSuperview().offset(32)
-                $0.trailing.equalTo(choiceLabel.snp.leading).offset(-36)
+                $0.top.equalToSuperview().offset(-23)
+                $0.leading.equalToSuperview().offset(-69)
             }
         }
         
         private func setBLayout(){
             choiceLabel.snp.makeConstraints{
-                $0.leading.equalToSuperview().offset(14)
-            }
-            contentLabel.snp.makeConstraints{
-                $0.trailing.equalToSuperview().inset(32)
-                $0.leading.equalTo(choiceLabel.snp.trailing).offset(36)
+                $0.top.equalToSuperview().offset(-23)
+                $0.trailing.equalToSuperview().offset(57)
             }
         }
     }
@@ -133,7 +107,7 @@ fileprivate extension ChoiceOption {
     
     var textAlignment: NSTextAlignment {
         switch self {
-        case .A:        return .right
+        case .A:        return .left
         case .B:        return .left
         }
     }
