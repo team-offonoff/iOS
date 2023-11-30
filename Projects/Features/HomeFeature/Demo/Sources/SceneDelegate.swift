@@ -8,10 +8,12 @@
 
 import UIKit
 import HomeFeature
+import FeatureDependency
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    var coordinator: Coordinator?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
@@ -20,8 +22,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: scene)
         window?.windowScene = scene
         
-        let homeCoordinator = DefaultHomeCoordinator(window: window)
-        homeCoordinator.start()
+        coordinator = DefaultHomeCoordinator(window: window)
+        coordinator?.start()
         
         window?.overrideUserInterfaceStyle = .light
         window?.makeKeyAndVisible()
