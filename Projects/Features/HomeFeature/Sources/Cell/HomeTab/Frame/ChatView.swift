@@ -13,13 +13,15 @@ import ABKit
 extension HomeTopicCollectionViewCell {
     
     final class ChatView: BaseView {
+        
         private let headerFrame: UIView = {
            let view = UIView()
             view.backgroundColor = UIColor(r: 100, g: 81, b: 155)
             return view
         }()
         private let contentFrame: UIView = UIView()
-
+        private let blurView: CustomVisualEffectView = CustomVisualEffectView(effect: UIBlurEffect(style: .regular), intensity: 0.06)
+        
         //TODO: replace to table view
         private let contentCell: ChatTableViewCell = ChatTableViewCell()
         
@@ -45,7 +47,7 @@ extension HomeTopicCollectionViewCell {
         override func hierarchy() {
             addSubviews([headerFrame, contentFrame])
             headerFrame.addSubviews([countStackView])
-            contentFrame.addSubviews([contentCell, induceSelectChip])
+            contentFrame.addSubviews([contentCell, blurView, induceSelectChip])
             countStackView.addArrangedSubviews([chatCountFrame, likeCountFrame])
         }
         override func layout() {
@@ -62,6 +64,10 @@ extension HomeTopicCollectionViewCell {
             contentFrame.snp.makeConstraints{
                 $0.top.equalTo(headerFrame.snp.bottom)
                 $0.leading.trailing.bottom.equalToSuperview()
+            }
+            
+            blurView.snp.makeConstraints{
+                $0.top.leading.trailing.bottom.equalToSuperview()
             }
             
             induceSelectChip.snp.makeConstraints{
