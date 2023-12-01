@@ -10,7 +10,8 @@ import UIKit
 import Foundation
 
 public enum Pretendard {
-    
+
+    public static let regular12: TypoCase = Regular12()
     public static let regular13: TypoCase = Regular13()
     public static let regular14: TypoCase = Regular14()
     public static let regular15: TypoCase = Regular15()
@@ -30,6 +31,11 @@ public enum Pretendard {
 extension Pretendard{
     
     //MARK: - Regular
+    
+    struct Regular12: TypoCase {
+        let font: UIFont = ABKitFontFamily.Pretendard.regular.font(size: 12)
+        let lineHeight: CGFloat? = 16.8
+    }
     
     struct Regular13: TypoCase {
         let font: UIFont = ABKitFontFamily.Pretendard.regular.font(size: 13)
