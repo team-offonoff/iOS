@@ -49,10 +49,6 @@ public class DefaultTabCoordinator: TabCoordinator {
             userTabNavigationController
         ]
         
-        TabBarItem.allCases.forEach {
-            tabs[$0.rawValue].tabBarItem = $0.asTabBarItem()
-        }
-        
         tabBarController.setViewControllers(tabs, animated: true)
         tabBarController.selectedIndex = 0
     }
