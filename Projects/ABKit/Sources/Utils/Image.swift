@@ -16,10 +16,13 @@ extension UIImage{
 
 public struct Image{
     //MARK: Tab
-    public static let tabHome = UIImage.load(name: "tab_home")
+    public static let tabHomeSelect = UIImage.load(name: "tab_home_select")
+    public static let tabHomeDeselect = UIImage.load(name: "tab_home_deselect")
     public static let tabAb = UIImage.load(name: "tab_ab")
     public static let tabNew = UIImage.load(name: "tab_new")
-    public static let tabUser = UIImage.load(name: "tab_mypage")
+    public static let tabMySelect = UIImage.load(name: "tab_my_select")
+    public static let tabMyDeselect = UIImage.load(name: "tab_my_deselect")
+    public static let tabGenerateTopic = UIImage.load(name: "tab_generate_topic")
     
     //MARK: Home
     public static let slide = UIImage.load(name: "slide")

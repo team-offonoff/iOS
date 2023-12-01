@@ -11,23 +11,37 @@ import ABKit
 
 enum TabBarItem: Int, CaseIterable {
     case home = 0
-    case ab
-    case new
+    case aSide
+    case bSide
     case user
 }
 
 extension TabBarItem {
     
-    var icon: UIImage {
+    var defaultIcon: UIImage {
         switch self {
-        case .home:         return Image.tabHome
-        case .ab:           return Image.tabAb
-        case .new:          return Image.tabNew
-        case .user:         return Image.tabUser
+        case .home:         return Image.tabHomeDeselect
+        case .aSide:        return Image.tabAb
+        case .bSide:        return Image.tabNew
+        case .user:         return Image.tabMyDeselect
         }
     }
     
-    public func asTabBarItem() -> UITabBarItem {
-        UITabBarItem(title: nil, image: icon, selectedImage: icon)
+    var selectedIcon: UIImage {
+        switch self {
+        case .home:         return Image.tabHomeSelect
+        case .aSide:        return Image.tabAb
+        case .bSide:        return Image.tabNew
+        case .user:         return Image.tabMySelect
+        }
+    }
+    
+    var title: String {
+        switch self {
+        case .home:         return "홈"
+        case .aSide:        return "A 사이드"
+        case .bSide:        return "B 사이드"
+        case .user:         return "MY"
+        }
     }
 }

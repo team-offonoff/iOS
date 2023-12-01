@@ -31,6 +31,8 @@ public class DefaultTabCoordinator: TabCoordinator {
         self.userTabNavigationController = UINavigationController()
     }
     
+    private var coordinators: [Coordinator] = []
+    
     public func start() {
         window?.rootViewController = tabBarController
         setTabBarViewControllers()
@@ -49,16 +51,13 @@ public class DefaultTabCoordinator: TabCoordinator {
             userTabNavigationController
         ]
         
-        TabBarItem.allCases.forEach {
-            tabs[$0.rawValue].tabBarItem = $0.asTabBarItem()
-        }
-        
         tabBarController.setViewControllers(tabs, animated: true)
         tabBarController.selectedIndex = 0
     }
     
     private func startHome() {
         let homeCoordinator: HomeCoordinator = DefaultHomeCoordinator(navigationController: homeTabNavigationController)
+        coordinators.append(homeCoordinator)
         homeCoordinator.start()
     }
     
