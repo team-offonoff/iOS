@@ -107,6 +107,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         topic.titleLabel.text = data.title
         topic.sideLabel.text = data.side
         topic.keywordLabel.text = data.keyword
+        user.nicknameLabel.text = data.nickname
         chat.chatCountFrame.binding(data.chatCount)
         chat.likeCountFrame.binding(data.likeCount)
     }
