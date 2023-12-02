@@ -10,6 +10,7 @@ import Foundation
 import HomeFeatureInterface
 import Combine
 import Domain
+import Core
 import FeatureDependency
 
 final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
@@ -22,6 +23,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     var topics: [Topic] = [TestData.topicA, TestData.topicB]
     var willMovePage: Published<IndexPath>.Publisher{ $currentTopic }
     var canBottomSheetMovePublisher: Published<Bool>.Publisher { $canBottomSheetMove }
+    var selectionSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
     let reloadTopics: PassthroughSubject<Void, Never> = PassthroughSubject()
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
@@ -32,6 +34,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     private let fetchTopicsUseCase: any FetchTopicsUseCase
     
     @Published private var canBottomSheetMove: Bool = true
+    @Published private var selectedOption: Choice?
     @Published private var currentTopic: IndexPath = IndexPath(row: 0, section: 0)
     
     override func bind(){
@@ -144,5 +147,10 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
                 second: time % 60
             )
         }
+    }
+    
+    func select(option: ChoiceOption) {
+//        topicSelectUseCase.execute()
+        selectedOption = topics[currentTopic.row].choices.first(where: { $0.option == option })
     }
 }
