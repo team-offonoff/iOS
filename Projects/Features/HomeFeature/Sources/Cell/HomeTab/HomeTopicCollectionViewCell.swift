@@ -25,8 +25,8 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     private let informationStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 7)
     
     override func hierarchy() {
-        
-        baseView.addSubviews([etc.realTimeTitleLabel, topic.titleLabel, profileStackView, choiceStackView, topic.timer, selection.slideExplainView, informationStackView, etc.declareButton, chat])
+
+        baseView.addSubviews([etc.realTimeTitleLabel, topic.titleLabel, profileStackView, choiceStackView, selection.completeView, topic.timer, selection.slideExplainView, informationStackView, etc.declareButton, chat])
         
         profileStackView.addArrangedSubviews([user.profileImageView, user.nicknameLabel])
         
@@ -61,6 +61,11 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
             $0.width.equalTo(selection.bChoiceView)
         }
         
+        selection.completeView.snp.makeConstraints{
+            $0.top.equalTo(profileStackView.snp.bottom).offset(42)
+            $0.leading.trailing.equalToSuperview().inset(28)
+        }
+
         topic.timer.snp.makeConstraints{
             $0.top.equalTo(choiceStackView.snp.bottom).offset(43)
             $0.centerX.equalToSuperview()
@@ -153,6 +158,7 @@ extension HomeTopicCollectionViewCell {
     }
     
     final class SelectionGroup {
+        let completeView: SelectionCompleteView = SelectionCompleteView()
         let aChoiceView = ChoiceView(choice: .A)
         let bChoiceView = ChoiceView(choice: .B)
         lazy var slideExplainView: UIView = {
