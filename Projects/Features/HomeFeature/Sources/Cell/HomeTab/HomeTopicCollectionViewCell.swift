@@ -11,6 +11,7 @@ import UIKit
 import Domain
 import FeatureDependency
 import Core
+import HomeFeatureInterface
 
 class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
@@ -92,13 +93,20 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         }
     }
     
-    func binding(data: Topic) {
-        selection.completeView.isHidden = true
+    func binding(data: HomeTopicItemViewModel) {
+        if data.isVoted {
+            guard let choice = data.votedChoice else { return }
+            select(choice: choice)
+        }
+        else {
+            selection.completeView.isHidden = true
+            selection.aChoiceView.contentLabel.text = data.aOption.content.text
+            selection.bChoiceView.contentLabel.text = data.bOption.content.text
+        }
+        
         topic.titleLabel.text = data.title
         topic.sideLabel.text = "A 사이드"
         topic.keywordLabel.text = "대표 키워드"
-        selection.aChoiceView.contentLabel.text = data.choices.first(where: { $0.option == .A })?.content.text
-        selection.bChoiceView.contentLabel.text = data.choices.first(where: { $0.option == .B })?.content.text
         chat.chatCountFrame.binding("1천 개")
         chat.likeCountFrame.binding("1.2천 명")
     }

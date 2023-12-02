@@ -22,7 +22,7 @@ public protocol TopicSelectable {
 }
 
 public protocol TopicPageControllable {
-    var topics: [Topic] { get }
+    var topics: [HomeTopicItemViewModel] { get }
     var canMovePrevious: Bool { get }
     var canMoveNext: Bool { get }
     var willMovePage: Published<IndexPath>.Publisher { get }

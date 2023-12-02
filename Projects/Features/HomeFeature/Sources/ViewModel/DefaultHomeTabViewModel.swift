@@ -20,7 +20,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         super.init()
     }
 
-    var topics: [Topic] = [TestData.topicA, TestData.topicB]
+    var topics: [HomeTopicItemViewModel] = [.init(topic: TestData.topicA), .init(topic: TestData.topicB)]
     var willMovePage: Published<IndexPath>.Publisher{ $currentTopic }
     var selectionSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
@@ -48,16 +48,16 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
     
     private func bindTopics(){
-        
+
         let task = fetchTopicsUseCase.execute()
-        
+
         task.filter{ $0.code == .success }
             .map{ $0.data }
             .sink(receiveValue: { [weak self] topics in
                 defer {
                     self?.reloadTopics.send(())
                 }
-                self?.topics = topics
+                self?.topics = topics.map{ HomeTopicItemViewModel.init(topic: $0) }
             })
             .store(in: &cancellable)
         
@@ -149,6 +149,12 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     
     func select(option: ChoiceOption) {
 //        topicSelectUseCase.execute()
-        selectedOption = topics[currentTopic.row].choices.first(where: { $0.option == option })
+        topics[currentTopic.row].votedChoice = {
+            switch option {
+            case .A:    return topics[currentTopic.row].aOption
+            case .B:    return topics[currentTopic.row].bOption
+            }
+        }()
+        selectedOption = topics[currentTopic.row].votedChoice
     }
 }
