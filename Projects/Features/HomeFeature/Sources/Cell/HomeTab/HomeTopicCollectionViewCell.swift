@@ -105,10 +105,10 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         }
         
         topic.titleLabel.text = data.title
-        topic.sideLabel.text = "A 사이드"
-        topic.keywordLabel.text = "대표 키워드"
-        chat.chatCountFrame.binding("1천 개")
-        chat.likeCountFrame.binding("1.2천 명")
+        topic.sideLabel.text = data.side
+        topic.keywordLabel.text = data.keyword
+        chat.chatCountFrame.binding(data.chatCount)
+        chat.likeCountFrame.binding(data.likeCount)
     }
     
     func binding(timer: TimerInfo) {
@@ -168,7 +168,6 @@ extension HomeTopicCollectionViewCell {
         }()
         let nicknameLabel: UILabel = {
             let label = UILabel()
-            label.text = "체리체리체리체리"
             label.textColor = Color.white60
             label.setTypo(Pretendard.regular14)
             return label
