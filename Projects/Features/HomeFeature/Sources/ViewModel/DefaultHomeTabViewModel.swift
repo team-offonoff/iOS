@@ -64,24 +64,6 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
 //        task.filter{ $0.code != .success }
     }
     
-    private func convertNumberOfChatToFormat(num: Int) -> String {
-        //1. 999까지는 숫자 표현
-        //2. 999 초과인 경우 '천' 단위 표기
-        let (integer, decimal) = divide()
-        if integer == 0 {
-            return "\(num)"
-        } else if decimal == 0 {
-            return "\(integer)천"
-        } else {
-            return "\(integer).\(decimal)천"
-        }
-        
-        //기준 단위에 맞춰 정수형과 소수점으로 구분한다.
-        func divide(unit: Int = 1000) ->  (integer: Int, decimal: Int) {
-            (num / unit, (num % unit)/(unit/10))
-        }
-    }
-    
     //MARK: topic page control
     
     var canMovePrevious: Bool {
