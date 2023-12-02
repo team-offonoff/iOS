@@ -50,7 +50,6 @@ extension HomeTopicCollectionViewCell {
         override func style() {
             contentView.layer.cornerRadius = 10
             contentView.layer.masksToBounds = true
-            fill(choice: Choice(id: 1, content: .init(text: "10년 전 과거로 가기", imageURL: nil), option: .A))
         }
         
         override func hierarchy() {
