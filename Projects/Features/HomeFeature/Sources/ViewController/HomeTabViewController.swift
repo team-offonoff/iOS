@@ -71,7 +71,6 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         viewModel.viewDidLoad()
         bindReloadTopics()
         bindMoveTopic()
-        bindBottomSheetMove()
         bindTimer()
         bindSelectionSuccess()
     }
@@ -107,13 +106,6 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
     private func setMoveButtonVisibility(){
         mainView.scrollFrame.buttonFrame.previousButton.isHidden = !viewModel.canMovePrevious
         mainView.scrollFrame.buttonFrame.nextButton.isHidden = !viewModel.canMoveNext
-    }
-    
-    private func bindBottomSheetMove(){
-//        viewModel.canBottomSheetMovePublisher
-//            .receive(on: RunLoop.main)
-//            .assign(to: \.isUserInteractionEnabled, on: mainView.chatBottomSheet)
-//            .store(in: &cancellables)
     }
     
     private func bindTimer(){

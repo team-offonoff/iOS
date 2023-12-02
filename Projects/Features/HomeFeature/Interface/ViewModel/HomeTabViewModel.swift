@@ -13,7 +13,6 @@ import Core
 import FeatureDependency
 
 public protocol HomeTabViewModel: TopicPageControllable, TimerControllable, TopicSelectable {
-    var canBottomSheetMovePublisher: Published<Bool>.Publisher { get }
     func viewDidLoad()
 }
 
