@@ -73,6 +73,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         bindMoveTopic()
         bindBottomSheetMove()
         bindTimer()
+        bindSelectionSuccess()
     }
     
     private func bindReloadTopics(){
@@ -90,6 +91,15 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
             .sink{ [weak self] indexPath in
                 self?.mainView.scrollFrame.move(to: indexPath)
                 self?.setMoveButtonVisibility()
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func bindSelectionSuccess() {
+        viewModel.selectionSuccess
+            .receive(on: RunLoop.main)
+            .sink{ [weak self] choice in
+                self?.currentTopicCell?.select(choice: choice)
             }
             .store(in: &cancellables)
     }
