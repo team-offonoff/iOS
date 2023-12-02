@@ -21,7 +21,6 @@ public struct HomeTopicItemViewModel {
     public let likeCount: String
     public let aOption: Choice
     public let bOption: Choice
-    public var isVoted: Bool
     public var votedChoice: Choice?
 }
 
@@ -39,8 +38,7 @@ extension HomeTopicItemViewModel {
         self.likeCount = convertFormat(count: 1200) + " 명"
         self.aOption = topic.choices.first(where: { $0.option == .A })!
         self.bOption = topic.choices.first(where: { $0.option == .B })!
-        self.isVoted = false
-        self.votedChoice = aOption
+        self.votedChoice = nil
         
         func convertFormat(count: Int) -> String {
             //1. 999까지는 숫자 표현
@@ -56,6 +54,10 @@ extension HomeTopicItemViewModel {
                 (count / unit, (count % unit)/(unit/10))
             }
         }
+    }
+    
+    public var isVoted: Bool {
+        votedChoice != nil
     }
 }
 
