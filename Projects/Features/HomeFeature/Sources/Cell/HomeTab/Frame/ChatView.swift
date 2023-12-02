@@ -14,6 +14,15 @@ extension HomeTopicCollectionViewCell {
     
     final class ChatView: BaseView {
         
+        var canUserInteraction = false {
+            didSet {
+                if !canUserInteraction { return }
+                blurView.isHidden = true
+                induceSelectChip.isHidden = true
+                isUserInteractionEnabled = true
+            }
+        }
+        
         private let headerFrame: UIView = {
            let view = UIView()
             view.backgroundColor = UIColor(r: 100, g: 81, b: 155)

@@ -93,6 +93,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     }
     
     func binding(data: Topic) {
+        selection.completeView.isHidden = true
         topic.titleLabel.text = data.title
         topic.sideLabel.text = "A 사이드"
         topic.keywordLabel.text = "대표 키워드"
@@ -104,6 +105,15 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
     func binding(timer: TimerInfo) {
         topic.timer.binding(data: timer)
+    }
+    
+    func select(choice: Choice){
+        selection.completeView.fill(choice: choice)
+        selection.completeView.isHidden = false
+        selection.slideExplainView.isHidden = true
+        choiceStackView.isHidden = true
+        chat.canUserInteraction = true
+        
     }
 }
 
