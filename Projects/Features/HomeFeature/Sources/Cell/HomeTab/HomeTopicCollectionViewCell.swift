@@ -11,6 +11,7 @@ import UIKit
 import Domain
 import FeatureDependency
 import Core
+import HomeFeatureInterface
 
 class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
@@ -25,8 +26,8 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     private let informationStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 7)
     
     override func hierarchy() {
-        
-        baseView.addSubviews([etc.realTimeTitleLabel, topic.titleLabel, profileStackView, choiceStackView, topic.timer, selection.slideExplainView, informationStackView, etc.declareButton, chat])
+
+        baseView.addSubviews([etc.realTimeTitleLabel, topic.titleLabel, profileStackView, choiceStackView, selection.completeView, topic.timer, selection.slideExplainView, informationStackView, etc.declareButton, chat])
         
         profileStackView.addArrangedSubviews([user.profileImageView, user.nicknameLabel])
         
@@ -61,6 +62,11 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
             $0.width.equalTo(selection.bChoiceView)
         }
         
+        selection.completeView.snp.makeConstraints{
+            $0.top.equalTo(profileStackView.snp.bottom).offset(42)
+            $0.leading.trailing.equalToSuperview().inset(28)
+        }
+
         topic.timer.snp.makeConstraints{
             $0.top.equalTo(choiceStackView.snp.bottom).offset(43)
             $0.centerX.equalToSuperview()
@@ -87,18 +93,36 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         }
     }
     
-    func binding(data: Topic) {
+    func binding(data: HomeTopicItemViewModel) {
+        if data.isVoted {
+            guard let choice = data.votedChoice else { return }
+            select(choice: choice)
+        }
+        else {
+            selection.completeView.isHidden = true
+            selection.aChoiceView.contentLabel.text = data.aOption.content.text
+            selection.bChoiceView.contentLabel.text = data.bOption.content.text
+        }
+        
         topic.titleLabel.text = data.title
-        topic.sideLabel.text = "A 사이드"
-        topic.keywordLabel.text = "대표 키워드"
-        selection.aChoiceView.contentLabel.text = data.choices.first(where: { $0.option == .A })?.content.text
-        selection.bChoiceView.contentLabel.text = data.choices.first(where: { $0.option == .B })?.content.text
-        chat.chatCountFrame.binding("1천 개")
-        chat.likeCountFrame.binding("1.2천 명")
+        topic.sideLabel.text = data.side
+        topic.keywordLabel.text = data.keyword
+        user.nicknameLabel.text = data.nickname
+        chat.chatCountFrame.binding(data.chatCount)
+        chat.likeCountFrame.binding(data.likeCount)
     }
     
     func binding(timer: TimerInfo) {
         topic.timer.binding(data: timer)
+    }
+    
+    func select(choice: Choice){
+        selection.completeView.fill(choice: choice)
+        selection.completeView.isHidden = false
+        selection.slideExplainView.isHidden = true
+        choiceStackView.isHidden = true
+        chat.canUserInteraction = true
+        
     }
 }
 
@@ -145,7 +169,6 @@ extension HomeTopicCollectionViewCell {
         }()
         let nicknameLabel: UILabel = {
             let label = UILabel()
-            label.text = "체리체리체리체리"
             label.textColor = Color.white60
             label.setTypo(Pretendard.regular14)
             return label
@@ -153,6 +176,7 @@ extension HomeTopicCollectionViewCell {
     }
     
     final class SelectionGroup {
+        let completeView: SelectionCompleteView = SelectionCompleteView()
         let aChoiceView = ChoiceView(choice: .A)
         let bChoiceView = ChoiceView(choice: .B)
         lazy var slideExplainView: UIView = {

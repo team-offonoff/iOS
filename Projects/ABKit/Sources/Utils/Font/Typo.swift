@@ -20,6 +20,7 @@ public struct Typo{
         case medium
         case bold
         case semibold
+        case black
     }
 
     public static func font(family: FontFamily, type: FontType, size: CGFloat) -> UIFont {
@@ -38,6 +39,7 @@ public struct Typo{
         case .medium:      return ABKitFontFamily.Pretendard.medium
         case .bold:         return ABKitFontFamily.Pretendard.bold
         case .semibold:     return ABKitFontFamily.Pretendard.semiBold
+        case .black:     return ABKitFontFamily.Pretendard.black
         }
     }
     

@@ -9,15 +9,20 @@
 import Foundation
 import Combine
 import Domain
+import Core
 import FeatureDependency
 
-public protocol HomeTabViewModel: TopicPageControllable, TimerControllable {
-    var canBottomSheetMovePublisher: Published<Bool>.Publisher { get }
+public protocol HomeTabViewModel: TopicPageControllable, TimerControllable, TopicSelectable {
     func viewDidLoad()
 }
 
+public protocol TopicSelectable {
+    var selectionSuccess: AnyPublisher<Choice, Never> { get }
+    func select(option: ChoiceOption)
+}
+
 public protocol TopicPageControllable {
-    var topics: [Topic] { get }
+    var topics: [HomeTopicItemViewModel] { get }
     var canMovePrevious: Bool { get }
     var canMoveNext: Bool { get }
     var willMovePage: Published<IndexPath>.Publisher { get }

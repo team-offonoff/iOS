@@ -10,6 +10,7 @@ import Foundation
 import HomeFeatureInterface
 import Combine
 import Domain
+import Core
 import FeatureDependency
 
 final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
@@ -19,9 +20,9 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         super.init()
     }
 
-    var topics: [Topic] = [TestData.topicA, TestData.topicB]
+    var topics: [HomeTopicItemViewModel] = [.init(topic: TestData.topicA), .init(topic: TestData.topicB)]
     var willMovePage: Published<IndexPath>.Publisher{ $currentTopic }
-    var canBottomSheetMovePublisher: Published<Bool>.Publisher { $canBottomSheetMove }
+    var selectionSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
     let reloadTopics: PassthroughSubject<Void, Never> = PassthroughSubject()
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
@@ -31,7 +32,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     private let hourUnit = 60*60
     private let fetchTopicsUseCase: any FetchTopicsUseCase
     
-    @Published private var canBottomSheetMove: Bool = true
+    @Published private var selectedOption: Choice?
     @Published private var currentTopic: IndexPath = IndexPath(row: 0, section: 0)
     
     override func bind(){
@@ -47,38 +48,20 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
     
     private func bindTopics(){
-        
+
         let task = fetchTopicsUseCase.execute()
-        
+
         task.filter{ $0.code == .success }
             .map{ $0.data }
             .sink(receiveValue: { [weak self] topics in
                 defer {
                     self?.reloadTopics.send(())
                 }
-                self?.topics = topics
+                self?.topics = topics.map{ HomeTopicItemViewModel.init(topic: $0) }
             })
             .store(in: &cancellable)
         
 //        task.filter{ $0.code != .success }
-    }
-    
-    private func convertNumberOfChatToFormat(num: Int) -> String {
-        //1. 999까지는 숫자 표현
-        //2. 999 초과인 경우 '천' 단위 표기
-        let (integer, decimal) = divide()
-        if integer == 0 {
-            return "\(num)"
-        } else if decimal == 0 {
-            return "\(integer)천"
-        } else {
-            return "\(integer).\(decimal)천"
-        }
-        
-        //기준 단위에 맞춰 정수형과 소수점으로 구분한다.
-        func divide(unit: Int = 1000) ->  (integer: Int, decimal: Int) {
-            (num / unit, (num % unit)/(unit/10))
-        }
     }
     
     //MARK: topic page control
@@ -144,5 +127,16 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
                 second: time % 60
             )
         }
+    }
+    
+    func select(option: ChoiceOption) {
+//        topicSelectUseCase.execute()
+        topics[currentTopic.row].votedChoice = {
+            switch option {
+            case .A:    return topics[currentTopic.row].aOption
+            case .B:    return topics[currentTopic.row].bOption
+            }
+        }()
+        selectedOption = topics[currentTopic.row].votedChoice
     }
 }
