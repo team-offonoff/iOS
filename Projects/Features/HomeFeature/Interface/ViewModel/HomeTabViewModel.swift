@@ -12,8 +12,15 @@ import Domain
 import Core
 import FeatureDependency
 
-public protocol HomeTabViewModel: TopicPageControllable, TimerControllable, TopicSelectable {
+public protocol HomeTabViewModel: TopicPageControllable, TimerControllable, TopicSelectable, TopicBottomSheetViewModel {
     func viewDidLoad()
+}
+
+public protocol TopicBottomSheetViewModel {
+    var canChoiceReset: Bool { get }
+    func hideTopic()
+    func reportTopic()
+    func resetChoice()
 }
 
 public protocol TopicSelectable {
