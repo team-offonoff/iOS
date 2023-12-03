@@ -15,6 +15,7 @@ extension UIImage{
 }
 
 public struct Image{
+    
     //MARK: Tab
     public static let tabHomeSelect = UIImage.load(name: "tab_home_select")
     public static let tabHomeDeselect = UIImage.load(name: "tab_home_deselect")
@@ -25,6 +26,9 @@ public struct Image{
     public static let tabGenerateTopic = UIImage.load(name: "tab_generate_topic")
     
     //MARK: Home
+    public static let hide = UIImage.load(name: "hide")
+    public static let report = UIImage.load(name: "report")
+    public static let reset = UIImage.load(name: "reset")
     public static let slide = UIImage.load(name: "slide")
     public static let dot = UIImage.load(name: "dot")
     public static let homeArrow = UIImage.load(name: "home_arrow")
