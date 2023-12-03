@@ -48,4 +48,5 @@ public struct Color{
     public static let black = UIColor.black
     public static let black20 = black.withAlphaComponent(0.2)
     public static let black40 = black.withAlphaComponent(0.4)
+    public static let black60 = black.withAlphaComponent(0.6)
 }
