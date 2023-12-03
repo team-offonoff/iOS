@@ -26,7 +26,8 @@ final class TopicBottomSheetView: BaseView {
 
         func addItems() {
             TopicBottomSheetFunction.allCases.forEach{
-                let item = ItemStackView(icon: $0.icon, title: $0.title)
+                let item = ItemStackView(function: $0)
+                item.tag = $0.rawValue
                 itemsStackView.addArrangedSubview(item)
             }
         }
@@ -46,14 +47,17 @@ extension TopicBottomSheetView {
         
         var isDisabled: Bool = false {
             didSet {
-                setElementColor()
+                isUserInteractionEnabled = !isDisabled
+                setElement()
             }
         }
         
-        init(icon: UIImage, title: String) {
+        private let function: TopicBottomSheetFunction
+        
+        init(function: TopicBottomSheetFunction) {
+            self.function = function
             super.init()
-            iconImageView.image = icon
-            titleLabel.text = title
+            titleLabel.text = function.title
         }
         
         required init(coder: NSCoder) {
@@ -76,27 +80,34 @@ extension TopicBottomSheetView {
         override func style() {
             axis = .horizontal
             spacing = 14
-            setElementColor()
+            setElement()
         }
         
         override func hierarchy() {
             addArrangedSubviews([iconImageView, titleLabel])
         }
         
-        private func setElementColor() {
-            let color = isDisabled ? Color.black20 : Color.black
-            iconImageView.image?.withTintColor(color)
-            titleLabel.textColor = color
+        private func setElement() {
+            iconImageView.image = isDisabled ? function.disabledIcon : function.defaultIcon
+            titleLabel.textColor = isDisabled ? Color.black20 : Color.black
         }
     }
 }
 
 extension TopicBottomSheetFunction {
-    var icon: UIImage {
+    
+    var defaultIcon: UIImage {
         switch self {
         case .hide:     return Image.hide
         case .report:   return Image.report
-        case .reset:    return Image.reset
+        case .reset:    return Image.resetEnable
+        }
+    }
+    
+    var disabledIcon: UIImage? {
+        switch self {
+        case .reset:    return Image.resetDisable
+        default:        return nil
         }
     }
     
