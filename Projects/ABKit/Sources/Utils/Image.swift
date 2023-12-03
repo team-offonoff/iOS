@@ -28,7 +28,8 @@ public struct Image{
     //MARK: Home
     public static let hide = UIImage.load(name: "hide")
     public static let report = UIImage.load(name: "report")
-    public static let reset = UIImage.load(name: "reset")
+    public static let resetEnable = UIImage.load(name: "reset_enable")
+    public static let resetDisable = UIImage.load(name: "reset_disable")
     public static let slide = UIImage.load(name: "slide")
     public static let dot = UIImage.load(name: "dot")
     public static let homeArrow = UIImage.load(name: "home_arrow")
