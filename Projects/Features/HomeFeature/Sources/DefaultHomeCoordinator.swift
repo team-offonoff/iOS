@@ -16,8 +16,6 @@ public class DefaultHomeCoordinator: HomeCoordinator {
     private var window: UIWindow?
     private let navigationController: UINavigationController
     
-    private let topicRepository: TopicRepository = DefaultTopicRepository()
-    
     required public init(window: UIWindow?){
         self.window = window
         self.navigationController = UINavigationController()
@@ -28,19 +26,25 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         self.navigationController = navigationController
     }
     
-    public func start() {
+    private lazy var homeViewModel: HomeTabViewModel = generateHomeViewModel()
+    
+    private let topicRepository: TopicRepository = DefaultTopicRepository()
+    
+    private func generateHomeViewModel() -> HomeTabViewModel {
         
-        let viewController = HomeTabViewController(viewModel: getHomeTabViewModel())
-        viewController.coordinator = self
-        navigationController.pushViewController(viewController, animated: true)
-        
-        func getHomeTabViewModel() -> HomeTabViewModel {
-            DefaultHomeTabViewModel(fetchTopicsUseCase: getFetchTopicsUseCase())
-        }
+        return DefaultHomeTabViewModel(
+            fetchTopicsUseCase: getFetchTopicsUseCase()
+        )
         
         func getFetchTopicsUseCase() -> any FetchTopicsUseCase {
             DefaultFetchTopicsUseCase(repository: topicRepository)
         }
+    }
+    
+    public func start() {
+        let viewController = HomeTabViewController(viewModel: homeViewModel)
+        viewController.coordinator = self
+        navigationController.pushViewController(viewController, animated: true)
     }
     
     public func startTopicBottomSheet() {
