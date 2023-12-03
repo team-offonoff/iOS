@@ -9,10 +9,14 @@
 import Foundation
 import UIKit
 import ABKit
+import HomeFeatureInterface
 
 final class TopicBottomSheetViewController: UIViewController{
     
-    init() {
+    private let viewModel: any TopicBottomSheetViewModel
+    
+    init(viewModel: TopicBottomSheetViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -23,13 +27,9 @@ final class TopicBottomSheetViewController: UIViewController{
     private let mainView: TopicBottomSheetView = TopicBottomSheetView()
     
     override func viewDidLoad() {
-        initSetting()
-        initialize()
-    }
-    
-    private func initSetting(){
         modalSetting()
         layout()
+        initialize()
     }
 
     private func modalSetting(){

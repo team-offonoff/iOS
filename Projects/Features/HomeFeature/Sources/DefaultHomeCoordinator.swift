@@ -48,6 +48,6 @@ public class DefaultHomeCoordinator: HomeCoordinator {
     }
     
     public func startTopicBottomSheet() {
-        navigationController.present(TopicBottomSheetViewController(), animated: true)
+        navigationController.present(TopicBottomSheetViewController(viewModel: homeViewModel), animated: true)
     }
 }
