@@ -12,6 +12,10 @@ import Core
 
 final class TopicBottomSheetView: BaseView {
     
+    var choiceResetItem: ItemStackView? {
+        itemsStackView.viewWithTag(TopicBottomSheetFunction.reset.rawValue) as? ItemStackView
+    }
+    
     private let itemsStackView: UIStackView = UIStackView(axis: .vertical, spacing: 20)
     
     override func style() {
