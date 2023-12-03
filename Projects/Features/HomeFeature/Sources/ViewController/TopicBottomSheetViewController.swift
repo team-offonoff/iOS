@@ -56,6 +56,6 @@ final class TopicBottomSheetViewController: UIViewController{
     }
     
     private func initialize() {
-        
+        mainView.choiceResetItem?.isDisabled = !viewModel.canChoiceReset
     }
 }
