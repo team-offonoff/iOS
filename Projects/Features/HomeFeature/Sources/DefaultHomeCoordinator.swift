@@ -42,4 +42,8 @@ public class DefaultHomeCoordinator: HomeCoordinator {
             DefaultFetchTopicsUseCase(repository: topicRepository)
         }
     }
+    
+    public func startTopicBottomSheet() {
+        navigationController.present(TopicBottomSheetViewController(), animated: true)
+    }
 }
