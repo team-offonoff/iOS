@@ -8,8 +8,8 @@
 
 import Foundation
 
-public enum TopicBottomSheetFunction: CaseIterable {
-    case hide
+public enum TopicBottomSheetFunction: Int, CaseIterable {
+    case hide = 1
     case report
     case reset
 }
