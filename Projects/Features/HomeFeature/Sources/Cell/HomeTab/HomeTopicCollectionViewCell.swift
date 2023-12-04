@@ -12,8 +12,12 @@ import Domain
 import FeatureDependency
 import Core
 import HomeFeatureInterface
+import Combine
 
 class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
+    
+    weak var delegate: TopicBottomSheetDelegate?
+    private var cancellable: Set<AnyCancellable> = []
     
     private let topic: TopicGroup = TopicGroup()
     private let user: UserGroup = UserGroup()
@@ -91,6 +95,14 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
             $0.top.equalTo(informationStackView.snp.bottom).offset(14)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
+    }
+    
+    override func initialize() {
+        etc.declareButton.tapPublisher
+            .sink{ [weak self] _ in
+                self?.delegate?.show()
+            }
+            .store(in: &cancellable)
     }
     
     func binding(data: HomeTopicItemViewModel) {

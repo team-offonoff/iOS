@@ -13,6 +13,10 @@ import FeatureDependency
 import HomeFeatureInterface
 import Core
 
+protocol TopicBottomSheetDelegate: AnyObject {
+    func show()
+}
+
 final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, DefaultHomeCoordinator>{
 
     init(viewModel: any HomeTabViewModel){
@@ -127,6 +131,7 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(for: indexPath, cellType: HomeTopicCollectionViewCell.self)
+        cell.delegate = self
         cell.binding(data: viewModel.topics[indexPath.row])
         return cell
     }
@@ -137,5 +142,11 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         currentTopicCell = cell as? HomeTopicCollectionViewCell
+    }
+}
+
+extension HomeTabViewController: TopicBottomSheetDelegate {
+    func show() {
+        coordinator?.startTopicBottomSheet()
     }
 }

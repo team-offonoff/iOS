@@ -9,5 +9,5 @@
 import FeatureDependency
 
 public protocol HomeCoordinator: Coordinator {
-
+    func startTopicBottomSheet()
 }

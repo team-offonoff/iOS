@@ -139,4 +139,22 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         }()
         selectedOption = topics[currentTopic.row].votedChoice
     }
+    
+    //MARK: - Topic Bottom Sheet View Model
+    
+    var canChoiceReset: Bool {
+        topics[currentTopic.row].isVoted
+    }
+    
+    func hideTopic() {
+        
+    }
+    
+    func reportTopic() {
+        
+    }
+    
+    func resetChoice() {
+        
+    }
 }
