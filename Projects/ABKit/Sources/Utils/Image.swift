@@ -26,6 +26,9 @@ public struct Image{
     public static let tabGenerateTopic = UIImage.load(name: "tab_generate_topic")
     
     //MARK: Home
+    
+    public static let choiceTextExpand = UIImage.load(name: "choice_text_expand")
+    public static let choiceImageExpand = UIImage.load(name: "choice_image_expand")
     public static let hide = UIImage.load(name: "hide")
     public static let report = UIImage.load(name: "report")
     public static let resetEnable = UIImage.load(name: "reset_enable")
