@@ -19,10 +19,10 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     weak var delegate: TopicBottomSheetDelegate?
     private var cancellable: Set<AnyCancellable> = []
     
-    private let topic: TopicGroup = TopicGroup()
-    private let user: UserGroup = UserGroup()
-    private let selection: SelectionGroup = SelectionGroup()
-    private let etc: EtcGroup = EtcGroup()
+    private let topicGroup: TopicGroup = TopicGroup()
+    private let userGroup: UserGroup = UserGroup()
+    private let choiceGroup: ChoiceGroup = ChoiceGroup()
+    private let etcGroup: EtcGroup = EtcGroup()
     private let chat: ChatView = ChatView()
     
     private let profileStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 8)
@@ -31,62 +31,62 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
     override func hierarchy() {
 
-        baseView.addSubviews([etc.realTimeTitleLabel, topic.titleLabel, profileStackView, choiceStackView, selection.completeView, topic.timer, selection.slideExplainView, informationStackView, etc.declareButton, chat])
+        baseView.addSubviews([etcGroup.realTimeTitleLabel, topicGroup.titleLabel, profileStackView, choiceStackView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.declareButton, chat])
         
-        profileStackView.addArrangedSubviews([user.profileImageView, user.nicknameLabel])
+        profileStackView.addArrangedSubviews([userGroup.profileImageView, userGroup.nicknameLabel])
         
-        choiceStackView.addArrangedSubviews([selection.aChoiceView, selection.bChoiceView])
+        choiceStackView.addArrangedSubviews([choiceGroup.aChoiceView, choiceGroup.bChoiceView])
 
-        informationStackView.addArrangedSubviews([topic.sideLabel, etc.separatorLine, topic.keywordLabel])
+        informationStackView.addArrangedSubviews([topicGroup.sideLabel, etcGroup.separatorLine, topicGroup.keywordLabel])
     }
     
     override func layout() {
         
-        etc.realTimeTitleLabel.snp.makeConstraints{
+        etcGroup.realTimeTitleLabel.snp.makeConstraints{
             $0.top.centerX.equalToSuperview()
         }
         
-        topic.titleLabel.snp.makeConstraints{
-            $0.top.equalTo(etc.realTimeTitleLabel.snp.bottom).offset(20)
+        topicGroup.titleLabel.snp.makeConstraints{
+            $0.top.equalTo(etcGroup.realTimeTitleLabel.snp.bottom).offset(20)
             $0.centerX.equalToSuperview()
             $0.leading.equalToSuperview().offset(102)
         }
         
         profileStackView.snp.makeConstraints{
-            $0.top.equalTo(topic.titleLabel.snp.bottom).offset(4)
+            $0.top.equalTo(topicGroup.titleLabel.snp.bottom).offset(4)
             $0.centerX.equalToSuperview()
         }
         
         choiceStackView.snp.makeConstraints{
             $0.top.equalTo(profileStackView.snp.bottom).offset(56)
-            $0.leading.trailing.equalToSuperview()
+            $0.centerX.equalToSuperview()
         }
         
-        selection.aChoiceView.snp.makeConstraints{
-            $0.width.equalTo(selection.bChoiceView)
+        choiceGroup.aChoiceView.snp.makeConstraints{
+            $0.width.equalTo(choiceGroup.bChoiceView)
         }
         
-        selection.completeView.snp.makeConstraints{
+        choiceGroup.completeView.snp.makeConstraints{
             $0.top.equalTo(profileStackView.snp.bottom).offset(42)
             $0.leading.trailing.equalToSuperview().inset(28)
         }
 
-        topic.timer.snp.makeConstraints{
+        topicGroup.timer.snp.makeConstraints{
             $0.top.equalTo(choiceStackView.snp.bottom).offset(43)
             $0.centerX.equalToSuperview()
         }
         
-        selection.slideExplainView.snp.makeConstraints{
-            $0.top.equalTo(topic.timer.snp.bottom).offset(4)
+        choiceGroup.slideExplainView.snp.makeConstraints{
+            $0.top.equalTo(topicGroup.timer.snp.bottom).offset(4)
             $0.centerX.equalToSuperview()
         }
         
         informationStackView.snp.makeConstraints{
-            $0.top.equalTo(selection.slideExplainView.snp.bottom).offset(43)
+            $0.top.equalTo(choiceGroup.slideExplainView.snp.bottom).offset(43)
             $0.leading.equalToSuperview().offset(20)
         }
         
-        etc.declareButton.snp.makeConstraints{
+        etcGroup.declareButton.snp.makeConstraints{
             $0.trailing.equalToSuperview().inset(20)
             $0.centerY.equalTo(informationStackView)
         }
@@ -98,7 +98,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     }
     
     override func initialize() {
-        etc.declareButton.tapPublisher
+        etcGroup.declareButton.tapPublisher
             .sink{ [weak self] _ in
                 self?.delegate?.show()
             }
@@ -111,27 +111,27 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
             select(choice: choice)
         }
         else {
-            selection.completeView.isHidden = true
-            selection.aChoiceView.contentLabel.text = data.aOption.content.text
-            selection.bChoiceView.contentLabel.text = data.bOption.content.text
+            choiceGroup.completeView.isHidden = true
+            choiceGroup.aChoiceView.fill(data.aOption)
+            choiceGroup.bChoiceView.fill(data.bOption)
         }
         
-        topic.titleLabel.text = data.title
-        topic.sideLabel.text = data.side
-        topic.keywordLabel.text = data.keyword
-        user.nicknameLabel.text = data.nickname
+        topicGroup.titleLabel.text = data.title
+        topicGroup.sideLabel.text = data.side
+        topicGroup.keywordLabel.text = data.keyword
+        userGroup.nicknameLabel.text = data.nickname
         chat.chatCountFrame.binding(data.chatCount)
         chat.likeCountFrame.binding(data.likeCount)
     }
     
     func binding(timer: TimerInfo) {
-        topic.timer.binding(data: timer)
+        topicGroup.timer.binding(data: timer)
     }
     
     func select(choice: Choice){
-        selection.completeView.fill(choice: choice)
-        selection.completeView.isHidden = false
-        selection.slideExplainView.isHidden = true
+        choiceGroup.completeView.fill(choice: choice)
+        choiceGroup.completeView.isHidden = false
+        choiceGroup.slideExplainView.isHidden = true
         choiceStackView.isHidden = true
         chat.canUserInteraction = true
         
@@ -187,8 +187,8 @@ extension HomeTopicCollectionViewCell {
         }()
     }
     
-    final class SelectionGroup {
-        let completeView: SelectionCompleteView = SelectionCompleteView()
+    final class ChoiceGroup {
+        let completeView: ChoiceCompleteView = ChoiceCompleteView()
         let aChoiceView = ChoiceView(option: .A)
         let bChoiceView = ChoiceView(option: .B)
         lazy var slideExplainView: UIView = {
