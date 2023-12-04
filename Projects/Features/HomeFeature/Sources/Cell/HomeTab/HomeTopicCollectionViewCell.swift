@@ -189,8 +189,8 @@ extension HomeTopicCollectionViewCell {
     
     final class SelectionGroup {
         let completeView: SelectionCompleteView = SelectionCompleteView()
-        let aChoiceView = ChoiceView(choice: .A)
-        let bChoiceView = ChoiceView(choice: .B)
+        let aChoiceView = ChoiceView(option: .A)
+        let bChoiceView = ChoiceView(option: .B)
         lazy var slideExplainView: UIView = {
             let view = UIView()
             view.addSubviews([leftSlideImageView, rightSlideImageView, slideExplainLabel])
