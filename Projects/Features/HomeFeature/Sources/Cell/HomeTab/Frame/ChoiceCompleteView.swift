@@ -14,7 +14,7 @@ import Core
 
 extension HomeTopicCollectionViewCell {
     
-    final class SelectionCompleteView: BaseView {
+    final class ChoiceCompleteView: BaseView {
         
         private let completeTagLabel: PaddingLabel = {
             let label = PaddingLabel(topBottom: 3, leftRight: 13)
@@ -42,7 +42,7 @@ extension HomeTopicCollectionViewCell {
         }()
         
         private let choiceLabel: UILabel = {
-           let label = UILabel()
+            let label = UILabel()
             label.setTypo(Pretendard.black200)
             return label
         }()
