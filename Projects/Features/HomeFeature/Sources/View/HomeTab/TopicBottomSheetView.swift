@@ -16,6 +16,8 @@ final class TopicBottomSheetView: BaseView {
         itemsStackView.viewWithTag(TopicBottomSheetFunction.reset.rawValue) as? ItemStackView
     }
     
+    weak var delegate: TopicBottomSheetGestureDelegate?
+    
     private let itemsStackView: UIStackView = UIStackView(axis: .vertical, spacing: 20)
     
     override func style() {
@@ -32,6 +34,7 @@ final class TopicBottomSheetView: BaseView {
             TopicBottomSheetFunction.allCases.forEach{
                 let item = ItemStackView(function: $0)
                 item.tag = $0.rawValue
+                item.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(functionTap)))
                 itemsStackView.addArrangedSubview(item)
             }
         }
@@ -42,6 +45,11 @@ final class TopicBottomSheetView: BaseView {
             $0.top.bottom.equalToSuperview().inset(36)
             $0.leading.trailing.equalToSuperview().inset(24)
         }
+    }
+    
+    @objc private func functionTap(_ recognizer: UITapGestureRecognizer) {
+        guard let item = recognizer.view as? ItemStackView else { return }
+        delegate?.tap(function: item.function)
     }
 }
 
@@ -56,7 +64,7 @@ extension TopicBottomSheetView {
             }
         }
         
-        private let function: TopicBottomSheetFunction
+        let function: TopicBottomSheetFunction
         
         init(function: TopicBottomSheetFunction) {
             self.function = function

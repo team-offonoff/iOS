@@ -153,10 +153,11 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
     
     func hideTopic() {
-        
+        print("hide topic")
     }
     
     func reportTopic() {
+        print("report topic")
         reportTopicUseCase.execute(topicId: topics[currentTopic.row].id)
             .sink{ code, _, error in
                 if code == .success {
@@ -167,10 +168,9 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
                 }
             }
             .store(in: &cancellable)
-            
     }
     
     func resetChoice() {
-        
+        print("reset topic")
     }
 }
