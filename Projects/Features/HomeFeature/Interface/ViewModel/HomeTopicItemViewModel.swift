@@ -11,6 +11,7 @@ import Domain
 import Core
 
 public struct HomeTopicItemViewModel {
+    public let id: Int
     public let title: String
     public let nickname: String
     public let profileUrl: URL?
@@ -28,6 +29,7 @@ extension HomeTopicItemViewModel {
     
     public init(topic: Topic) {
         
+        self.id = topic.id!
         self.title = topic.title
         self.nickname = "닉네임"
         self.profileUrl = nil
