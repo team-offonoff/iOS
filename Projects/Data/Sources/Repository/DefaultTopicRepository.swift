@@ -64,4 +64,16 @@ public final class DefaultTopicRepository: TopicRepository {
         
         return arrayDataTask(request: urlRequest, elementType: TopicResponseDTO.self)
     }
+    
+    public func report(topicId: Int) -> NetworkResultPublisher<Any?> {
+        
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = "/topics/\(topicId)/report"
+        
+        guard let urlRequest = urlComponents?.toURLRequest(method: .post) else {
+            fatalError("url parsing error")
+        }
+
+        return dataTask(request: urlRequest)
+    }
 }

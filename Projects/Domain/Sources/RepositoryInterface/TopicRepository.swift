@@ -12,4 +12,5 @@ import Core
 public protocol TopicRepository: Repository{
     func generateTopic(request: Topic) -> NetworkResultPublisher<Topic?>
     func fetchTopic() -> NetworkResultPublisher<[Topic]>
+    func report(topicId: Int) -> NetworkResultPublisher<Any?>
 }
