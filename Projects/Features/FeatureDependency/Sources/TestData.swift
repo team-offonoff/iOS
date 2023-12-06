@@ -10,7 +10,9 @@ import Foundation
 import Domain
 
 public struct TestData {
+    
     public static let topicA = Topic(
+        id: 0,
         side: .A,
         title: "10년 전 또는 후로 갈 수 있다면?",
         categoryId: 0,
@@ -22,7 +24,8 @@ public struct TestData {
     )
     
     public static let topicB = Topic(
-        side: .A,
+        id: 1,
+        side: .B,
         title: "10년 전 또는 후로 갈 수 있다면?",
         categoryId: 0,
         choices: [
