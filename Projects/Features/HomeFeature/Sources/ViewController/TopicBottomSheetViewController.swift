@@ -9,7 +9,12 @@
 import Foundation
 import UIKit
 import ABKit
+import Core
 import HomeFeatureInterface
+
+protocol TopicBottomSheetGestureDelegate: AnyObject {
+    func tap(function: TopicBottomSheetFunction)
+}
 
 final class TopicBottomSheetViewController: UIViewController{
     
@@ -56,6 +61,20 @@ final class TopicBottomSheetViewController: UIViewController{
     }
     
     private func initialize() {
+        mainView.delegate = self
         mainView.choiceResetItem?.isDisabled = !viewModel.canChoiceReset
+    }
+}
+
+extension TopicBottomSheetViewController: TopicBottomSheetGestureDelegate {
+    func tap(function: TopicBottomSheetFunction) {
+        switch function {
+        case .hide:
+            viewModel.hideTopic()
+        case .report:
+            viewModel.reportTopic()
+        case .reset:
+            viewModel.resetChoice()
+        }
     }
 }

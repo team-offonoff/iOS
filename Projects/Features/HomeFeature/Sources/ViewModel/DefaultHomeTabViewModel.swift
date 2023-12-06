@@ -15,8 +15,15 @@ import FeatureDependency
 
 final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     
-    init(fetchTopicsUseCase: any FetchTopicsUseCase) {
+    private let fetchTopicsUseCase: any FetchTopicsUseCase
+    private let reportTopicUseCase: any ReportTopicUseCase
+    
+    init(
+        fetchTopicsUseCase: any FetchTopicsUseCase,
+        reportTopicUseCase: any ReportTopicUseCase
+    ) {
         self.fetchTopicsUseCase = fetchTopicsUseCase
+        self.reportTopicUseCase = reportTopicUseCase
         super.init()
     }
 
@@ -30,7 +37,6 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     private var timer: Timer?
     
     private let hourUnit = 60*60
-    private let fetchTopicsUseCase: any FetchTopicsUseCase
     
     @Published private var selectedOption: Choice?
     @Published private var currentTopic: IndexPath = IndexPath(row: 0, section: 0)
@@ -44,7 +50,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
     
     func viewDidLoad() {
-        bindTopics()
+//        bindTopics()
     }
     
     private func bindTopics(){
@@ -147,14 +153,24 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
     
     func hideTopic() {
-        
+        print("hide topic")
     }
     
     func reportTopic() {
-        
+        print("report topic")
+        reportTopicUseCase.execute(topicId: topics[currentTopic.row].id)
+            .sink{ code, _, error in
+                if code == .success {
+                    print("reportTopicUseCase: success")
+                }
+                else {
+                    print(error)
+                }
+            }
+            .store(in: &cancellable)
     }
     
     func resetChoice() {
-        
+        print("reset topic")
     }
 }

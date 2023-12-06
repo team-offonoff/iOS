@@ -33,11 +33,16 @@ public class DefaultHomeCoordinator: HomeCoordinator {
     private func generateHomeViewModel() -> HomeTabViewModel {
         
         return DefaultHomeTabViewModel(
-            fetchTopicsUseCase: getFetchTopicsUseCase()
+            fetchTopicsUseCase: getFetchTopicsUseCase(),
+            reportTopicUseCase: getReportTopicUseCase()
         )
         
         func getFetchTopicsUseCase() -> any FetchTopicsUseCase {
             DefaultFetchTopicsUseCase(repository: topicRepository)
+        }
+        
+        func getReportTopicUseCase() -> any ReportTopicUseCase {
+            DefaultReportTopicUseCase(repository: topicRepository)
         }
     }
     
