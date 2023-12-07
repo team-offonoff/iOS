@@ -28,6 +28,12 @@ extension HomeTopicCollectionViewCell {
         
         private var content: ChoiceContent?
         
+        private lazy var gradientLayer: CAGradientLayer = {
+            let layer0 = option.generateGradientLayer()
+            layer0.position = center
+            return layer0
+        }()
+        
         private let optionLabel: UILabel = {
             let label = UILabel()
             label.textAlignment = .center
@@ -37,7 +43,6 @@ extension HomeTopicCollectionViewCell {
         }()
         
         override func style() {
-            backgroundColor = option.backgroundColor
             layer.cornerRadius = 148/2
             layer.maskedCorners = option.cornerRadiusPosition
             layer.masksToBounds = true
@@ -53,8 +58,18 @@ extension HomeTopicCollectionViewCell {
                 $0.width.equalTo(UIScreen.main.bounds.size.width-55)
                 $0.height.equalTo(148)
             }
-            
+
+            setGradient()
             setOptionLabelLayout()
+            
+            func setGradient() {
+                gradientLayer.frame = CGRect(
+                    x: 0, y: 0,
+                    width: UIScreen.main.bounds.size.width-55, height: 148
+                )
+                layer.addSublayer(gradientLayer)
+                bringSubviewToFront(optionLabel)
+            }
             
             func setOptionLabelLayout() {
                 switch option {
@@ -79,7 +94,7 @@ extension HomeTopicCollectionViewCell {
         }
         
         func fill(_ choice: Choice) {
-            
+
             content = {
                 if choice.content.imageURL == nil {
                     return TextChoiceContent(choice: choice)
@@ -133,5 +148,31 @@ fileprivate extension ChoiceOption {
     
     var textAlignment: NSTextAlignment {
         .left
+    }
+    
+    func generateGradientLayer() -> CAGradientLayer {
+        let layer0 = CAGradientLayer()
+        layer0.colors = [
+            backgroundColor.cgColor,
+            backgroundColor.withAlphaComponent(0).cgColor
+        ]
+        layer0.locations = [0.5, 1]
+        layer0.startPoint = CGPoint(x: startX, y: 0.5)
+        layer0.endPoint = CGPoint(x: endX, y: 0.5)
+        return layer0
+    }
+    
+    private var startX: CGFloat {
+        switch self {
+        case .A:        return 1
+        case .B:        return 0
+        }
+    }
+    
+    private var endX: CGFloat {
+        switch self {
+        case .A:        return 0
+        case .B:        return 1
+        }
     }
 }
