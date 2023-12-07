@@ -31,7 +31,9 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
     override func hierarchy() {
 
-        baseView.addSubviews([etcGroup.realTimeTitleLabel, topicGroup.titleLabel, profileStackView, choiceStackView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.declareButton, chat])
+        baseView.addSubviews([etcGroup.realTimeTitleLabel, topicGroup.titleLabel, profileStackView, choiceGroup.swipeableView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.declareButton, chat])
+        
+        choiceGroup.swipeableView.addSubviews([choiceStackView])
         
         profileStackView.addArrangedSubviews([userGroup.profileImageView, userGroup.nicknameLabel])
         
@@ -57,8 +59,14 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
             $0.centerX.equalToSuperview()
         }
         
+        choiceGroup.swipeableView.snp.makeConstraints{
+            $0.top.equalTo(profileStackView.snp.bottom).offset(19)
+            $0.leading.trailing.equalToSuperview()
+        }
+        
         choiceStackView.snp.makeConstraints{
-            $0.top.equalTo(profileStackView.snp.bottom).offset(56)
+            $0.top.equalToSuperview().offset(36)
+            $0.centerY.equalToSuperview()
             $0.centerX.equalToSuperview()
         }
         
@@ -72,7 +80,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         }
 
         topicGroup.timer.snp.makeConstraints{
-            $0.top.equalTo(choiceStackView.snp.bottom).offset(43)
+            $0.top.equalTo(choiceGroup.swipeableView.snp.bottom).offset(7)
             $0.centerX.equalToSuperview()
         }
         
@@ -195,6 +203,7 @@ extension HomeTopicCollectionViewCell {
     }
     
     final class ChoiceGroup {
+        let swipeableView: UIView = UIView()
         let completeView: ChoiceCompleteView = ChoiceCompleteView()
         let aChoiceView = ChoiceView(option: .A)
         let bChoiceView = ChoiceView(option: .B)
