@@ -106,11 +106,66 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     }
     
     override func initialize() {
+        
         etcGroup.declareButton.tapPublisher
             .sink{ [weak self] _ in
                 self?.delegate?.show()
             }
             .store(in: &cancellable)
+        
+        addPanGesture()
+        
+        func addPanGesture() {
+            let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panGesture))
+            panGesture.delaysTouchesBegan = false
+            panGesture.delaysTouchesEnded = false
+            choiceGroup.swipeableView.addGestureRecognizer(panGesture)
+        }
+    }
+    
+    enum SwipeState {
+        case choiceA
+        case choiceB
+        case normal
+    }
+    
+    private var originalPoint: CGPoint = CGPoint()
+    private var state: SwipeState = .normal
+    
+    @objc private func panGesture(_ recognizer: UIPanGestureRecognizer) {
+        let translation = recognizer.translation(in: choiceStackView)
+        switch recognizer.state {
+        case .began:
+            originalPoint = choiceStackView.frame.origin
+        case .changed:
+            choiceStackView.frame.origin = CGPoint(x: originalPoint.x + translation.x, y: originalPoint.y)
+    
+            if abs(translation.x) >= Device.width/2 {
+                if state == .normal && translation.y <= 0{
+                    state = .choiceA
+                }
+                else if state == .normal && translation.y >= 0{
+                    state = .choiceB
+                }
+            }
+        case .ended:
+            let movePoint: CGPoint = {
+                switch state {
+                case .normal:
+                    return originalPoint
+                case .choiceA:
+                    return CGPoint(x: Device.width, y: originalPoint.y)
+                case .choiceB:
+                    return CGPoint(x: -2*Device.width, y: originalPoint.y)
+                }
+            }()
+            UIView.animate(
+                withDuration: 0.27,
+                animations: {
+                    self.choiceStackView.frame.origin = movePoint
+                })
+        default:    return
+        }
     }
     
     func binding(data: HomeTopicItemViewModel) {
