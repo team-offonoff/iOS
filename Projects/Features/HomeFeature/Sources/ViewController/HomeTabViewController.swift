@@ -18,7 +18,7 @@ protocol TopicBottomSheetDelegate: AnyObject {
 }
 
 protocol Choiceable: AnyObject {
-    func choice(_ choice: ChoiceOption)
+    func choice(option: ChoiceOption)
 }
 
 final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, DefaultHomeCoordinator>{
@@ -165,7 +165,7 @@ extension HomeTabViewController: TopicBottomSheetDelegate {
 }
 
 extension HomeTabViewController: Choiceable {
-    func choice(_ choice: ChoiceOption) {
+    func choice(option: ChoiceOption) {
         print(choice)
     }
 }
