@@ -25,8 +25,7 @@
 
 ### MVVM Pattern
 ---
-- 책임을 기반으로 View Model을 설계하였습니다. 
-- 의존 역전 규칙을 준수하기 위해 protocol을 통해 인터페이스를 설계하였습니다.
+- 책임을 기반으로 View Model을 설계하였습니다. 의존 역전 규칙을 준수하기 위해 protocol을 통해 인터페이스를 설계하였습니다.
 
 ### Coordinator Pattern
 ---
