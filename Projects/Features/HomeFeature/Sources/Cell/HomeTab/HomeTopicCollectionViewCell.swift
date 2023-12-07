@@ -16,7 +16,7 @@ import Combine
 
 class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
-    weak var delegate: TopicBottomSheetDelegate?
+    weak var delegate: (Choiceable & TopicBottomSheetDelegate)?
     private var cancellable: Set<AnyCancellable> = []
     
     private let topicGroup: TopicGroup = TopicGroup()
@@ -154,8 +154,10 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
                 case .normal:
                     return originalPoint
                 case .choiceA:
+                    delegate?.choice(.A)
                     return CGPoint(x: Device.width, y: originalPoint.y)
                 case .choiceB:
+                    delegate?.choice(.B)
                     return CGPoint(x: -2*Device.width, y: originalPoint.y)
                 }
             }()

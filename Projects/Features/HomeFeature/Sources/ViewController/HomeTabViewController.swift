@@ -17,6 +17,10 @@ protocol TopicBottomSheetDelegate: AnyObject {
     func show()
 }
 
+protocol Choiceable: AnyObject {
+    func choice(_ choice: ChoiceOption)
+}
+
 final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, DefaultHomeCoordinator>{
 
     init(viewModel: any HomeTabViewModel){
@@ -157,5 +161,11 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
 extension HomeTabViewController: TopicBottomSheetDelegate {
     func show() {
         coordinator?.startTopicBottomSheet()
+    }
+}
+
+extension HomeTabViewController: Choiceable {
+    func choice(_ choice: ChoiceOption) {
+        print(choice)
     }
 }
