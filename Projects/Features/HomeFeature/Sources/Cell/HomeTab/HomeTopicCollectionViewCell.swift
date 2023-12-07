@@ -136,16 +136,16 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         let translation = recognizer.translation(in: choiceStackView)
         switch recognizer.state {
         case .began:
+            state = .normal
             originalPoint = choiceStackView.frame.origin
         case .changed:
             choiceStackView.frame.origin = CGPoint(x: originalPoint.x + translation.x, y: originalPoint.y)
-    
             if abs(translation.x) >= Device.width/2 {
-                if state == .normal && translation.y <= 0{
-                    state = .choiceA
-                }
-                else if state == .normal && translation.y >= 0{
+                if state == .normal && translation.x <= 0{
                     state = .choiceB
+                }
+                else if state == .normal && translation.x >= 0{
+                    state = .choiceA
                 }
             }
         case .ended:
@@ -160,7 +160,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
                 }
             }()
             UIView.animate(
-                withDuration: 0.27,
+                withDuration: 0.5,
                 animations: {
                     self.choiceStackView.frame.origin = movePoint
                 })
