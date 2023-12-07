@@ -167,5 +167,6 @@ extension HomeTabViewController: TopicBottomSheetDelegate {
 extension HomeTabViewController: Choiceable {
     func choice(option: ChoiceOption) {
         print(choice)
+        viewModel.choice(option: option)
     }
 }
