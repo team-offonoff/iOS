@@ -103,7 +103,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
     }
     
     private func bindSelectionSuccess() {
-        viewModel.selectionSuccess
+        viewModel.choiceSuccess
             .receive(on: RunLoop.main)
             .sink{ [weak self] choice in
                 self?.currentTopicCell?.select(choice: choice)

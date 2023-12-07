@@ -29,7 +29,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
 
     var topics: [HomeTopicItemViewModel] = [.init(topic: TestData.topicA), .init(topic: TestData.topicImage), .init(topic: TestData.topicA), .init(topic: TestData.topicB)]
     var willMovePage: Published<IndexPath>.Publisher{ $currentTopic }
-    var selectionSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
+    var choiceSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
     let reloadTopics: PassthroughSubject<Void, Never> = PassthroughSubject()
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
@@ -135,7 +135,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         }
     }
     
-    func select(option: ChoiceOption) {
+    func choice(option: ChoiceOption) {
 //        topicSelectUseCase.execute()
         topics[currentTopic.row].votedChoice = {
             switch option {
