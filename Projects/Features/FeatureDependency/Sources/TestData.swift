@@ -34,4 +34,16 @@ public struct TestData {
         ],
         deadline: Int(Date.now.timeIntervalSince1970) + 60*60 + 5
     )
+    
+    public static let topicImage = Topic(
+        id: 0,
+        side: .A,
+        title: "10년 전 또는 후로 갈 수 있다면?",
+        categoryId: 0,
+        choices: [
+            Choice(id: 0, content: Choice.Content(text: "10년 전 과거로 가기", imageURL: URL(string: "http://ab")), option: .A),
+            Choice(id: 1, content: Choice.Content(text: "10년 후 미래로 가기", imageURL: URL(string: "http://ab")), option: .B)
+        ],
+        deadline: Int(Date.now.timeIntervalSince1970) + 10
+    )
 }

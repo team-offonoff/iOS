@@ -16,10 +16,10 @@ extension HomeTopicCollectionViewCell {
         
         var canUserInteraction = false {
             didSet {
-                if !canUserInteraction { return }
-                blurView.isHidden = true
-                induceSelectChip.isHidden = true
-                isUserInteractionEnabled = true
+                [blurView, induceSelectChip].forEach{
+                    $0.isHidden = canUserInteraction
+                }
+                isUserInteractionEnabled = canUserInteraction
             }
         }
         

@@ -111,9 +111,9 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
             select(choice: choice)
         }
         else {
-            choiceGroup.completeView.isHidden = true
             choiceGroup.aChoiceView.fill(data.aOption)
             choiceGroup.bChoiceView.fill(data.bOption)
+            toggle(isVoted: false)
         }
         
         topicGroup.titleLabel.text = data.title
@@ -130,11 +130,18 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
     func select(choice: Choice){
         choiceGroup.completeView.fill(choice: choice)
-        choiceGroup.completeView.isHidden = false
-        choiceGroup.slideExplainView.isHidden = true
-        choiceStackView.isHidden = true
-        chat.canUserInteraction = true
+        toggle(isVoted: true)
+    }
+    
+    private func toggle(isVoted value: Bool) {
         
+        choiceGroup.completeView.isHidden = !value
+        
+        [choiceGroup.slideExplainView, choiceStackView].forEach{
+            $0.isHidden = value
+        }
+        
+        chat.canUserInteraction = value
     }
 }
 
