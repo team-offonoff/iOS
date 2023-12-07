@@ -154,10 +154,10 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
                 case .normal:
                     return originalPoint
                 case .choiceA:
-                    delegate?.choice(.A)
+                    delegate?.choice(option: .A)
                     return CGPoint(x: Device.width, y: originalPoint.y)
                 case .choiceB:
-                    delegate?.choice(.B)
+                    delegate?.choice(option: .B)
                     return CGPoint(x: -2*Device.width, y: originalPoint.y)
                 }
             }()
