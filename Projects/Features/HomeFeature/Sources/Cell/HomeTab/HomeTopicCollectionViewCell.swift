@@ -149,23 +149,28 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
                 }
             }
         case .ended:
-            let movePoint: CGPoint = {
+            
+            let (option, movePoint): (ChoiceOption?, CGPoint) = {
                 switch state {
                 case .normal:
-                    return originalPoint
+                    return (nil, originalPoint)
                 case .choiceA:
-                    delegate?.choice(option: .A)
-                    return CGPoint(x: Device.width, y: originalPoint.y)
+                    return (.A, CGPoint(x: Device.width, y: originalPoint.y))
                 case .choiceB:
-                    delegate?.choice(option: .B)
-                    return CGPoint(x: -2*Device.width, y: originalPoint.y)
+                    return (.B, CGPoint(x: -2*Device.width, y: originalPoint.y))
                 }
             }()
+            
             UIView.animate(
                 withDuration: 0.5,
                 animations: {
                     self.choiceStackView.frame.origin = movePoint
-                })
+                },
+                completion: { _ in
+                    guard let option = option else { return }
+                    self.delegate?.choice(option: option)
+                }
+            )
         default:    return
         }
     }
