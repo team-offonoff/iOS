@@ -16,7 +16,7 @@ import Combine
 
 class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
-    weak var delegate: TopicBottomSheetDelegate?
+    weak var delegate: (Choiceable & TopicBottomSheetDelegate)?
     private var cancellable: Set<AnyCancellable> = []
     
     private let topicGroup: TopicGroup = TopicGroup()
@@ -31,7 +31,9 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
     override func hierarchy() {
 
-        baseView.addSubviews([etcGroup.realTimeTitleLabel, topicGroup.titleLabel, profileStackView, choiceStackView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.declareButton, chat])
+        baseView.addSubviews([etcGroup.realTimeTitleLabel, topicGroup.titleLabel, profileStackView, choiceGroup.swipeableView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.declareButton, chat])
+        
+        choiceGroup.swipeableView.addSubviews([choiceStackView])
         
         profileStackView.addArrangedSubviews([userGroup.profileImageView, userGroup.nicknameLabel])
         
@@ -57,8 +59,14 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
             $0.centerX.equalToSuperview()
         }
         
+        choiceGroup.swipeableView.snp.makeConstraints{
+            $0.top.equalTo(profileStackView.snp.bottom).offset(19)
+            $0.leading.trailing.equalToSuperview()
+        }
+        
         choiceStackView.snp.makeConstraints{
-            $0.top.equalTo(profileStackView.snp.bottom).offset(56)
+            $0.top.equalToSuperview().offset(36)
+            $0.centerY.equalToSuperview()
             $0.centerX.equalToSuperview()
         }
         
@@ -72,7 +80,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         }
 
         topicGroup.timer.snp.makeConstraints{
-            $0.top.equalTo(choiceStackView.snp.bottom).offset(43)
+            $0.top.equalTo(choiceGroup.swipeableView.snp.bottom).offset(7)
             $0.centerX.equalToSuperview()
         }
         
@@ -98,11 +106,73 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     }
     
     override func initialize() {
+        
         etcGroup.declareButton.tapPublisher
             .sink{ [weak self] _ in
                 self?.delegate?.show()
             }
             .store(in: &cancellable)
+        
+        addPanGesture()
+        
+        func addPanGesture() {
+            let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panGesture))
+            panGesture.delaysTouchesBegan = false
+            panGesture.delaysTouchesEnded = false
+            choiceGroup.swipeableView.addGestureRecognizer(panGesture)
+        }
+    }
+    
+    enum SwipeState {
+        case choiceA
+        case choiceB
+        case normal
+    }
+    
+    private var originalPoint: CGPoint = CGPoint()
+    private var state: SwipeState = .normal
+    
+    @objc private func panGesture(_ recognizer: UIPanGestureRecognizer) {
+        let translation = recognizer.translation(in: choiceStackView)
+        switch recognizer.state {
+        case .began:
+            state = .normal
+            originalPoint = choiceStackView.frame.origin
+        case .changed:
+            choiceStackView.frame.origin = CGPoint(x: originalPoint.x + translation.x, y: originalPoint.y)
+            if abs(translation.x) >= Device.width/2 {
+                if state == .normal && translation.x <= 0{
+                    state = .choiceB
+                }
+                else if state == .normal && translation.x >= 0{
+                    state = .choiceA
+                }
+            }
+        case .ended:
+            
+            let (option, movePoint): (ChoiceOption?, CGPoint) = {
+                switch state {
+                case .normal:
+                    return (nil, originalPoint)
+                case .choiceA:
+                    return (.A, CGPoint(x: Device.width, y: originalPoint.y))
+                case .choiceB:
+                    return (.B, CGPoint(x: -2*Device.width, y: originalPoint.y))
+                }
+            }()
+            
+            UIView.animate(
+                withDuration: 0.5,
+                animations: {
+                    self.choiceStackView.frame.origin = movePoint
+                },
+                completion: { _ in
+                    guard let option = option else { return }
+                    self.delegate?.choice(option: option)
+                }
+            )
+        default:    return
+        }
     }
     
     func binding(data: HomeTopicItemViewModel) {
@@ -195,6 +265,7 @@ extension HomeTopicCollectionViewCell {
     }
     
     final class ChoiceGroup {
+        let swipeableView: UIView = UIView()
         let completeView: ChoiceCompleteView = ChoiceCompleteView()
         let aChoiceView = ChoiceView(option: .A)
         let bChoiceView = ChoiceView(option: .B)
