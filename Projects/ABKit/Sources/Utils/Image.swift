@@ -27,6 +27,9 @@ public struct Image{
     
     //MARK: Home
     
+    public static let chatLike = UIImage.load(name: "chat_like")
+    public static let chatDislike = UIImage.load(name: "chat_dislike")
+                                                        
     public static let choiceTextExpand = UIImage.load(name: "choice_text_expand")
     public static let choiceImageExpand = UIImage.load(name: "choice_image_expand")
     public static let hide = UIImage.load(name: "hide")
