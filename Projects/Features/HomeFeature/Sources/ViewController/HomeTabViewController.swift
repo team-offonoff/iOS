@@ -154,9 +154,17 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
 }
 
-extension HomeTabViewController: TopicBottomSheetDelegate {
-    func show() {
-        coordinator?.startTopicBottomSheet()
+extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelegate {
+    
+    func show(_ sender: DelegateSender) {
+        switch sender.identifier {
+        case Literal.BottomSheet.topicBottomSheet:
+            coordinator?.startTopicBottomSheet()
+        case Literal.BottomSheet.chatBottomSheet:
+            coordinator?.startChatBottomSheet()
+        default:
+            return
+        }
     }
 }
 
