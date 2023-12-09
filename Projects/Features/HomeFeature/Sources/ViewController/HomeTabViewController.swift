@@ -13,10 +13,6 @@ import FeatureDependency
 import HomeFeatureInterface
 import Core
 
-protocol TopicBottomSheetDelegate: AnyObject {
-    func show()
-}
-
 protocol Choiceable: AnyObject {
     func choice(option: ChoiceOption)
 }
