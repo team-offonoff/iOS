@@ -13,10 +13,6 @@ import FeatureDependency
 import HomeFeatureInterface
 import Core
 
-protocol TopicBottomSheetDelegate: AnyObject {
-    func show()
-}
-
 protocol Choiceable: AnyObject {
     func choice(option: ChoiceOption)
 }
@@ -158,9 +154,17 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
 }
 
-extension HomeTabViewController: TopicBottomSheetDelegate {
-    func show() {
-        coordinator?.startTopicBottomSheet()
+extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelegate {
+    
+    func show(_ sender: DelegateSender) {
+        switch sender.identifier {
+        case Literal.BottomSheet.topic:
+            coordinator?.startTopicBottomSheet()
+        case Literal.BottomSheet.chat:
+            coordinator?.startChatBottomSheet()
+        default:
+            return
+        }
     }
 }
 
