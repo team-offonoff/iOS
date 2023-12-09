@@ -10,9 +10,11 @@ import Foundation
 
 public struct Literal {
     
-    public enum BottomSheet {
-        public static let topicBottomSheet = "topicBottomSheet"
-        public static let chatBottomSheet = "chatBottomSheet"
+    public struct BottomSheet {
+        
+        private static let base = "BottomSheet."
+        
+        public static let topic = base + "topic"
+        public static let chat = base + "chat"
     }
-    
 }

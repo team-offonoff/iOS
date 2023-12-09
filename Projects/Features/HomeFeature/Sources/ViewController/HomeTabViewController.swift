@@ -158,9 +158,9 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
     
     func show(_ sender: DelegateSender) {
         switch sender.identifier {
-        case Literal.BottomSheet.topicBottomSheet:
+        case Literal.BottomSheet.topic:
             coordinator?.startTopicBottomSheet()
-        case Literal.BottomSheet.chatBottomSheet:
+        case Literal.BottomSheet.chat:
             coordinator?.startChatBottomSheet()
         default:
             return

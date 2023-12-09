@@ -109,7 +109,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         
         etcGroup.declareButton.tapPublisher
             .sink{ [weak self] _ in
-                self?.delegate?.show(DelegateSender(identifier: Literal.BottomSheet.topicBottomSheet))
+                self?.delegate?.show(DelegateSender(identifier: Literal.BottomSheet.topic))
             }
             .store(in: &cancellable)
         
@@ -129,7 +129,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     }
     
     @objc private func chatTapGesture(_ recognizer: UITapGestureRecognizer) {
-        delegate?.show(DelegateSender(identifier: Literal.BottomSheet.chatBottomSheet))
+        delegate?.show(DelegateSender(identifier: Literal.BottomSheet.chat))
     }
     
     enum SwipeState {
