@@ -16,7 +16,7 @@ import Combine
 
 class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
-    weak var delegate: (Choiceable & TopicBottomSheetDelegate)?
+    weak var delegate: (Choiceable & TopicBottomSheetDelegate & ChatBottomSheetDelegate)?
     private var cancellable: Set<AnyCancellable> = []
     
     private let topicGroup: TopicGroup = TopicGroup()
@@ -109,11 +109,16 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         
         etcGroup.declareButton.tapPublisher
             .sink{ [weak self] _ in
-                self?.delegate?.show()
+                self?.delegate?.show(DelegateSender(identifier: Literal.BottomSheet.topicBottomSheet))
             }
             .store(in: &cancellable)
         
+        addTapGesture()
         addPanGesture()
+        
+        func addTapGesture() {
+            chat.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(chatTapGesture)))
+        }
         
         func addPanGesture() {
             let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panGesture))
@@ -121,6 +126,10 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
             panGesture.delaysTouchesEnded = false
             choiceGroup.swipeableView.addGestureRecognizer(panGesture)
         }
+    }
+    
+    @objc private func chatTapGesture(_ recognizer: UITapGestureRecognizer) {
+        delegate?.show(DelegateSender(identifier: Literal.BottomSheet.chatBottomSheet))
     }
     
     enum SwipeState {
