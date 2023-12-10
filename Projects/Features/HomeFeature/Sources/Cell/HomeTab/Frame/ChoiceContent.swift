@@ -11,6 +11,7 @@ import UIKit
 import ABKit
 import Domain
 import Core
+import FeatureDependency
 
 protocol ChoiceContent{
     init(choice: Choice)
@@ -120,7 +121,11 @@ extension HomeTopicCollectionViewCell {
         }()
         
         @objc private func tap(_ recognizer: UITapGestureRecognizer) {
-            NotificationCenter.default.post(name: NSNotification.Name(Topic.Action.expandImage.identifier), object: nil)
+            NotificationCenter.default
+                .post(
+                    name: NSNotification.Name(Topic.Action.expandImage.identifier),
+                    object: choice
+                )
         }
         
         func setALayout() {
