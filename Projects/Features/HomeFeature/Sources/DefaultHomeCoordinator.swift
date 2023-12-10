@@ -59,4 +59,10 @@ public class DefaultHomeCoordinator: HomeCoordinator {
     public func startChatBottomSheet() {
         navigationController.present(ChatBottomSheetViewController(), animated: true)
     }
+    
+    public func startImagePopUp(choice: Choice) {
+        let popUpViewController = ImagePopUpViewController(choice: choice)
+        popUpViewController.modalPresentationStyle = .overFullScreen
+        navigationController.present(popUpViewController, animated: false)
+    }
 }
