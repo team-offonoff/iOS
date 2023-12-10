@@ -14,7 +14,10 @@ import Domain
 
 final class ImagePopUpViewController: BaseViewController<BaseHeaderView, ImagePopUpView, DefaultHomeCoordinator> {
     
-    init() {
+    private let choice: Choice
+    
+    init(choice: Choice) {
+        self.choice = choice
         super.init(headerView: BaseHeaderView(), mainView: ImagePopUpView())
     }
     
@@ -54,6 +57,9 @@ final class ImagePopUpViewController: BaseViewController<BaseHeaderView, ImagePo
         func modifyHeader() {
             headerView.snp.updateConstraints{
                 $0.height.equalTo(0)
+            }
+            mainView.snp.updateConstraints{
+                $0.top.equalTo(headerView.snp.bottom).offset(-(UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0))
             }
         }
         
