@@ -44,7 +44,7 @@ final class ImagePopUpView: BaseView {
     private let optionLabel: UILabel = {
         let label = UILabel()
         label.textColor = Color.white20
-        label.setTypo(Pretendard.black200, lineSpacing: 280)
+        label.setTypo(Pretendard.black200, setLineSpacing: true)
         return label
     }()
     

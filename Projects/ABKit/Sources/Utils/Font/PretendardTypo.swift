@@ -128,6 +128,6 @@ extension Pretendard{
     
     struct Black200: TypoCase {
         let font: UIFont = ABKitFontFamily.Pretendard.black.font(size: 200)
-        let lineHeight: CGFloat? = nil
+        let lineHeight: CGFloat? = 280
     }
 }

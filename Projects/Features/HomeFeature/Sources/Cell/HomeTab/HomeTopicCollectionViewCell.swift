@@ -231,7 +231,7 @@ extension HomeTopicCollectionViewCell {
             let label = UILabel()
             label.numberOfLines = 2
             label.textColor = Color.white
-            label.setTypo(Pretendard.semibold24)
+            label.setTypo(Pretendard.semibold24, setLineSpacing: true)
             label.textAlignment = .center
             label.lineBreakMode = .byWordWrapping
             label.snp.makeConstraints{

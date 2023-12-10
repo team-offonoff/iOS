@@ -44,10 +44,10 @@ public extension UILabel{
             .setKern(kern)
     }
      */
-    
-    func setTypo(_ typo: TypoCase, lineSpacing: CGFloat? = nil) {
+
+    func setTypo(_ typo: TypoCase, setLineSpacing: Bool = false) {
         let font = typo.font
-        if let lineSpacing = lineSpacing {
+        if setLineSpacing, let lineSpacing = typo.lineHeight {
             setTypo(font, lineSpacing: lineSpacing)
         } else {
             setTypo(font)

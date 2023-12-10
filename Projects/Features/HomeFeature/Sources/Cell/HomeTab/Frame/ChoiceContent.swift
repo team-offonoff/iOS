@@ -47,7 +47,7 @@ extension HomeTopicCollectionViewCell {
         
         private let contentLabel: UILabel = {
             let label = UILabel()
-            label.setTypo(Pretendard.semibold20)
+            label.setTypo(Pretendard.semibold20, setLineSpacing: true)
             label.textColor = Color.white
             label.numberOfLines = 0
             label.lineBreakMode = .byWordWrapping
