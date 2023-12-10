@@ -52,7 +52,7 @@ final class ImagePopUpViewController: BaseViewController<BaseHeaderView, ImagePo
         
         modifyHeader()
         addCloseTarget()
-        mainView.fill(nil)
+        mainView.fill(choice)
         
         func modifyHeader() {
             headerView.snp.updateConstraints{
