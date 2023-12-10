@@ -125,10 +125,11 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         func bindImageExpandNotification() {
             //Image Choice Content에서 notification post
             NotificationCenter.default
-                .publisher(for: Notification.Name(Topic.Action.expandImage.identifier))
+                .publisher(for: Notification.Name(Topic.Action.expandImage.identifier), object: currentTopicCell)
                 .receive(on: DispatchQueue.main)
                 .sink{ [weak self] receive in
-                    if let choice = receive.object as? Choice {
+                    //TODO: #55 이후 키값 변경 예정
+                    if let choice = receive.userInfo?["Choice"] as? Choice {
                         self?.coordinator?.startImagePopUp(choice: choice)
                     }
                 }

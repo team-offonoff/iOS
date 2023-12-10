@@ -121,10 +121,13 @@ extension HomeTopicCollectionViewCell {
         }()
         
         @objc private func tap(_ recognizer: UITapGestureRecognizer) {
+            //home view controller로 이벤트 전달
             NotificationCenter.default
                 .post(
                     name: NSNotification.Name(Topic.Action.expandImage.identifier),
-                    object: choice
+                    object: self,
+                    //TODO: #55 이후 키값 변경 예정
+                    userInfo: ["Choice": choice]
                 )
         }
         
