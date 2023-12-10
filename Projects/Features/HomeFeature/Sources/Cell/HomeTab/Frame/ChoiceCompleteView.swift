@@ -34,7 +34,7 @@ extension HomeTopicCollectionViewCell {
         
         private let contentLabel: UILabel = {
             let label = UILabel()
-            label.setTypo(Pretendard.semibold20)
+            label.setTypo(Pretendard.semibold20, setLineSpacing: true)
             label.numberOfLines = 2
             label.textColor = Color.white
             label.textAlignment = .center

@@ -7,8 +7,10 @@
 //
 
 import FeatureDependency
+import Domain
 
 public protocol HomeCoordinator: Coordinator {
     func startTopicBottomSheet()
     func startChatBottomSheet()
+    func startImagePopUp(choice: Choice)
 }

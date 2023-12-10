@@ -11,6 +11,7 @@ import UIKit
 import ABKit
 import Domain
 import Core
+import FeatureDependency
 
 protocol ChoiceContent{
     init(choice: Choice)
@@ -46,7 +47,7 @@ extension HomeTopicCollectionViewCell {
         
         private let contentLabel: UILabel = {
             let label = UILabel()
-            label.setTypo(Pretendard.semibold20)
+            label.setTypo(Pretendard.semibold20, setLineSpacing: true)
             label.textColor = Color.white
             label.numberOfLines = 0
             label.lineBreakMode = .byWordWrapping
@@ -98,25 +99,37 @@ extension HomeTopicCollectionViewCell {
         
         private lazy var buttonStackView: UIStackView = {
             let stackView = UIStackView(axis: .vertical, spacing: 4)
-            stackView.addArrangedSubviews([textExpandButton, imageExpandButton])
+            stackView.addArrangedSubviews([imageExpandIcon])
+            stackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
             return stackView
         }()
-        private let textExpandButton: UIButton = {
-            let button = UIButton()
-            button.setImage(Image.choiceTextExpand, for: .normal)
+//        private let textExpandButton: UIButton = {
+//            let button = UIButton()
+//            button.setImage(Image.choiceTextExpand, for: .normal)
+//            button.snp.makeConstraints{
+//                $0.width.height.equalTo(24)
+//            }
+//            return button
+//        }()
+        private let imageExpandIcon: UIImageView = {
+            let button = UIImageView()
+            button.image = Image.choiceImageExpand
             button.snp.makeConstraints{
                 $0.width.height.equalTo(24)
             }
             return button
         }()
-        private let imageExpandButton: UIButton = {
-            let button = UIButton()
-            button.setImage(Image.choiceImageExpand, for: .normal)
-            button.snp.makeConstraints{
-                $0.width.height.equalTo(24)
-            }
-            return button
-        }()
+        
+        @objc private func tap(_ recognizer: UITapGestureRecognizer) {
+            //home view controller로 이벤트 전달
+            NotificationCenter.default
+                .post(
+                    name: NSNotification.Name(Topic.Action.expandImage.identifier),
+                    object: self,
+                    //TODO: #55 이후 키값 변경 예정
+                    userInfo: ["Choice": choice]
+                )
+        }
         
         func setALayout() {
             buttonStackView.snp.makeConstraints{

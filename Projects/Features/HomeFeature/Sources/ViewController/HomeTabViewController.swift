@@ -12,6 +12,7 @@ import UIKit
 import FeatureDependency
 import HomeFeatureInterface
 import Core
+import Domain
 
 protocol Choiceable: AnyObject {
     func choice(option: ChoiceOption)
@@ -38,7 +39,6 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
     private let viewModel: any HomeTabViewModel
     
     override func viewDidAppear(_ animated: Bool) {
-//        mainView.setBottomSheetDefaultY()
         viewModel.startTimer()
     }
     
@@ -51,24 +51,25 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
     }
     
     override func initialize() {
+        
         setDelegate()
         addButtonFrameTarget()
-    }
-    
-    private func setDelegate(){
-        mainView.scrollFrame.setDelegate(to: self)
-    }
-    
-    private func addButtonFrameTarget(){
-        mainView.scrollFrame.buttonFrame.previousButton.tapPublisher
-            .sink{ [weak self] _ in
-                self?.viewModel.movePreviousTopic()
-            }.store(in: &cancellables)
         
-        mainView.scrollFrame.buttonFrame.nextButton.tapPublisher
-            .sink{ [weak self] _ in
-                self?.viewModel.moveNextTopic()
-            }.store(in: &cancellables)
+        func setDelegate(){
+            mainView.scrollFrame.setDelegate(to: self)
+        }
+        
+        func addButtonFrameTarget(){
+            mainView.scrollFrame.buttonFrame.previousButton.tapPublisher
+                .sink{ [weak self] _ in
+                    self?.viewModel.movePreviousTopic()
+                }.store(in: &cancellables)
+            
+            mainView.scrollFrame.buttonFrame.nextButton.tapPublisher
+                .sink{ [weak self] _ in
+                    self?.viewModel.moveNextTopic()
+                }.store(in: &cancellables)
+        }
     }
     
     override func bind() {
@@ -77,48 +78,63 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         bindMoveTopic()
         bindTimer()
         bindSelectionSuccess()
-    }
-    
-    private func bindReloadTopics(){
-        viewModel.reloadTopics
-            .receive(on: RunLoop.main)
-            .sink{ [weak self] _ in
-                self?.mainView.scrollFrame.reloadTopics()
+        bindImageExpandNotification()
+        
+        func bindReloadTopics(){
+            viewModel.reloadTopics
+                .receive(on: RunLoop.main)
+                .sink{ [weak self] _ in
+                    self?.mainView.scrollFrame.reloadTopics()
+                }
+                .store(in: &cancellables)
+        }
+        
+        func bindMoveTopic(){
+            viewModel.willMovePage
+                .receive(on: RunLoop.main)
+                .sink{ [weak self] indexPath in
+                    self?.mainView.scrollFrame.move(to: indexPath)
+                    setMoveButtonVisibility()
+                }
+                .store(in: &cancellables)
+            
+            func setMoveButtonVisibility(){
+                mainView.scrollFrame.buttonFrame.previousButton.isHidden = !viewModel.canMovePrevious
+                mainView.scrollFrame.buttonFrame.nextButton.isHidden = !viewModel.canMoveNext
             }
-            .store(in: &cancellables)
-    }
-    
-    private func bindMoveTopic(){
-        viewModel.willMovePage
-            .receive(on: RunLoop.main)
-            .sink{ [weak self] indexPath in
-                self?.mainView.scrollFrame.move(to: indexPath)
-                self?.setMoveButtonVisibility()
-            }
-            .store(in: &cancellables)
-    }
-    
-    private func bindSelectionSuccess() {
-        viewModel.choiceSuccess
-            .receive(on: RunLoop.main)
-            .sink{ [weak self] choice in
-                self?.currentTopicCell?.select(choice: choice)
-            }
-            .store(in: &cancellables)
-    }
-    
-    private func setMoveButtonVisibility(){
-        mainView.scrollFrame.buttonFrame.previousButton.isHidden = !viewModel.canMovePrevious
-        mainView.scrollFrame.buttonFrame.nextButton.isHidden = !viewModel.canMoveNext
-    }
-    
-    private func bindTimer(){
-        viewModel.timerSubject
-            .receive(on: RunLoop.main)
-            .sink{ [weak self] time in
-                self?.currentTopicCell?.binding(timer: time)
-            }
-            .store(in: &cancellables)
+        }
+        
+        func bindSelectionSuccess() {
+            viewModel.choiceSuccess
+                .receive(on: RunLoop.main)
+                .sink{ [weak self] choice in
+                    self?.currentTopicCell?.select(choice: choice)
+                }
+                .store(in: &cancellables)
+        }
+        
+        func bindTimer(){
+            viewModel.timerSubject
+                .receive(on: RunLoop.main)
+                .sink{ [weak self] time in
+                    self?.currentTopicCell?.binding(timer: time)
+                }
+                .store(in: &cancellables)
+        }
+        
+        func bindImageExpandNotification() {
+            //Image Choice Content에서 notification post
+            NotificationCenter.default
+                .publisher(for: Notification.Name(Topic.Action.expandImage.identifier), object: currentTopicCell)
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] receive in
+                    //TODO: #55 이후 키값 변경 예정
+                    if let choice = receive.userInfo?["Choice"] as? Choice {
+                        self?.coordinator?.startImagePopUp(choice: choice)
+                    }
+                }
+                .store(in: &cancellables)
+        }
     }
 }
 
