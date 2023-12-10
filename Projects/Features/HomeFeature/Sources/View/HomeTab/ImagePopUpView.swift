@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import ABKit
+import Domain
 
 final class ImagePopUpView: BaseView {
     
@@ -42,6 +43,7 @@ final class ImagePopUpView: BaseView {
     }()
     private let optionLabel: UILabel = {
         let label = UILabel()
+        label.textColor = Color.white20
         label.setTypo(Pretendard.black200, lineSpacing: 280)
         return label
     }()
@@ -66,5 +68,11 @@ final class ImagePopUpView: BaseView {
             $0.centerY.equalToSuperview().offset(10)
             $0.centerX.equalToSuperview()
         }
+    }
+    
+    func fill(_ choice: Choice?) {
+        optionBackgroundView.backgroundColor = Color.mainA
+        optionLabel.text = "A"
+        imageView.backgroundColor = .black
     }
 }
