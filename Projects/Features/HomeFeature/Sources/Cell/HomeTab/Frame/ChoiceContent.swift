@@ -98,17 +98,18 @@ extension HomeTopicCollectionViewCell {
         
         private lazy var buttonStackView: UIStackView = {
             let stackView = UIStackView(axis: .vertical, spacing: 4)
-            stackView.addArrangedSubviews([textExpandButton, imageExpandButton])
+            stackView.addArrangedSubviews([imageExpandButton])
+            stackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
             return stackView
         }()
-        private let textExpandButton: UIButton = {
-            let button = UIButton()
-            button.setImage(Image.choiceTextExpand, for: .normal)
-            button.snp.makeConstraints{
-                $0.width.height.equalTo(24)
-            }
-            return button
-        }()
+//        private let textExpandButton: UIButton = {
+//            let button = UIButton()
+//            button.setImage(Image.choiceTextExpand, for: .normal)
+//            button.snp.makeConstraints{
+//                $0.width.height.equalTo(24)
+//            }
+//            return button
+//        }()
         private let imageExpandButton: UIButton = {
             let button = UIButton()
             button.setImage(Image.choiceImageExpand, for: .normal)
@@ -117,6 +118,10 @@ extension HomeTopicCollectionViewCell {
             }
             return button
         }()
+        
+        @objc private func tap(_ recognizer: UITapGestureRecognizer) {
+            NotificationCenter.default.post(name: NSNotification.Name(Topic.Action.expandImage.identifier), object: nil)
+        }
         
         func setALayout() {
             buttonStackView.snp.makeConstraints{
