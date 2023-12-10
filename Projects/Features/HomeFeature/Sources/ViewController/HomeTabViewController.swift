@@ -12,6 +12,7 @@ import UIKit
 import FeatureDependency
 import HomeFeatureInterface
 import Core
+import Domain
 
 protocol Choiceable: AnyObject {
     func choice(option: ChoiceOption)
@@ -77,6 +78,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         bindMoveTopic()
         bindTimer()
         bindSelectionSuccess()
+        bindImageExpandNotification()
     }
     
     private func bindReloadTopics(){
@@ -117,6 +119,19 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
             .receive(on: RunLoop.main)
             .sink{ [weak self] time in
                 self?.currentTopicCell?.binding(timer: time)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func bindImageExpandNotification() {
+        //Image Choice Content에서 notification post
+        NotificationCenter.default
+            .publisher(for: Notification.Name(Topic.Action.expandImage.identifier))
+            .receive(on: DispatchQueue.main)
+            .sink{ [weak self] receive in
+                if let choice = receive.object as? Choice {
+                    self?.coordinator?.startImagePopUp(choice: choice)
+                }
             }
             .store(in: &cancellables)
     }
