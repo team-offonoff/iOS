@@ -98,7 +98,7 @@ extension HomeTopicCollectionViewCell {
         
         private lazy var buttonStackView: UIStackView = {
             let stackView = UIStackView(axis: .vertical, spacing: 4)
-            stackView.addArrangedSubviews([imageExpandButton])
+            stackView.addArrangedSubviews([imageExpandIcon])
             stackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
             return stackView
         }()
@@ -110,9 +110,9 @@ extension HomeTopicCollectionViewCell {
 //            }
 //            return button
 //        }()
-        private let imageExpandButton: UIButton = {
-            let button = UIButton()
-            button.setImage(Image.choiceImageExpand, for: .normal)
+        private let imageExpandIcon: UIImageView = {
+            let button = UIImageView()
+            button.image = Image.choiceImageExpand
             button.snp.makeConstraints{
                 $0.width.height.equalTo(24)
             }
