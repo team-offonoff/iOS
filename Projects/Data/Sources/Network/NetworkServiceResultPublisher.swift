@@ -8,6 +8,5 @@
 
 import Foundation
 import Combine
-import Domain
 
 public typealias NetworkServiceResultPublisher<DTO> = AnyPublisher<(isSuccess: Bool, data: DTO, error: NetworkErrorResponeDTO?), Never>
