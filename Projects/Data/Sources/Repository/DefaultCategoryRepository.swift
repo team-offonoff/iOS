@@ -11,7 +11,7 @@ import Domain
 import Core
 
 public final class DefaultCategoryRepository: CategoryRepository {
-    
+
     private let networkService: NetworkService = NetworkService.shared
     
     public init() { }

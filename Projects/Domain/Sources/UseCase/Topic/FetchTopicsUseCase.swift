@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Core
 
 public protocol FetchTopicsUseCase: UseCase {
     func execute() -> NetworkResultPublisher<[Topic]>

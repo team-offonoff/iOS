@@ -57,7 +57,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
 
         let task = fetchTopicsUseCase.execute()
 
-        task.filter{ $0.code == .success }
+        task.filter{ $0.isSuccess }
             .map{ $0.data }
             .sink(receiveValue: { [weak self] topics in
                 defer {
@@ -159,8 +159,8 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     func reportTopic() {
         print("report topic")
         reportTopicUseCase.execute(topicId: topics[currentTopic.row].id)
-            .sink{ code, _, error in
-                if code == .success {
+            .sink{ isSuccess, _, error in
+                if isSuccess {
                     print("reportTopicUseCase: success")
                 }
                 else {
