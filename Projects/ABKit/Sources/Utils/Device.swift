@@ -9,6 +9,7 @@
 import UIKit
 
 public struct Device {
+    public static let safeAreaInsets = UIApplication.shared.windows.first?.safeAreaInsets
     public static let width = UIScreen.main.bounds.size.width
     public static let height = UIScreen.main.bounds.size.height
 }
