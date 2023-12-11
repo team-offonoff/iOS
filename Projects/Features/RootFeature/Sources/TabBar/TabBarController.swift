@@ -89,7 +89,7 @@ extension TabBarController {
         override func layout() {
             
             self.snp.makeConstraints{
-                $0.height.equalTo(78 + (UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0))
+                $0.height.equalTo(78 + (Device.safeAreaInsets?.bottom ?? 0))
             }
             
             leftItemsStackView.snp.makeConstraints{

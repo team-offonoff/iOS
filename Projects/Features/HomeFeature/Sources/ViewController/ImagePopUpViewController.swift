@@ -59,7 +59,7 @@ final class ImagePopUpViewController: BaseViewController<BaseHeaderView, ImagePo
                 $0.height.equalTo(0)
             }
             mainView.snp.updateConstraints{
-                $0.top.equalTo(headerView.snp.bottom).offset(-(UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0))
+                $0.top.equalTo(headerView.snp.bottom).offset(-(Device.safeAreaInsets?.top ?? 0))
             }
         }
         
