@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Core
 
 public protocol CategoryRepository: Repository {
     func generateCategory(request: GenerateCategoryUseCaseRequestValue) -> NetworkResultPublisher<Any?>

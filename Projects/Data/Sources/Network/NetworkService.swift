@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import Core
 
 public final class NetworkService {
     
@@ -28,7 +29,7 @@ public final class NetworkService {
         URLComponents(string: baseURL)
     }
     
-    public func dataTask<DTO: Decodable>(request: URLRequest, type: DTO.Type) -> NetworkResultPublisher<DTO?> {
+    public func dataTask<DTO: Decodable>(request: URLRequest, type: DTO.Type) -> NetworkServiceResultPublisher<DTO?> {
         
         print("🌐 " + (request.httpMethod ?? "") + ": " + String(request.url?.absoluteString ?? ""))
         
@@ -43,16 +44,16 @@ public final class NetworkService {
                 
                 if httpResponse.statusCode == 200 {
                     if data.isEmpty {
-                        return (.success, nil, nil)
+                        return (true, nil, nil)
                     }
-                    return (.success, try decode(data, DTO.self), nil)
+                    return (true, try decode(data, DTO.self), nil)
                 }
                 else {
-                    let error = try decode(data, NetworkErrorRespone.self)
-                    return (NetworkServiceCode(rawValue: error.code) ?? .fail, nil, error.content)
+                    let error = try decode(data, NetworkErrorResponeDTO.self)
+                    return (false, nil, error)
                 }
             }
-            .replaceError(with: (.fail, nil, nil))
+            .replaceError(with: (false, nil, nil))
             .eraseToAnyPublisher()
         
         func requestWithToken() -> URLRequest{
