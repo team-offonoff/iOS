@@ -184,6 +184,10 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         }
     }
     
+    func moveChoicesOriginalPosition() {
+        choiceStackView.frame.origin = originalPoint
+    }
+    
     func binding(data: HomeTopicItemViewModel) {
         if data.isVoted {
             guard let choice = data.votedChoice else { return }

@@ -34,6 +34,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
 
     var topics: [HomeTopicItemViewModel] = [.init(topic: TestData.topicA), .init(topic: TestData.topicImage), .init(topic: TestData.topicA), .init(topic: TestData.topicB)]
+    
     var willMovePage: Published<IndexPath>.Publisher{ $currentTopic }
     var choiceSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
@@ -142,15 +143,30 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         }
     }
     
-    func choice(option: ChoiceOption) {
-//        topicSelectUseCase.execute()
-        topics[currentTopic.row].votedChoice = {
-            switch option {
-            case .A:    return topics[currentTopic.row].aOption
-            case .B:    return topics[currentTopic.row].bOption
-            }
-        }()
-        selectedOption = topics[currentTopic.row].votedChoice
+    func choice(option: ChoiceTemp.Option) {
+        voteTopicUseCase
+            .execute(
+                topicId: topics[currentTopic.row].id,
+                request: .init(
+                    choiceOption: option,
+                    votedAt: Int(Date.now.timeIntervalSince1970)
+                )
+            )
+            .sink{ [weak self] result in
+                guard let self = self else { return }
+                if result.isSuccess {
+                    self.topics[self.currentTopic.row].votedChoice = {
+                        switch option {
+                        case .A:    return self.topics[self.currentTopic.row].aOption
+                        case .B:    return self.topics[self.currentTopic.row].bOption
+                        }
+                    }()
+                    self.selectedOption = self.topics[self.currentTopic.row].votedChoice
+                }
+                else if let error = result.error {
+                    self.errorHandler.send(error)
+                }
+            }.store(in: &cancellable)
     }
     
     //MARK: - Topic Bottom Sheet View Model

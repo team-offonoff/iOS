@@ -73,12 +73,34 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
     }
     
     override func bind() {
+        
         viewModel.viewDidLoad()
+        bindError()
         bindReloadTopics()
         bindMoveTopic()
         bindTimer()
         bindSelectionSuccess()
         bindImageExpandNotification()
+        
+        func bindError() {
+            viewModel.errorHandler
+                .receive(on: DispatchQueue.main)
+                .sink{ error in
+                    ToastMessage.show(message: error.message)
+                    handleError(code: error.code)
+                }
+                .store(in: &cancellables)
+            
+            func handleError(code: SerivceError) {
+                switch code {
+                case .votedByAuthor:
+                    //선택지 원위치로 돌리기
+                    currentTopicCell?.moveChoicesOriginalPosition()
+                default:
+                    return
+                }
+            }
+        }
         
         func bindReloadTopics(){
             viewModel.reloadTopics
