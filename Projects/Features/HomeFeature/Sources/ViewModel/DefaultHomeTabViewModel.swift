@@ -150,7 +150,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
                 topicId: topics[currentTopic.row].id,
                 request: .init(
                     choiceOption: option,
-                    votedAt: Int(Date.now.timeIntervalSince1970)
+                    votedAt: UTCTime.current
                 )
             )
             .sink{ [weak self] result in
@@ -183,7 +183,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     func reportTopic() {
         reportTopicUseCase
             .execute(topicId: topics[currentTopic.row].id)
-            .sink{ result in
+            .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
                     self.successTopicAction.send(TopicTemp.Action.report)
@@ -198,7 +198,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     
     func resetChoice() {
         cancelVoteTopicUseCase
-            .execute(topicId: topics[currentTopic.row].id, request: .init(canceledAt: Int(Date.now.timeIntervalSince1970)))
+            .execute(topicId: topics[currentTopic.row].id, request: .init(canceledAt: UTCTime.current))
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
