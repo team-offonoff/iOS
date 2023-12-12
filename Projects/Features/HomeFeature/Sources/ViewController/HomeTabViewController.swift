@@ -15,7 +15,7 @@ import Core
 import Domain
 
 protocol Choiceable: AnyObject {
-    func choice(option: ChoiceOption)
+    func choice(option: ChoiceTemp.Option)
 }
 
 final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, DefaultHomeCoordinator>{
@@ -73,12 +73,34 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
     }
     
     override func bind() {
+        
         viewModel.viewDidLoad()
+        bindError()
         bindReloadTopics()
         bindMoveTopic()
         bindTimer()
         bindSelectionSuccess()
         bindImageExpandNotification()
+        
+        func bindError() {
+            viewModel.errorHandler
+                .receive(on: DispatchQueue.main)
+                .sink{ error in
+                    ToastMessage.show(message: error.message)
+                    handleError(code: error.code)
+                }
+                .store(in: &cancellables)
+            
+            func handleError(code: SerivceError) {
+                switch code {
+                case .votedByAuthor:
+                    //선택지 원위치로 돌리기
+                    currentTopicCell?.moveChoicesOriginalPosition()
+                default:
+                    return
+                }
+            }
+        }
         
         func bindReloadTopics(){
             viewModel.reloadTopics
@@ -125,7 +147,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         func bindImageExpandNotification() {
             //Image Choice Content에서 notification post
             NotificationCenter.default
-                .publisher(for: Notification.Name(Topic.Action.expandImage.identifier), object: currentTopicCell)
+                .publisher(for: Notification.Name(TopicTemp.Action.expandImage.identifier), object: currentTopicCell)
                 .receive(on: DispatchQueue.main)
                 .sink{ [weak self] receive in
                     //TODO: #55 이후 키값 변경 예정
@@ -185,7 +207,7 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
 }
 
 extension HomeTabViewController: Choiceable {
-    func choice(option: ChoiceOption) {
+    func choice(option: ChoiceTemp.Option) {
         print(choice)
         viewModel.choice(option: option)
     }

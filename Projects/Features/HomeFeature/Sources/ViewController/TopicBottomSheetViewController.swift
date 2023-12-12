@@ -11,6 +11,7 @@ import UIKit
 import ABKit
 import Core
 import HomeFeatureInterface
+import Combine
 
 protocol TopicBottomSheetGestureDelegate: AnyObject {
     func tap(function: TopicBottomSheetFunction)
@@ -29,12 +30,14 @@ final class TopicBottomSheetViewController: UIViewController{
         fatalError("init(coder:) has not been implemented")
     }
     
+    private var cancellable: Set<AnyCancellable> = []
     private let mainView: TopicBottomSheetView = TopicBottomSheetView()
     
     override func viewDidLoad() {
         modalSetting()
         layout()
         initialize()
+        bind()
     }
 
     private func modalSetting(){
@@ -63,6 +66,29 @@ final class TopicBottomSheetViewController: UIViewController{
     private func initialize() {
         mainView.delegate = self
         mainView.choiceResetItem?.isDisabled = !viewModel.canChoiceReset
+    }
+    
+    private func bind() {
+        
+        viewModel.successTopicAction
+            .receive(on: DispatchQueue.main)
+            .sink{ action in
+                switch action {
+                case .hide:
+                    dismiss()
+                case .report:
+                    dismiss()
+                case .reset:
+                    dismiss()
+                default:
+                    fatalError()
+                }
+            }
+            .store(in: &cancellable)
+        
+        func dismiss() {
+            self.dismiss(animated: true)
+        }
     }
 }
 

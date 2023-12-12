@@ -9,6 +9,7 @@
 import UIKit
 import ABKit
 import Core
+import Combine
 
 final class TopicBottomSheetView: BaseView {
     
@@ -17,6 +18,8 @@ final class TopicBottomSheetView: BaseView {
     }
     
     weak var delegate: TopicBottomSheetGestureDelegate?
+    
+    private var cancellable: Set<AnyCancellable> = []
     
     private let itemsStackView: UIStackView = UIStackView(axis: .vertical, spacing: 20)
     
@@ -46,10 +49,15 @@ final class TopicBottomSheetView: BaseView {
             $0.leading.trailing.equalToSuperview().inset(24)
         }
     }
-    
+
     @objc private func functionTap(_ recognizer: UITapGestureRecognizer) {
-        guard let item = recognizer.view as? ItemStackView else { return }
-        delegate?.tap(function: item.function)
+        recognizer.view
+            .publisher
+            .sink{ [weak self] view in
+                guard let item = view as? ItemStackView else { return }
+                self?.delegate?.tap(function: item.function)
+            }
+            .store(in: &cancellable)
     }
 }
 

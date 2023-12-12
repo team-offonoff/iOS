@@ -17,22 +17,31 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     
     private let fetchTopicsUseCase: any FetchTopicsUseCase
     private let reportTopicUseCase: any ReportTopicUseCase
+    private let voteTopicUseCase: any GenerateVoteUseCase
+    private let cancelVoteTopicUseCase: any CancelVoteUseCase
     
     init(
         fetchTopicsUseCase: any FetchTopicsUseCase,
-        reportTopicUseCase: any ReportTopicUseCase
+        reportTopicUseCase: any ReportTopicUseCase,
+        voteTopicUseCase: any GenerateVoteUseCase,
+        cancelVoteTopicUseCase: any CancelVoteUseCase
     ) {
         self.fetchTopicsUseCase = fetchTopicsUseCase
         self.reportTopicUseCase = reportTopicUseCase
+        self.voteTopicUseCase = voteTopicUseCase
+        self.cancelVoteTopicUseCase = cancelVoteTopicUseCase
         super.init()
     }
 
     var topics: [HomeTopicItemViewModel] = [.init(topic: TestData.topicA), .init(topic: TestData.topicImage), .init(topic: TestData.topicA), .init(topic: TestData.topicB)]
+    
     var willMovePage: Published<IndexPath>.Publisher{ $currentTopic }
     var choiceSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
+    let successTopicAction: PassthroughSubject<TopicTemp.Action, Never> = PassthroughSubject()
     let reloadTopics: PassthroughSubject<Void, Never> = PassthroughSubject()
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
+    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     private var timer: Timer?
     
@@ -135,15 +144,30 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         }
     }
     
-    func choice(option: ChoiceOption) {
-//        topicSelectUseCase.execute()
-        topics[currentTopic.row].votedChoice = {
-            switch option {
-            case .A:    return topics[currentTopic.row].aOption
-            case .B:    return topics[currentTopic.row].bOption
-            }
-        }()
-        selectedOption = topics[currentTopic.row].votedChoice
+    func choice(option: ChoiceTemp.Option) {
+        voteTopicUseCase
+            .execute(
+                topicId: topics[currentTopic.row].id,
+                request: .init(
+                    choiceOption: option,
+                    votedAt: UTCTime.current
+                )
+            )
+            .sink{ [weak self] result in
+                guard let self = self else { return }
+                if result.isSuccess {
+                    self.topics[self.currentTopic.row].votedChoice = {
+                        switch option {
+                        case .A:    return self.topics[self.currentTopic.row].aOption
+                        case .B:    return self.topics[self.currentTopic.row].bOption
+                        }
+                    }()
+                    self.selectedOption = self.topics[self.currentTopic.row].votedChoice
+                }
+                else if let error = result.error {
+                    self.errorHandler.send(error)
+                }
+            }.store(in: &cancellable)
     }
     
     //MARK: - Topic Bottom Sheet View Model
@@ -157,20 +181,36 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
     
     func reportTopic() {
-        print("report topic")
-        reportTopicUseCase.execute(topicId: topics[currentTopic.row].id)
-            .sink{ isSuccess, _, error in
-                if isSuccess {
-                    print("reportTopicUseCase: success")
+        reportTopicUseCase
+            .execute(topicId: topics[currentTopic.row].id)
+            .sink{ [weak self] result in
+                guard let self = self else { return }
+                if result.isSuccess {
+                    self.successTopicAction.send(TopicTemp.Action.report)
                 }
-                else {
+                else if let error = result.error {
                     print(error)
+                    self.errorHandler.send(error)
                 }
             }
             .store(in: &cancellable)
     }
     
     func resetChoice() {
-        print("reset topic")
+        cancelVoteTopicUseCase
+            .execute(topicId: topics[currentTopic.row].id, request: .init(canceledAt: UTCTime.current))
+            .sink{ [weak self] result in
+                guard let self = self else { return }
+                if result.isSuccess {
+                    self.topics[self.currentTopic.row].votedChoice = nil
+                    self.successTopicAction.send(TopicTemp.Action.reset)
+                    self.reloadTopics.send(())
+                }
+                else if let error = result.error {
+                    print(error)
+                    self.errorHandler.send(error)
+                }
+            }
+            .store(in: &cancellable)
     }
 }

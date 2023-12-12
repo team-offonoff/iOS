@@ -8,7 +8,8 @@
 
 import Foundation
 import Combine
+import Domain
 
 public protocol ErrorHandleable {
-    var errorSubject: PassthroughSubject<String, Never> { get }
+    var errorHandler: PassthroughSubject<ErrorContent, Never> { get }
 }

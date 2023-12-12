@@ -12,11 +12,12 @@ import Domain
 import Core
 import FeatureDependency
 
-public protocol HomeTabViewModel: TopicPageControllableViewModel, TimerControllableViewModel, TopicChoiceableViewModel, TopicBottomSheetViewModel {
+public protocol HomeTabViewModel: TopicPageControllableViewModel, TimerControllableViewModel, TopicChoiceableViewModel, TopicBottomSheetViewModel, ErrorHandleable {
     func viewDidLoad()
 }
 
 public protocol TopicBottomSheetViewModel {
+    var successTopicAction: PassthroughSubject<TopicTemp.Action, Never> { get }
     var canChoiceReset: Bool { get }
     func hideTopic()
     func reportTopic()
@@ -25,7 +26,7 @@ public protocol TopicBottomSheetViewModel {
 
 public protocol TopicChoiceableViewModel {
     var choiceSuccess: AnyPublisher<Choice, Never> { get }
-    func choice(option: ChoiceOption)
+    func choice(option: ChoiceTemp.Option)
 }
 
 public protocol TopicPageControllableViewModel {

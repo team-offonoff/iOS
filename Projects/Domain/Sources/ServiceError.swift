@@ -9,6 +9,10 @@
 import Foundation
 
 public enum SerivceError: String {
+    case emptyAuthorization = "EMPTY_AUTHORIZATION"
+    case votedByAuthor = "VOTED_BY_AUTHOR"
+    case futureTimeRequest = "FUTURE_TIME_REQUEST"
+    case memberNotVote = "MEMBER_NOT_VOTE"
     case invalidField = "INVALID_FIELD"
     case topicNotFound = "TOPIC_NOT_FOUND"
     case duplicateTopicReport = "DUPLICATE_TOPIC_REPORT"

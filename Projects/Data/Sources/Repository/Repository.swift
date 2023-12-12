@@ -11,6 +11,10 @@ import Domain
 
 public extension Repository {
     
+    func path(_ path: Any) -> String {
+        "/\(path)"
+    }
+    
     func dataTask<DTO: Domainable>(request: URLRequest, responseType: DTO.Type = EmptyData.self) -> NetworkResultPublisher<DTO.Output?> {
         return NetworkService.shared.dataTask(request: request, type: DTO.self)
             .map{ (isSuccess, dto, error) in

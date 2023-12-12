@@ -159,7 +159,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
             }
         case .ended:
             
-            let (option, movePoint): (ChoiceOption?, CGPoint) = {
+            let (option, movePoint): (ChoiceTemp.Option?, CGPoint) = {
                 switch state {
                 case .normal:
                     return (nil, originalPoint)
@@ -182,6 +182,10 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
             )
         default:    return
         }
+    }
+    
+    func moveChoicesOriginalPosition() {
+        choiceStackView.frame.origin = originalPoint
     }
     
     func binding(data: HomeTopicItemViewModel) {

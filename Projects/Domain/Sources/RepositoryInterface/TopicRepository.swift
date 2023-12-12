@@ -13,4 +13,6 @@ public protocol TopicRepository: Repository{
     func generateTopic(request: Topic) -> NetworkResultPublisher<Topic?>
     func fetchTopic() -> NetworkResultPublisher<[Topic]>
     func report(topicId: Int) -> NetworkResultPublisher<Any?>
+    func vote(topicId: Int, request: GenerateVoteUseCaseRequestValue) -> NetworkResultPublisher<Any?>
+    func cancelVote(topicId: Int, request: CancelVoteUseCaseRequestValue) -> NetworkResultPublisher<Any?>
 }

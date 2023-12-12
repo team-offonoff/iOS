@@ -1,15 +1,14 @@
 //
 //  TopicNamespace.swift
-//  FeatureDependency
+//  Core
 //
-//  Created by 박소윤 on 2023/12/10.
+//  Created by 박소윤 on 2023/12/11.
 //  Copyright © 2023 AB. All rights reserved.
 //
 
 import Foundation
-import Domain
 
-public extension Topic {
+public enum TopicTemp {
         
     enum Side: String {
         case A
@@ -26,7 +25,7 @@ public extension Topic {
         case choiced
     }
     
-    enum Action: String {
+    public enum Action: String {
         case choiceA
         case choiceB
         case expandImage
@@ -40,7 +39,7 @@ public protocol EnumerationIdentifiable {
     var identifier: String { get }
 }
 
-extension Topic.Action: EnumerationIdentifiable {
+extension TopicTemp.Action: EnumerationIdentifiable {
     public var identifier: String {
         "Action." + String(describing: self)
     }

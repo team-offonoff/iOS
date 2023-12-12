@@ -9,7 +9,11 @@
 import Foundation
 import Combine
 
-open class BaseViewModel {
+public protocol CancelStorageable {
+    var cancellable: Set<AnyCancellable> { get set }
+}
+
+open class BaseViewModel: CancelStorageable {
     
     public init(){
         bind()
