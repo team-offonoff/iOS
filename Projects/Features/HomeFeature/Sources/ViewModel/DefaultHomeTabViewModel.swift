@@ -181,14 +181,16 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
     
     func reportTopic() {
-        print("report topic")
-        reportTopicUseCase.execute(topicId: topics[currentTopic.row].id)
-            .sink{ isSuccess, _, error in
-                if isSuccess {
-                    print("reportTopicUseCase: success")
+        reportTopicUseCase
+            .execute(topicId: topics[currentTopic.row].id)
+            .sink{ result in
+                guard let self = self else { return }
+                if result.isSuccess {
+                    self.successTopicAction.send(TopicTemp.Action.report)
                 }
-                else {
+                else if let error = result.error {
                     print(error)
+                    self.errorHandler.send(error)
                 }
             }
             .store(in: &cancellable)
