@@ -38,6 +38,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     var willMovePage: Published<IndexPath>.Publisher{ $currentTopic }
     var choiceSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
+    let successTopicAction: PassthroughSubject<TopicTemp.Action, Never> = PassthroughSubject()
     let reloadTopics: PassthroughSubject<Void, Never> = PassthroughSubject()
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
     let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
@@ -194,6 +195,20 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
     
     func resetChoice() {
-        print("reset topic")
+        cancelVoteTopicUseCase
+            .execute(topicId: topics[currentTopic.row].id, request: .init(canceledAt: Int(Date.now.timeIntervalSince1970)))
+            .sink{ [weak self] result in
+                guard let self = self else { return }
+                if result.isSuccess {
+                    self.topics[self.currentTopic.row].votedChoice = nil
+                    self.successTopicAction.send(TopicTemp.Action.reset)
+                    self.reloadTopics.send(())
+                }
+                else if let error = result.error {
+                    print(error)
+                    self.errorHandler.send(error)
+                }
+            }
+            .store(in: &cancellable)
     }
 }

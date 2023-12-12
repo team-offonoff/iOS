@@ -17,6 +17,7 @@ public protocol HomeTabViewModel: TopicPageControllableViewModel, TimerControlla
 }
 
 public protocol TopicBottomSheetViewModel {
+    var successTopicAction: PassthroughSubject<TopicTemp.Action, Never> { get }
     var canChoiceReset: Bool { get }
     func hideTopic()
     func reportTopic()
