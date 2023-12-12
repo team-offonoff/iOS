@@ -35,7 +35,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
 
     var topics: [HomeTopicItemViewModel] = [.init(topic: TestData.topicA), .init(topic: TestData.topicImage), .init(topic: TestData.topicA), .init(topic: TestData.topicB)]
     
-    var willMovePage: Published<IndexPath>.Publisher{ $currentTopic }
+    var willMovePage: Published<IndexPath>.Publisher{ $currentIndexPath }
     var choiceSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
     let successTopicAction: PassthroughSubject<TopicTemp.Action, Never> = PassthroughSubject()
@@ -48,7 +48,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     private let hourUnit = 60*60
     
     @Published private var selectedOption: Choice?
-    @Published private var currentTopic: IndexPath = IndexPath(row: 0, section: 0)
+    @Published private var currentIndexPath: IndexPath = IndexPath(row: 0, section: 0)
     
     override func bind(){
         willMovePage
@@ -82,18 +82,18 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     //MARK: topic page control
     
     var canMovePrevious: Bool {
-        currentTopic.row > 0
+        currentIndexPath.row > 0
     }
     var canMoveNext: Bool {
-        currentTopic.row < topics.count-1
+        currentIndexPath.row < topics.count-1
     }
     
     func moveNextTopic(){
-        currentTopic.row += 1
+        currentIndexPath.row += 1
     }
     
     func movePreviousTopic(){
-        currentTopic.row -= 1
+        currentIndexPath.row -= 1
     }
     
     //MARK: timer
@@ -121,7 +121,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         //MARK: helper method
         
         func remainTime() -> Int {
-            topics[currentTopic.row].deadline - Int(Date.now.timeIntervalSince1970)
+            topics[currentIndexPath.row].deadline - Int(Date.now.timeIntervalSince1970)
         }
         
         func publishTimer() {
@@ -147,7 +147,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     func choice(option: ChoiceTemp.Option) {
         voteTopicUseCase
             .execute(
-                topicId: topics[currentTopic.row].id,
+                topicId: topics[currentIndexPath.row].id,
                 request: .init(
                     choiceOption: option,
                     votedAt: UTCTime.current
@@ -156,13 +156,13 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
-                    self.topics[self.currentTopic.row].votedChoice = {
+                    self.topics[self.currentIndexPath.row].votedChoice = {
                         switch option {
-                        case .A:    return self.topics[self.currentTopic.row].aOption
-                        case .B:    return self.topics[self.currentTopic.row].bOption
+                        case .A:    return self.topics[self.currentIndexPath.row].aOption
+                        case .B:    return self.topics[self.currentIndexPath.row].bOption
                         }
                     }()
-                    self.selectedOption = self.topics[self.currentTopic.row].votedChoice
+                    self.selectedOption = self.topics[self.currentIndexPath.row].votedChoice
                 }
                 else if let error = result.error {
                     self.errorHandler.send(error)
@@ -173,7 +173,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     //MARK: - Topic Bottom Sheet View Model
     
     var canChoiceReset: Bool {
-        topics[currentTopic.row].isVoted
+        topics[currentIndexPath.row].isVoted
     }
     
     func hideTopic() {
@@ -182,7 +182,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     
     func reportTopic() {
         reportTopicUseCase
-            .execute(topicId: topics[currentTopic.row].id)
+            .execute(topicId: topics[currentIndexPath.row].id)
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
@@ -198,11 +198,11 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     
     func resetChoice() {
         cancelVoteTopicUseCase
-            .execute(topicId: topics[currentTopic.row].id, request: .init(canceledAt: UTCTime.current))
+            .execute(topicId: topics[currentIndexPath.row].id, request: .init(canceledAt: UTCTime.current))
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
-                    self.topics[self.currentTopic.row].votedChoice = nil
+                    self.topics[self.currentIndexPath.row].votedChoice = nil
                     self.successTopicAction.send(TopicTemp.Action.reset)
                     self.reloadTopics.send(())
                 }
