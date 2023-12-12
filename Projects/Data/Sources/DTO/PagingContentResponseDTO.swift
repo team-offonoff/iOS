@@ -24,7 +24,7 @@ struct PagingContentResponseDTO<DTO: Decodable & Domainable>: Decodable {
 
 extension PagingContentResponseDTO: Domainable {
     
-    func toDomain() -> (page: PageEntity, data: [DTO.Output]) {
+    func toDomain() -> (PageEntity, [DTO.Output]) {
         (pageInfo.toDomain(), data.map{ $0.toDomain() })
     }
     

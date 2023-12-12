@@ -10,5 +10,5 @@ import Foundation
 
 public protocol CommentRepository: Repository {
     func generateComment(request: GenerateCommentUseCaseRequestValue) -> NetworkResultPublisher<CommentEntity?>
-    func fetchComments(topicId: Int, page: Int) -> NetworkResultPublisher<[CommentEntity]>
+    func fetchComments(topicId: Int, page: Int) -> NetworkResultPublisher<(PageEntity, [CommentEntity])?>
 }

@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol FetchCommentsUseCase: UseCase {
-    func execute(topicId: Int, page: Int) -> NetworkResultPublisher<[CommentEntity]>
+    func execute(topicId: Int, page: Int) -> NetworkResultPublisher<(PageEntity, [CommentEntity])?>
 }
 
 public final class DefaultFetchCommentsUseCase: FetchCommentsUseCase {
@@ -22,7 +22,7 @@ public final class DefaultFetchCommentsUseCase: FetchCommentsUseCase {
         self.repository = repository
     }
     
-    public func execute(topicId: Int, page: Int) -> NetworkResultPublisher<[CommentEntity]> {
+    public func execute(topicId: Int, page: Int) -> NetworkResultPublisher<(PageEntity, [CommentEntity])?> {
         repository.fetchComments(topicId: topicId, page: page)
     }
 }
