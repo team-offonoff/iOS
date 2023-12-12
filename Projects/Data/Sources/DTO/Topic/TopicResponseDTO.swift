@@ -51,7 +51,7 @@ extension ChoiceResponseDTO: Domainable {
         .init(
             id: choiceId,
             content: content.toDomain(),
-            option: ChoiceOption(rawValue: choiceOption)!
+            option: ChoiceOptionDTO(rawValue: choiceOption)!.toDomain()
         )
     }
 }

@@ -92,7 +92,7 @@ extension HomeTopicCollectionViewCell {
     }
 }
 
-private extension ChoiceOption {
+private extension ChoiceTemp.Option {
     
     var backgroundColor: UIColor {
         switch self {

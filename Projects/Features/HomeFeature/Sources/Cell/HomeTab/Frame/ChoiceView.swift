@@ -15,9 +15,9 @@ extension HomeTopicCollectionViewCell {
     
     class ChoiceView: BaseView {
         
-        private let option: ChoiceOption
+        private let option: ChoiceTemp.Option
         
-        init(option: ChoiceOption) {
+        init(option: ChoiceTemp.Option) {
             self.option = option
             super.init()
         }
@@ -123,7 +123,7 @@ extension HomeTopicCollectionViewCell {
     
 }
     
-fileprivate extension ChoiceOption {
+fileprivate extension ChoiceTemp.Option {
     
     var title: String {
         switch self {
