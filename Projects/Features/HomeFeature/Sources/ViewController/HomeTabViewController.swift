@@ -199,7 +199,7 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
         case Literal.BottomSheet.topic:
             coordinator?.startTopicBottomSheet()
         case Literal.BottomSheet.chat:
-            coordinator?.startChatBottomSheet()
+            coordinator?.startCommentBottomSheet(topicId: viewModel.currentTopic.id)
         default:
             return
         }

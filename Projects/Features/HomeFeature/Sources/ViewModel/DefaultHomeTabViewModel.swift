@@ -35,6 +35,10 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
 
     var topics: [HomeTopicItemViewModel] = [.init(topic: TestData.topicA), .init(topic: TestData.topicImage), .init(topic: TestData.topicA), .init(topic: TestData.topicB)]
     
+    var currentTopic: HomeTopicItemViewModel {
+        topics[currentIndexPath.row]
+    }
+    
     var willMovePage: Published<IndexPath>.Publisher{ $currentIndexPath }
     var choiceSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
@@ -51,6 +55,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     @Published private var currentIndexPath: IndexPath = IndexPath(row: 0, section: 0)
     
     override func bind(){
+        topics[0].votedChoice = topics[0].aOption
         willMovePage
             .sink{ [weak self] _ in
                 self?.startTimer()
