@@ -33,6 +33,8 @@ public enum TopicTemp {
         case report
         case hide
     }
+    
+    public static let bottomSheetActions: [Action] = [.hide, .report, .reset]
 }
 
 public protocol EnumerationIdentifiable {
