@@ -15,7 +15,7 @@ import Core
 import Domain
 
 protocol Choiceable: AnyObject {
-    func choice(option: ChoiceOption)
+    func choice(option: ChoiceTemp.Option)
 }
 
 final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, DefaultHomeCoordinator>{
@@ -185,7 +185,7 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
 }
 
 extension HomeTabViewController: Choiceable {
-    func choice(option: ChoiceOption) {
+    func choice(option: ChoiceTemp.Option) {
         print(choice)
         viewModel.choice(option: option)
     }
