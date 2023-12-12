@@ -13,11 +13,13 @@ public protocol CancelStorageable {
     var cancellable: Set<AnyCancellable> { get set }
 }
 
-open class BaseViewModel {
+open class BaseViewModel: CancelStorageable {
     
     public init(){
         bind()
     }
+    
+    public var cancellable: Set<AnyCancellable> = []
     
     open func bind(){ }
 }
