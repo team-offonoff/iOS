@@ -7,23 +7,19 @@
 //
 
 import Foundation
+import Domain
 
 public struct CommentListItemViewModel {
-    
+
     public init(
-        profileImageUrl: URL,
-        nickname: String,
-        date: String,
-        choice: String,
-        content: String,
-        likeCount: Int
+        comment: CommentEntity
     ) {
-        self.profileImageUrl = profileImageUrl
-        self.nickname = nickname
-        self.date = date
-        self.choice = choice
-        self.content = content
-        self.likeCount = String(likeCount)
+        self.profileImageUrl = comment.writer.profileImageURl
+        self.nickname = comment.writer.nickname
+        self.date = "" //comment.date
+        self.choice = "" //comment.choice
+        self.content = comment.content
+        self.likeCount = String(comment.likes)
     }
     
     public let profileImageUrl: URL
