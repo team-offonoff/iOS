@@ -12,7 +12,7 @@ import Domain
 import Core
 import FeatureDependency
 
-public protocol HomeTabViewModel: TopicPageControllableViewModel, TimerControllableViewModel, TopicChoiceableViewModel, TopicBottomSheetViewModel {
+public protocol HomeTabViewModel: TopicPageControllableViewModel, TimerControllableViewModel, TopicChoiceableViewModel, TopicBottomSheetViewModel, ErrorHandleable {
     func viewDidLoad()
 }
 

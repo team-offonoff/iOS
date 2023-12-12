@@ -33,6 +33,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     
     let reloadTopics: PassthroughSubject<Void, Never> = PassthroughSubject()
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
+    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     private var timer: Timer?
     
