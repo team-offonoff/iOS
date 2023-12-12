@@ -14,7 +14,7 @@ import HomeFeatureInterface
 
 final class CommentBottomSheetViewController: UIViewController {
     
-    private let viewModel: any CommentBottomSheetViewModel
+    private var viewModel: any CommentBottomSheetViewModel
     
     init(viewModel: CommentBottomSheetViewModel){
         self.viewModel = viewModel
@@ -38,6 +38,7 @@ final class CommentBottomSheetViewController: UIViewController {
         layout()
         initialize()
         modalSetting()
+        bind()
         viewModel.viewDidLoad()
     }
     
@@ -54,6 +55,10 @@ final class CommentBottomSheetViewController: UIViewController {
         sheetPresentationController.prefersScrollingExpandsWhenScrolledToEdge = false
         
         loadViewIfNeeded()
+        
+        func detents() -> [CGFloat] {
+            [Device.height-273, Device.height-52]
+        }
     }
 
     func hierarchy() {
@@ -76,8 +81,12 @@ final class CommentBottomSheetViewController: UIViewController {
         headerView.fill(viewModel.commentsCount)
     }
     
-    func detents() -> [CGFloat] {
-        [Device.height-273, Device.height-52]
+    func bind() {
+        viewModel.reloadData = {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
     }
 }
 
