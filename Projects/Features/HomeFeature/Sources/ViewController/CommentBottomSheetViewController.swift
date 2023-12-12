@@ -10,9 +10,14 @@ import Foundation
 import UIKit
 import ABKit
 
+import HomeFeatureInterface
+
 final class CommentBottomSheetViewController: UIViewController {
     
-    init(){
+    private let viewModel: any CommentBottomSheetViewModel
+    
+    init(viewModel: CommentBottomSheetViewModel){
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -33,6 +38,7 @@ final class CommentBottomSheetViewController: UIViewController {
         layout()
         initialize()
         modalSetting()
+        viewModel.viewDidLoad()
     }
     
     private func modalSetting(){
@@ -67,7 +73,7 @@ final class CommentBottomSheetViewController: UIViewController {
     func initialize() {
         tableView.delegate = self
         tableView.dataSource = self
-        headerView.fill("")
+        headerView.fill(viewModel.commentsCount)
     }
     
     func detents() -> [CGFloat] {
@@ -76,12 +82,14 @@ final class CommentBottomSheetViewController: UIViewController {
 }
 
 extension CommentBottomSheetViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        viewModel.comments.count
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(for: indexPath, cellType: CommentBottomSheetTableViewCell.self)
-        cell.fill()
+        cell.fill(viewModel.comments[indexPath.row])
         return cell
     }
 }
@@ -123,7 +131,7 @@ extension CommentBottomSheetViewController {
         }
         
         func fill(_ count: String) {
-            countLabel.text = "1천 개"
+            countLabel.text = count
         }
     }
 }
