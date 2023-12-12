@@ -14,7 +14,7 @@ import HomeFeatureInterface
 import Combine
 
 protocol TopicBottomSheetGestureDelegate: AnyObject {
-    func tap(function: TopicBottomSheetFunction)
+    func tap(function: TopicTemp.Action)
 }
 
 final class TopicBottomSheetViewController: UIViewController{
@@ -93,7 +93,7 @@ final class TopicBottomSheetViewController: UIViewController{
 }
 
 extension TopicBottomSheetViewController: TopicBottomSheetGestureDelegate {
-    func tap(function: TopicBottomSheetFunction) {
+    func tap(function: TopicTemp.Action) {
         switch function {
         case .hide:
             viewModel.hideTopic()
@@ -101,6 +101,8 @@ extension TopicBottomSheetViewController: TopicBottomSheetGestureDelegate {
             viewModel.reportTopic()
         case .reset:
             viewModel.resetChoice()
+        default:
+            fatalError("매개변수로 잘못된 액션 전달")
         }
     }
 }

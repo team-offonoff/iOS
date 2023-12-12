@@ -14,7 +14,7 @@ import Combine
 final class TopicBottomSheetView: BaseView {
     
     var choiceResetItem: ItemStackView? {
-        itemsStackView.viewWithTag(TopicBottomSheetFunction.reset.rawValue) as? ItemStackView
+        itemsStackView.viewWithTag(tag(of: TopicTemp.Action.reset)) as? ItemStackView
     }
     
     weak var delegate: TopicBottomSheetGestureDelegate?
@@ -34,9 +34,9 @@ final class TopicBottomSheetView: BaseView {
         addItems()
 
         func addItems() {
-            TopicBottomSheetFunction.allCases.forEach{
-                let item = ItemStackView(function: $0)
-                item.tag = $0.rawValue
+            TopicTemp.bottomSheetActions.forEach{ action in
+                let item = ItemStackView(function: action)
+                item.tag = tag(of: action)
                 item.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(functionTap)))
                 itemsStackView.addArrangedSubview(item)
             }
@@ -59,6 +59,10 @@ final class TopicBottomSheetView: BaseView {
             }
             .store(in: &cancellable)
     }
+    
+    private func tag(of action: TopicTemp.Action) -> Int {
+        action.hashValue
+    }
 }
 
 extension TopicBottomSheetView {
@@ -72,9 +76,9 @@ extension TopicBottomSheetView {
             }
         }
         
-        let function: TopicBottomSheetFunction
+        let function: TopicTemp.Action
         
-        init(function: TopicBottomSheetFunction) {
+        init(function: TopicTemp.Action) {
             self.function = function
             super.init()
             titleLabel.text = function.title
@@ -114,13 +118,14 @@ extension TopicBottomSheetView {
     }
 }
 
-extension TopicBottomSheetFunction {
+extension TopicTemp.Action {
     
     var defaultIcon: UIImage {
         switch self {
         case .hide:     return Image.hide
         case .report:   return Image.report
         case .reset:    return Image.resetEnable
+        default:        fatalError()
         }
     }
     
@@ -136,6 +141,7 @@ extension TopicBottomSheetFunction {
         case .hide:     return "이런 토픽은 안볼래요"
         case .report:   return "신고하기"
         case .reset:    return "투표 다시 하기"
+        default:        fatalError()
         }
     }
 }
