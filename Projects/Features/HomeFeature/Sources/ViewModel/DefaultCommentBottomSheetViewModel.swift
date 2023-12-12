@@ -13,6 +13,7 @@ import FeatureDependency
 import HomeFeatureInterface
 
 import Domain
+import Core
 
 public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBottomSheetViewModel {
 
@@ -29,7 +30,11 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
     }
     
     public var comments: [HomeFeatureInterface.CommentListItemViewModel] = []
+    
     public var reloadData: (() -> Void)?
+    public var commentsCount: String {
+        ABFormat.count(comments.count) + " 개"
+    }
     
     public var errorHandler: PassthroughSubject<Domain.ErrorContent, Never> = PassthroughSubject()
     

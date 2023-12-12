@@ -22,6 +22,7 @@ public protocol CommentBottomSheetViewModelInput {
 }
 
 public protocol CommentBottomSheetViewModelOutput {
+    var commentsCount: String { get }
     var comments: [CommentListItemViewModel] { get }
     var reloadData: (() -> Void)? { get set }
 }
