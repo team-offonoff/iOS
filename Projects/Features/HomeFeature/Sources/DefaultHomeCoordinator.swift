@@ -29,6 +29,7 @@ public class DefaultHomeCoordinator: HomeCoordinator {
     private lazy var homeViewModel: HomeTabViewModel = generateHomeViewModel()
     
     private let topicRepository: TopicRepository = DefaultTopicRepository()
+    private let commentRepository: CommentRepository = DefaultCommentRepository()
     
     private func generateHomeViewModel() -> HomeTabViewModel {
         
@@ -66,8 +67,17 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         navigationController.present(TopicBottomSheetViewController(viewModel: homeViewModel), animated: true)
     }
     
-    public func startChatBottomSheet() {
-        navigationController.present(ChatBottomSheetViewController(), animated: true)
+    public func startCommentBottomSheet(topicId: Int) {
+        
+        let bottomSheetViewController = CommentBottomSheetViewController(viewModel: viewModel())
+        navigationController.present(bottomSheetViewController, animated: true)
+        
+        func viewModel() -> CommentBottomSheetViewModel {
+            DefaultCommentBottomSheetViewModel(
+                topicId: topicId,
+                fetchCommentsUseCase: DefaultFetchCommentsUseCase(repository: commentRepository)
+            )
+        }
     }
     
     public func startImagePopUp(choice: Choice) {

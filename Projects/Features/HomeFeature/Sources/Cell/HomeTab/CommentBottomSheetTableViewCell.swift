@@ -9,8 +9,9 @@
 import Foundation
 import UIKit
 import ABKit
+import HomeFeatureInterface
 
-final class ChatBottomSheetTableViewCell: BaseTableViewCell {
+final class CommentBottomSheetTableViewCell: BaseTableViewCell {
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -111,16 +112,16 @@ final class ChatBottomSheetTableViewCell: BaseTableViewCell {
         }
     }
     
-    func fill() {
-        nicknameLabel.text = "닉네임"
-        dateLabel.text = "2일전"
-        choiceLabel.text = "A. 10년 전 과거로 가기"
-        contentLabel.text = "왜들 그리 다운돼있어? 뭐가 문제야 say something 분위기가 겁나 싸해 요새는 이런 게 유행인가 왜들 그리 재미없어? 아 그건 나도 마찬가지"
-        likeContent.countLabel.text = "129"
+    func fill(_ comment: CommentListItemViewModel) {
+        nicknameLabel.text = comment.nickname
+        dateLabel.text = comment.date
+        choiceLabel.text = comment.choice
+        contentLabel.text = comment.content
+        likeContent.countLabel.text = comment.likeCount
     }
 }
 
-extension ChatBottomSheetTableViewCell {
+extension CommentBottomSheetTableViewCell {
     
     private class LikeContentView: BaseStackView {
         

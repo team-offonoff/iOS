@@ -11,6 +11,6 @@ import Domain
 
 public protocol HomeCoordinator: Coordinator {
     func startTopicBottomSheet()
-    func startChatBottomSheet()
+    func startCommentBottomSheet(topicId: Int)
     func startImagePopUp(choice: Choice)
 }

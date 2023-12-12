@@ -13,6 +13,7 @@ import Core
 import FeatureDependency
 
 public protocol HomeTabViewModel: TopicPageControllableViewModel, TimerControllableViewModel, TopicChoiceableViewModel, TopicBottomSheetViewModel, ErrorHandleable {
+    var currentTopic: HomeTopicItemViewModel { get }
     func viewDidLoad()
 }
 

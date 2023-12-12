@@ -10,9 +10,14 @@ import Foundation
 import UIKit
 import ABKit
 
-final class ChatBottomSheetViewController: UIViewController {
+import HomeFeatureInterface
+
+final class CommentBottomSheetViewController: UIViewController {
     
-    init(){
+    private var viewModel: any CommentBottomSheetViewModel
+    
+    init(viewModel: CommentBottomSheetViewModel){
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -20,11 +25,11 @@ final class ChatBottomSheetViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let headerView: ChatHeaderView = ChatHeaderView()
+    private let headerView: CommentHeaderView = CommentHeaderView()
     private let tableView: UITableView = {
         let tableView: UITableView = UITableView()
         tableView.separatorStyle = .none
-        tableView.registers(cellTypes: [ChatBottomSheetTableViewCell.self])
+        tableView.registers(cellTypes: [CommentBottomSheetTableViewCell.self])
         return tableView
     }()
     
@@ -33,6 +38,8 @@ final class ChatBottomSheetViewController: UIViewController {
         layout()
         initialize()
         modalSetting()
+        bind()
+        viewModel.viewDidLoad()
     }
     
     private func modalSetting(){
@@ -48,6 +55,10 @@ final class ChatBottomSheetViewController: UIViewController {
         sheetPresentationController.prefersScrollingExpandsWhenScrolledToEdge = false
         
         loadViewIfNeeded()
+        
+        func detents() -> [CGFloat] {
+            [Device.height-273, Device.height-52]
+        }
     }
 
     func hierarchy() {
@@ -67,28 +78,34 @@ final class ChatBottomSheetViewController: UIViewController {
     func initialize() {
         tableView.delegate = self
         tableView.dataSource = self
-        headerView.fill("")
+        headerView.fill(viewModel.commentsCount)
     }
     
-    func detents() -> [CGFloat] {
-        [Device.height-273, Device.height-52]
+    func bind() {
+        viewModel.reloadData = {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
     }
 }
 
-extension ChatBottomSheetViewController: UITableViewDelegate, UITableViewDataSource {
+extension CommentBottomSheetViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        viewModel.comments.count
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(for: indexPath, cellType: ChatBottomSheetTableViewCell.self)
-        cell.fill()
+        let cell = tableView.dequeueReusableCell(for: indexPath, cellType: CommentBottomSheetTableViewCell.self)
+        cell.fill(viewModel.comments[indexPath.row])
         return cell
     }
 }
 
-extension ChatBottomSheetViewController {
+extension CommentBottomSheetViewController {
     
-    final class ChatHeaderView: BaseView {
+    final class CommentHeaderView: BaseView {
         
         private let countStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 1)
         private let countLabel: UILabel = {
@@ -123,7 +140,7 @@ extension ChatBottomSheetViewController {
         }
         
         func fill(_ count: String) {
-            countLabel.text = "1천 개"
+            countLabel.text = count
         }
     }
 }
