@@ -7,10 +7,11 @@
 //
 
 import Foundation
+import Domain
 
 struct CommentResponseDTO: Decodable {
     
-    struct CommentWriterResponseDTO: Decodable {
+    struct WriterResponseDTO: Decodable {
         let id: Int
         let nickname: String
         let profileImageURl: String
@@ -18,8 +19,27 @@ struct CommentResponseDTO: Decodable {
     
     let commentId: Int
     let topicId: Int
-    let writer: CommentWriterResponseDTO
+    let writer: WriterResponseDTO
     let content: String
     let likes: Int
     let hates: Int
+}
+
+extension CommentResponseDTO: Domainable {
+    func toDomain() -> CommentEntity {
+        .init(
+            commentId: commentId,
+            topicId: topicId,
+            writer: writer.toDomain(),
+            content: content,
+            likes: likes,
+            hates: hates
+        )
+    }
+}
+
+extension CommentResponseDTO.WriterResponseDTO: Domainable {
+    func toDomain() -> CommentEntity.WriterEntity {
+        .init(id: id, nickname: nickname, profileImageURl: URL(string: profileImageURl)!)
+    }
 }
