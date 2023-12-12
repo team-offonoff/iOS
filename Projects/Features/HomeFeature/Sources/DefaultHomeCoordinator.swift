@@ -67,7 +67,7 @@ public class DefaultHomeCoordinator: HomeCoordinator {
     }
     
     public func startChatBottomSheet() {
-        navigationController.present(ChatBottomSheetViewController(), animated: true)
+        navigationController.present(CommentBottomSheetViewController(), animated: true)
     }
     
     public func startImagePopUp(choice: Choice) {

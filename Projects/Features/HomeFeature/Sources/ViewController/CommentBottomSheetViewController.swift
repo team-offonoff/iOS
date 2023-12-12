@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import ABKit
 
-final class ChatBottomSheetViewController: UIViewController {
+final class CommentBottomSheetViewController: UIViewController {
     
     init(){
         super.init(nibName: nil, bundle: nil)
@@ -20,11 +20,11 @@ final class ChatBottomSheetViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let headerView: ChatHeaderView = ChatHeaderView()
+    private let headerView: CommentHeaderView = CommentHeaderView()
     private let tableView: UITableView = {
         let tableView: UITableView = UITableView()
         tableView.separatorStyle = .none
-        tableView.registers(cellTypes: [ChatBottomSheetTableViewCell.self])
+        tableView.registers(cellTypes: [CommentBottomSheetTableViewCell.self])
         return tableView
     }()
     
@@ -75,20 +75,20 @@ final class ChatBottomSheetViewController: UIViewController {
     }
 }
 
-extension ChatBottomSheetViewController: UITableViewDelegate, UITableViewDataSource {
+extension CommentBottomSheetViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         10
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(for: indexPath, cellType: ChatBottomSheetTableViewCell.self)
+        let cell = tableView.dequeueReusableCell(for: indexPath, cellType: CommentBottomSheetTableViewCell.self)
         cell.fill()
         return cell
     }
 }
 
-extension ChatBottomSheetViewController {
+extension CommentBottomSheetViewController {
     
-    final class ChatHeaderView: BaseView {
+    final class CommentHeaderView: BaseView {
         
         private let countStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 1)
         private let countLabel: UILabel = {

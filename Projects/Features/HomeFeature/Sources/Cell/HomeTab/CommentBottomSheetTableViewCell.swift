@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import ABKit
 
-final class ChatBottomSheetTableViewCell: BaseTableViewCell {
+final class CommentBottomSheetTableViewCell: BaseTableViewCell {
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -120,7 +120,7 @@ final class ChatBottomSheetTableViewCell: BaseTableViewCell {
     }
 }
 
-extension ChatBottomSheetTableViewCell {
+extension CommentBottomSheetTableViewCell {
     
     private class LikeContentView: BaseStackView {
         
