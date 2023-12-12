@@ -17,13 +17,19 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     
     private let fetchTopicsUseCase: any FetchTopicsUseCase
     private let reportTopicUseCase: any ReportTopicUseCase
+    private let voteTopicUseCase: any GenerateVoteUseCase
+    private let cancelVoteTopicUseCase: any CancelVoteUseCase
     
     init(
         fetchTopicsUseCase: any FetchTopicsUseCase,
-        reportTopicUseCase: any ReportTopicUseCase
+        reportTopicUseCase: any ReportTopicUseCase,
+        voteTopicUseCase: any GenerateVoteUseCase,
+        cancelVoteTopicUseCase: any CancelVoteUseCase
     ) {
         self.fetchTopicsUseCase = fetchTopicsUseCase
         self.reportTopicUseCase = reportTopicUseCase
+        self.voteTopicUseCase = voteTopicUseCase
+        self.cancelVoteTopicUseCase = cancelVoteTopicUseCase
         super.init()
     }
 

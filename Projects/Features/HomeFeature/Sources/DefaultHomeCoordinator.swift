@@ -34,7 +34,9 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         
         return DefaultHomeTabViewModel(
             fetchTopicsUseCase: getFetchTopicsUseCase(),
-            reportTopicUseCase: getReportTopicUseCase()
+            reportTopicUseCase: getReportTopicUseCase(),
+            voteTopicUseCase: getVoteTopicUseCase(),
+            cancelVoteTopicUseCase: getCancelVoteTopicUseCase()
         )
         
         func getFetchTopicsUseCase() -> any FetchTopicsUseCase {
@@ -43,6 +45,14 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         
         func getReportTopicUseCase() -> any ReportTopicUseCase {
             DefaultReportTopicUseCase(repository: topicRepository)
+        }
+        
+        func getVoteTopicUseCase() -> any GenerateVoteUseCase {
+            DefaultGenerateVoteUseCase(repository: topicRepository)
+        }
+        
+        func getCancelVoteTopicUseCase() -> any CancelVoteUseCase {
+            DefaultCancelVoteUseCase(repository: topicRepository)
         }
     }
     
