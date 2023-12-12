@@ -48,27 +48,13 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
                 if result.isSuccess, let (pageInfo, data) = result.data {
                     //TODO: 페이징 코드 추가
                     self.pageInfo = pageInfo
-                    self.comments.append(contentsOf: mapItemViewModel(data))
+                    self.comments.append(contentsOf: data.map{ .init(comment: $0) })
                 }
                 else if let error = result.error {
                     self.errorHandler.send(error)
                 }
             }
             .store(in: &cancellable)
-        
-        func mapItemViewModel(_ comments: [CommentEntity]) -> [CommentListItemViewModel] {
-            comments
-                .map{
-                    .init(
-                        profileImageUrl: $0.writer.profileImageURl,
-                        nickname: $0.writer.nickname,
-                        date: "",
-                        choice: "",
-                        content: $0.content,
-                        likeCount: $0.likes
-                    )
-                }
-        }
     }
     
 }
