@@ -1,16 +1,15 @@
 //
 //  ChoiceNamespace.swift
-//  FeatureDependency
+//  Core
 //
-//  Created by 박소윤 on 2023/12/10.
+//  Created by 박소윤 on 2023/12/11.
 //  Copyright © 2023 AB. All rights reserved.
 //
 
 import Foundation
-import Domain
 
-public extension Choice {
-    enum Option {
+public enum ChoiceTemp {
+    public enum Option: String {
         case A
         case B
     }
