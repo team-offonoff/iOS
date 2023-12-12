@@ -13,13 +13,14 @@ import Core
 public final class DefaultTopicRepository: TopicRepository {
     
     private let networkService: NetworkService = NetworkService.shared
+    private let basePath = "/topics"
     
     public init() { }
     
     public func generateTopic(request: Topic) -> NetworkResultPublisher<Topic?> {
         
         var urlComponents = networkService.baseUrlComponents
-        urlComponents?.path = "/topics"
+        urlComponents?.path = basePath
         
         guard let requestBody = try? JSONEncoder().encode(makeDTO()),
               let urlRequest = urlComponents?.toURLRequest(method: .post, httpBody: requestBody) else {
@@ -56,7 +57,7 @@ public final class DefaultTopicRepository: TopicRepository {
     public func fetchTopic() -> NetworkResultPublisher<[Topic]> {
         
         var urlComponents = networkService.baseUrlComponents
-        urlComponents?.path = "/topics"
+        urlComponents?.path = basePath
         
         guard let urlRequest = urlComponents?.toURLRequest(method: .get) else {
             fatalError("json encoding or url parsing error")
@@ -68,7 +69,7 @@ public final class DefaultTopicRepository: TopicRepository {
     public func report(topicId: Int) -> NetworkResultPublisher<Any?> {
         
         var urlComponents = networkService.baseUrlComponents
-        urlComponents?.path = "/topics/\(topicId)/report"
+        urlComponents?.path = basePath + path(topicId) + path("report")
         
         guard let urlRequest = urlComponents?.toURLRequest(method: .post) else {
             fatalError("url parsing error")
