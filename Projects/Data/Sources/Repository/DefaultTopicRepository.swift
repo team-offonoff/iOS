@@ -77,4 +77,39 @@ public final class DefaultTopicRepository: TopicRepository {
 
         return dataTask(request: urlRequest)
     }
+    
+    public func vote(topicId: Int, request: GenerateVoteUseCaseRequestValue) -> NetworkResultPublisher<Any?> {
+        
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = basePath + path(topicId) + path("vote")
+        
+        guard let requestBody = try? JSONEncoder().encode(makeDTO()),
+              let urlRequest = urlComponents?.toURLRequest(method: .post, httpBody: requestBody) else {
+            fatalError("json encoding or url parsing error")
+        }
+    
+        return dataTask(request: urlRequest)
+        
+        func makeDTO() -> GenerateVoteRequestDTO {
+            .init(choiceOption: request.choiceOption.toDTO(), votedAt: request.votedAt)
+        }
+    }
+    
+    public func cancelVote(topicId: Int, request: CancelVoteUseCaseRequestValue) -> NetworkResultPublisher<Any?> {
+        
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = basePath + path(topicId) + path("vote")
+        
+        guard let requestBody = try? JSONEncoder().encode(makeDTO()),
+              let urlRequest = urlComponents?.toURLRequest(method: .delete, httpBody: requestBody) else {
+            fatalError("json encoding or url parsing error")
+        }
+        
+        return dataTask(request: urlRequest)
+        
+        func makeDTO() -> CancelVoteRequestDTO {
+            .init(canceledAt: request.canceledAt)
+        }
+        
+    }
 }
