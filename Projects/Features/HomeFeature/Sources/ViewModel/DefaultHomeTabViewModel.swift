@@ -149,7 +149,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         }
     }
     
-    func vote(choice: ChoiceTemp.Option) {
+    func vote(choice: Choice.Option) {
         voteTopicUseCase
             .execute(
                 topicId: topics[currentIndexPath.row].id,

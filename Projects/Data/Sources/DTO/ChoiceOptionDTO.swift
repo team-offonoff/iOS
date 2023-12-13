@@ -15,12 +15,12 @@ enum ChoiceOptionDTO: String, Codable {
 }
 
 extension ChoiceOptionDTO: Domainable {
-    func toDomain() -> ChoiceTemp.Option {
+    func toDomain() -> Choice.Option {
         .init(rawValue: rawValue)!
     }
 }
 
-extension ChoiceTemp.Option {
+extension Choice.Option {
     func toDTO() -> String {
         switch self {
         case .A:    return ChoiceOptionDTO.A.rawValue

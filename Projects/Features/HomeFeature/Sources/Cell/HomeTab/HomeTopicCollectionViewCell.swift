@@ -159,7 +159,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
             }
         case .ended:
             
-            let (option, movePoint): (ChoiceTemp.Option?, CGPoint) = {
+            let (option, movePoint): (Choice.Option?, CGPoint) = {
                 switch state {
                 case .normal:
                     return (nil, originalPoint)

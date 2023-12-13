@@ -11,7 +11,7 @@ import UIKit
 import ABKit
 import Domain
 
-extension ChoiceTemp.Option {
+extension Choice.Option {
     public var content: ChoiceOptionContent {
         switch self {
         case .A:        return AChoiceOptionContent()

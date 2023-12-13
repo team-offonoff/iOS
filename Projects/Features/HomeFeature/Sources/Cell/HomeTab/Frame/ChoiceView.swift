@@ -14,9 +14,9 @@ extension HomeTopicCollectionViewCell {
     
     class ChoiceView: BaseView {
         
-        private let option: ChoiceTemp.Option
+        private let option: Choice.Option
         
-        init(option: ChoiceTemp.Option) {
+        init(option: Choice.Option) {
             self.option = option
             super.init()
         }

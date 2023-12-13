@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum ChoiceTemp {
+extension Choice {
     
     public static let identifier: String = "Choice."
     
@@ -20,7 +20,7 @@ public enum ChoiceTemp {
         case B
         
         public var identifier: String {
-            ChoiceTemp.identifier + Option.identifier + String(describing: self)
+            Choice.identifier + Option.identifier + String(describing: self)
         }
     }
 }

@@ -26,7 +26,7 @@ public protocol TopicBottomSheetViewModel {
 
 public protocol TopicVoteableViewModel {
     var voteSuccess: AnyPublisher<Choice, Never> { get }
-    func vote(choice: ChoiceTemp.Option)
+    func vote(choice: Choice.Option)
 }
 
 public protocol TopicPageControllableViewModel {

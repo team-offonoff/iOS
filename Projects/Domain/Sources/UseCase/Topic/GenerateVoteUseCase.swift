@@ -30,11 +30,11 @@ public final class DefaultGenerateVoteUseCase: GenerateVoteUseCase {
 
 public struct GenerateVoteUseCaseRequestValue {
     
-    public init(choiceOption: ChoiceTemp.Option, votedAt: Int) {
+    public init(choiceOption: Choice.Option, votedAt: Int) {
         self.choiceOption = choiceOption
         self.votedAt = votedAt
     }
     
-    public let choiceOption: ChoiceTemp.Option
+    public let choiceOption: Choice.Option
     public let votedAt: Int
 }

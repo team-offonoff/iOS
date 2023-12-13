@@ -25,7 +25,7 @@ public struct Choice {
     public init(
         id: Int,
         content: Choice.Content,
-        option: ChoiceTemp.Option
+        option: Choice.Option
     ) {
         self.id = id
         self.content = content
@@ -34,5 +34,5 @@ public struct Choice {
     
     public let id: Int
     public let content: Content
-    public let option: ChoiceTemp.Option
+    public let option: Choice.Option
 }

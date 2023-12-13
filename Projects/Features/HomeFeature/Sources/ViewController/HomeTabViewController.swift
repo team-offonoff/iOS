@@ -203,7 +203,7 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
 }
 
 extension HomeTabViewController: VoteDelegate {
-    func vote(choice: ChoiceTemp.Option) {
+    func vote(choice: Choice.Option) {
         print(choice)
         viewModel.vote(choice: choice)
     }
