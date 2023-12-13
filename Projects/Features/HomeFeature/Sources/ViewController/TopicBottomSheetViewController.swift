@@ -7,11 +7,14 @@
 //
 
 import Foundation
+
 import UIKit
 import ABKit
-import Core
-import HomeFeatureInterface
 import Combine
+
+import HomeFeatureInterface
+
+import Domain
 
 protocol TopicBottomSheetGestureDelegate: AnyObject {
     func tap(function: TopicTemp.Action)

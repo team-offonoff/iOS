@@ -8,7 +8,6 @@
 
 import Foundation
 import Domain
-import Core
 
 enum ChoiceOptionDTO: String, Codable {
     case A = "CHOICE_A"
@@ -16,7 +15,6 @@ enum ChoiceOptionDTO: String, Codable {
 }
 
 extension ChoiceOptionDTO: Domainable {
-    
     func toDomain() -> ChoiceTemp.Option {
         .init(rawValue: rawValue)!
     }

@@ -8,7 +8,7 @@
 
 import UIKit
 import ABKit
-import Core
+import Domain
 import Combine
 
 final class TopicBottomSheetView: BaseView {
@@ -34,7 +34,7 @@ final class TopicBottomSheetView: BaseView {
         addItems()
 
         func addItems() {
-            TopicTemp.bottomSheetActions.forEach{ action in
+            TopicTemp.Action.forBottomSheet.forEach{ action in
                 let item = ItemStackView(function: action)
                 item.tag = tag(of: action)
                 item.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(functionTap)))
