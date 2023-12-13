@@ -16,7 +16,7 @@ import Combine
 
 class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
-    weak var delegate: (Choiceable & TopicBottomSheetDelegate & ChatBottomSheetDelegate)?
+    weak var delegate: (VoteDelegate & TopicBottomSheetDelegate & ChatBottomSheetDelegate)?
     private var cancellable: Set<AnyCancellable> = []
     
     private let topicGroup: TopicGroup = TopicGroup()
@@ -177,7 +177,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
                 },
                 completion: { _ in
                     guard let option = option else { return }
-                    self.delegate?.choice(option: option)
+                    self.delegate?.vote(choice: option)
                 }
             )
         default:    return

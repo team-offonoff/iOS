@@ -40,7 +40,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
     
     var willMovePage: Published<IndexPath>.Publisher{ $currentIndexPath }
-    var choiceSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
+    var voteSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
     let successTopicAction: PassthroughSubject<TopicTemp.Action, Never> = PassthroughSubject()
     let reloadTopics: PassthroughSubject<Void, Never> = PassthroughSubject()
@@ -149,12 +149,12 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         }
     }
     
-    func choice(option: ChoiceTemp.Option) {
+    func vote(choice: ChoiceTemp.Option) {
         voteTopicUseCase
             .execute(
                 topicId: topics[currentIndexPath.row].id,
                 request: .init(
-                    choiceOption: option,
+                    choiceOption: choice,
                     votedAt: UTCTime.current
                 )
             )
@@ -162,7 +162,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
                 guard let self = self else { return }
                 if result.isSuccess {
                     self.topics[self.currentIndexPath.row].votedChoice = {
-                        switch option {
+                        switch choice {
                         case .A:    return self.topics[self.currentIndexPath.row].aOption
                         case .B:    return self.topics[self.currentIndexPath.row].bOption
                         }

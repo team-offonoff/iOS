@@ -11,7 +11,7 @@ import Combine
 import Domain
 import FeatureDependency
 
-public protocol HomeTabViewModel: TopicPageControllableViewModel, TimerControllableViewModel, TopicChoiceableViewModel, TopicBottomSheetViewModel, ErrorHandleable {
+public protocol HomeTabViewModel: TopicPageControllableViewModel, TimerControllableViewModel, TopicVoteableViewModel, TopicBottomSheetViewModel, ErrorHandleable {
     var currentTopic: HomeTopicItemViewModel { get }
     func viewDidLoad()
 }
@@ -24,9 +24,9 @@ public protocol TopicBottomSheetViewModel {
     func resetChoice()
 }
 
-public protocol TopicChoiceableViewModel {
-    var choiceSuccess: AnyPublisher<Choice, Never> { get }
-    func choice(option: ChoiceTemp.Option)
+public protocol TopicVoteableViewModel {
+    var voteSuccess: AnyPublisher<Choice, Never> { get }
+    func vote(choice: ChoiceTemp.Option)
 }
 
 public protocol TopicPageControllableViewModel {

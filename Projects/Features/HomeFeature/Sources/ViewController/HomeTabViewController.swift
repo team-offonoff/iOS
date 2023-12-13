@@ -14,10 +14,6 @@ import HomeFeatureInterface
 import Core
 import Domain
 
-protocol Choiceable: AnyObject {
-    func choice(option: ChoiceTemp.Option)
-}
-
 final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, DefaultHomeCoordinator>{
 
     init(viewModel: any HomeTabViewModel){
@@ -127,7 +123,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         }
         
         func bindSelectionSuccess() {
-            viewModel.choiceSuccess
+            viewModel.voteSuccess
                 .receive(on: RunLoop.main)
                 .sink{ [weak self] choice in
                     self?.currentTopicCell?.select(choice: choice)
@@ -206,9 +202,9 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
     }
 }
 
-extension HomeTabViewController: Choiceable {
-    func choice(option: ChoiceTemp.Option) {
+extension HomeTabViewController: VoteDelegate {
+    func vote(choice: ChoiceTemp.Option) {
         print(choice)
-        viewModel.choice(option: option)
+        viewModel.vote(choice: choice)
     }
 }

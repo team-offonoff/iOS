@@ -100,7 +100,7 @@ extension HomeTopicCollectionViewCell {
         private lazy var buttonStackView: UIStackView = {
             let stackView = UIStackView(axis: .vertical, spacing: 4)
             stackView.addArrangedSubviews([imageExpandIcon])
-            stackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
+            stackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(action)))
             return stackView
         }()
 //        private let textExpandButton: UIButton = {
