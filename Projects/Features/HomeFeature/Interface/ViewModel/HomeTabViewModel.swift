@@ -9,28 +9,27 @@
 import Foundation
 import Combine
 import Domain
-import Core
 import FeatureDependency
 
-public protocol HomeTabViewModel: TopicPageControllableViewModel, TimerControllableViewModel, TopicChoiceableViewModel, TopicBottomSheetViewModel, ErrorHandleable {
+public protocol HomeTabViewModel: TopicPageControlViewModel, TimerControlViewModel, TopicVoteViewModel, TopicBottomSheetViewModel, ErrorHandleable {
     var currentTopic: HomeTopicItemViewModel { get }
     func viewDidLoad()
 }
 
 public protocol TopicBottomSheetViewModel {
-    var successTopicAction: PassthroughSubject<TopicTemp.Action, Never> { get }
+    var successTopicAction: PassthroughSubject<Topic.Action, Never> { get }
     var canChoiceReset: Bool { get }
     func hideTopic()
     func reportTopic()
     func resetChoice()
 }
 
-public protocol TopicChoiceableViewModel {
-    var choiceSuccess: AnyPublisher<Choice, Never> { get }
-    func choice(option: ChoiceTemp.Option)
+public protocol TopicVoteViewModel {
+    var voteSuccess: AnyPublisher<Choice, Never> { get }
+    func vote(choice: Choice.Option)
 }
 
-public protocol TopicPageControllableViewModel {
+public protocol TopicPageControlViewModel {
     var topics: [HomeTopicItemViewModel] { get }
     var canMovePrevious: Bool { get }
     var canMoveNext: Bool { get }
@@ -40,7 +39,7 @@ public protocol TopicPageControllableViewModel {
     func movePreviousTopic()
 }
 
-public protocol TimerControllableViewModel{
+public protocol TimerControlViewModel{
     var timerSubject: PassthroughSubject<TimerInfo, Never> { get }
     func startTimer()
     func stopTimer()

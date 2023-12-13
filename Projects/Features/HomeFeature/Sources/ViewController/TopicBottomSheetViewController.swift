@@ -9,13 +9,10 @@
 import Foundation
 import UIKit
 import ABKit
-import Core
-import HomeFeatureInterface
 import Combine
-
-protocol TopicBottomSheetGestureDelegate: AnyObject {
-    func tap(function: TopicBottomSheetFunction)
-}
+import HomeFeatureInterface
+import FeatureDependency
+import Domain
 
 final class TopicBottomSheetViewController: UIViewController{
     
@@ -92,15 +89,17 @@ final class TopicBottomSheetViewController: UIViewController{
     }
 }
 
-extension TopicBottomSheetViewController: TopicBottomSheetGestureDelegate {
-    func tap(function: TopicBottomSheetFunction) {
-        switch function {
+extension TopicBottomSheetViewController: TopicActionDelegate {
+    func action(_ action: Topic.Action) {
+        switch action {
         case .hide:
             viewModel.hideTopic()
         case .report:
             viewModel.reportTopic()
         case .reset:
             viewModel.resetChoice()
+        default:
+            fatalError("매개변수로 잘못된 액션 전달")
         }
     }
 }

@@ -38,13 +38,13 @@
 <img src= ./graph.png  width="400" />
 
 - RootFeature: 각 Feature를 하나로 이어주는 모듈로, TabController가 구현되어 있음.
-- _Feature: View, ViewController, ViewModel 
+- _Feature: View, ViewController, ViewModel, CoordinatorImpl 
 - _FeatureInterface: 각 Feature의 Coordinator 인터페이스, ViewModel 인터페이스 등 선언
+- FeatureDependency: BaseViewController, Coordinator 프로토콜, Delegate 프로토콜
 - ABKit: A/B 디자인 시스템
-- FeatureDependency: BaseViewController, Coordinator 프로토콜
-- Data: DTO, RepositoryImpl 
+- Data: Network Layer, DTO, RepositoryImpl 
 - Domain: Entity, Repository Interface, Use Case
-- Core: Network, extension 선언 등
+- Core: extension 등
 - ThirdPartyLibs: 외부 라이브러리
 
 

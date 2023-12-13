@@ -26,7 +26,7 @@ struct CommentResponseDTO: Decodable {
 }
 
 extension CommentResponseDTO: Domainable {
-    func toDomain() -> CommentEntity {
+    func toDomain() -> Comment {
         .init(
             commentId: commentId,
             topicId: topicId,
@@ -39,7 +39,7 @@ extension CommentResponseDTO: Domainable {
 }
 
 extension CommentResponseDTO.WriterResponseDTO: Domainable {
-    func toDomain() -> CommentEntity.WriterEntity {
+    func toDomain() -> Comment.WriterEntity {
         .init(id: id, nickname: nickname, profileImageURl: URL(string: profileImageURl)!)
     }
 }

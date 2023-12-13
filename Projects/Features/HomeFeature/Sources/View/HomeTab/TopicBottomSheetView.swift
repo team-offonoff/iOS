@@ -8,16 +8,17 @@
 
 import UIKit
 import ABKit
-import Core
+import Domain
 import Combine
+import FeatureDependency
 
 final class TopicBottomSheetView: BaseView {
     
     var choiceResetItem: ItemStackView? {
-        itemsStackView.viewWithTag(TopicBottomSheetFunction.reset.rawValue) as? ItemStackView
+        itemsStackView.viewWithTag(tag(of: Topic.Action.reset)) as? ItemStackView
     }
     
-    weak var delegate: TopicBottomSheetGestureDelegate?
+    weak var delegate: TopicActionDelegate?
     
     private var cancellable: Set<AnyCancellable> = []
     
@@ -34,9 +35,9 @@ final class TopicBottomSheetView: BaseView {
         addItems()
 
         func addItems() {
-            TopicBottomSheetFunction.allCases.forEach{
-                let item = ItemStackView(function: $0)
-                item.tag = $0.rawValue
+            Topic.Action.forBottomSheet.forEach{ action in
+                let item = ItemStackView(action: action)
+                item.tag = tag(of: action)
                 item.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(functionTap)))
                 itemsStackView.addArrangedSubview(item)
             }
@@ -55,9 +56,13 @@ final class TopicBottomSheetView: BaseView {
             .publisher
             .sink{ [weak self] view in
                 guard let item = view as? ItemStackView else { return }
-                self?.delegate?.tap(function: item.function)
+                self?.delegate?.action(item.action)
             }
             .store(in: &cancellable)
+    }
+    
+    private func tag(of action: Topic.Action) -> Int {
+        action.hashValue
     }
 }
 
@@ -72,12 +77,12 @@ extension TopicBottomSheetView {
             }
         }
         
-        let function: TopicBottomSheetFunction
+        let action: Topic.Action
         
-        init(function: TopicBottomSheetFunction) {
-            self.function = function
+        init(action: Topic.Action) {
+            self.action = action
             super.init()
-            titleLabel.text = function.title
+            titleLabel.text = action.content.title
         }
         
         required init(coder: NSCoder) {
@@ -108,34 +113,8 @@ extension TopicBottomSheetView {
         }
         
         private func setElement() {
-            iconImageView.image = isDisabled ? function.disabledIcon : function.defaultIcon
+            iconImageView.image = isDisabled ? action.content.disabledIcon : action.content.defaultIcon
             titleLabel.textColor = isDisabled ? Color.black20 : Color.black
-        }
-    }
-}
-
-extension TopicBottomSheetFunction {
-    
-    var defaultIcon: UIImage {
-        switch self {
-        case .hide:     return Image.hide
-        case .report:   return Image.report
-        case .reset:    return Image.resetEnable
-        }
-    }
-    
-    var disabledIcon: UIImage? {
-        switch self {
-        case .reset:    return Image.resetDisable
-        default:        return nil
-        }
-    }
-    
-    var title: String {
-        switch self {
-        case .hide:     return "이런 토픽은 안볼래요"
-        case .report:   return "신고하기"
-        case .reset:    return "투표 다시 하기"
         }
     }
 }

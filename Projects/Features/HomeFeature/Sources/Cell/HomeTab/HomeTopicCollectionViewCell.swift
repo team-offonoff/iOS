@@ -16,7 +16,7 @@ import Combine
 
 class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
-    weak var delegate: (Choiceable & TopicBottomSheetDelegate & ChatBottomSheetDelegate)?
+    weak var delegate: (VoteDelegate & TopicBottomSheetDelegate & ChatBottomSheetDelegate)?
     private var cancellable: Set<AnyCancellable> = []
     
     private let topicGroup: TopicGroup = TopicGroup()
@@ -31,7 +31,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
     override func hierarchy() {
 
-        baseView.addSubviews([etcGroup.realTimeTitleLabel, topicGroup.titleLabel, profileStackView, choiceGroup.swipeableView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.declareButton, chat])
+        baseView.addSubviews([etcGroup.realTimeTitleLabel, topicGroup.titleLabel, profileStackView, choiceGroup.swipeableView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.etcButton, chat])
         
         choiceGroup.swipeableView.addSubviews([choiceStackView])
         
@@ -94,7 +94,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
             $0.leading.equalToSuperview().offset(20)
         }
         
-        etcGroup.declareButton.snp.makeConstraints{
+        etcGroup.etcButton.snp.makeConstraints{
             $0.trailing.equalToSuperview().inset(20)
             $0.centerY.equalTo(informationStackView)
         }
@@ -107,9 +107,9 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
     override func initialize() {
         
-        etcGroup.declareButton.tapPublisher
+        etcGroup.etcButton.tapPublisher
             .sink{ [weak self] _ in
-                self?.delegate?.show(DelegateSender(identifier: Literal.BottomSheet.topic))
+                self?.delegate?.show(DelegateSender(identifier: Topic.Action.showBottomSheet.identifier))
             }
             .store(in: &cancellable)
         
@@ -129,7 +129,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     }
     
     @objc private func chatTapGesture(_ recognizer: UITapGestureRecognizer) {
-        delegate?.show(DelegateSender(identifier: Literal.BottomSheet.chat))
+        delegate?.show(DelegateSender(identifier: Comment.Action.showBottomSheet.identifier))
     }
     
     enum SwipeState {
@@ -159,7 +159,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
             }
         case .ended:
             
-            let (option, movePoint): (ChoiceTemp.Option?, CGPoint) = {
+            let (option, movePoint): (Choice.Option?, CGPoint) = {
                 switch state {
                 case .normal:
                     return (nil, originalPoint)
@@ -177,7 +177,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
                 },
                 completion: { _ in
                     guard let option = option else { return }
-                    self.delegate?.choice(option: option)
+                    self.delegate?.vote(choice: option)
                 }
             )
         default:    return
@@ -340,7 +340,7 @@ extension HomeTopicCollectionViewCell {
             }
             return view
         }()
-        let declareButton: UIButton = {
+        let etcButton: UIButton = {
             let button = UIButton()
             button.setImage(Image.dot, for: .normal)
             button.snp.makeConstraints{

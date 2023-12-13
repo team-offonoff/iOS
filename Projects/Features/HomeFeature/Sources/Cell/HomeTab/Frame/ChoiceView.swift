@@ -8,16 +8,15 @@
 
 import UIKit
 import ABKit
-import Core
 import Domain
 
 extension HomeTopicCollectionViewCell {
     
     class ChoiceView: BaseView {
         
-        private let option: ChoiceOption
+        private let option: Choice.Option
         
-        init(option: ChoiceOption) {
+        init(option: Choice.Option) {
             self.option = option
             super.init()
         }
@@ -29,7 +28,7 @@ extension HomeTopicCollectionViewCell {
         private var content: ChoiceContent?
         
         private lazy var gradientLayer: CAGradientLayer = {
-            let layer0 = option.generateGradientLayer()
+            let layer0 = option.content.gradientLayer
             layer0.position = center
             return layer0
         }()
@@ -44,7 +43,7 @@ extension HomeTopicCollectionViewCell {
         
         override func style() {
             layer.cornerRadius = 148/2
-            layer.maskedCorners = option.cornerRadiusPosition
+            layer.maskedCorners = option.content.corenrMask
             layer.masksToBounds = true
         }
         
@@ -55,7 +54,7 @@ extension HomeTopicCollectionViewCell {
         override func layout() {
             
             self.snp.makeConstraints{
-                $0.width.equalTo(UIScreen.main.bounds.size.width-55)
+                $0.width.equalTo(Device.width-55)
                 $0.height.equalTo(148)
             }
 
@@ -65,7 +64,7 @@ extension HomeTopicCollectionViewCell {
             func setGradient() {
                 gradientLayer.frame = CGRect(
                     x: 0, y: 0,
-                    width: UIScreen.main.bounds.size.width-55, height: 148
+                    width: Device.width-55, height: 148
                 )
                 layer.addSublayer(gradientLayer)
                 bringSubviewToFront(optionLabel)
@@ -90,7 +89,7 @@ extension HomeTopicCollectionViewCell {
         }
         
         override func initialize() {
-            optionLabel.text = option.title
+            optionLabel.text = option.content.title
         }
         
         func fill(_ choice: Choice) {
@@ -118,61 +117,6 @@ extension HomeTopicCollectionViewCell {
                     content.setBLayout()
                 }
             }
-        }
-    }
-    
-}
-    
-fileprivate extension ChoiceOption {
-    
-    var title: String {
-        switch self {
-        case .A:        return "A"
-        case .B:        return "B"
-        }
-    }
-    
-    var backgroundColor: UIColor {
-        switch self {
-        case .A:        return Color.mainA
-        case .B:        return Color.mainB
-        }
-    }
-    
-    var cornerRadiusPosition: CACornerMask {
-        switch self {
-        case .A:        return [.layerMaxXMaxYCorner, .layerMaxXMinYCorner]
-        case .B:        return [.layerMinXMaxYCorner, .layerMinXMinYCorner]
-        }
-    }
-    
-    var textAlignment: NSTextAlignment {
-        .left
-    }
-    
-    func generateGradientLayer() -> CAGradientLayer {
-        let layer0 = CAGradientLayer()
-        layer0.colors = [
-            backgroundColor.cgColor,
-            backgroundColor.withAlphaComponent(0).cgColor
-        ]
-        layer0.locations = [0.5, 1]
-        layer0.startPoint = CGPoint(x: startX, y: 0.5)
-        layer0.endPoint = CGPoint(x: endX, y: 0.5)
-        return layer0
-    }
-    
-    private var startX: CGFloat {
-        switch self {
-        case .A:        return 1
-        case .B:        return 0
-        }
-    }
-    
-    private var endX: CGFloat {
-        switch self {
-        case .A:        return 0
-        case .B:        return 1
         }
     }
 }

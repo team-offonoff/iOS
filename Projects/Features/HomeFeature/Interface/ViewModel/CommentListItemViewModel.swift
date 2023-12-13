@@ -12,7 +12,7 @@ import Domain
 public struct CommentListItemViewModel {
 
     public init(
-        comment: CommentEntity
+        comment: Comment
     ) {
         self.profileImageUrl = comment.writer.profileImageURl
         self.nickname = comment.writer.nickname

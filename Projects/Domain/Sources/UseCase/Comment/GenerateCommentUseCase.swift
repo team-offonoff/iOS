@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol GenerateCommentUseCase: UseCase {
-    func execute(request: GenerateCommentUseCaseRequestValue) -> NetworkResultPublisher<CommentEntity?>
+    func execute(request: GenerateCommentUseCaseRequestValue) -> NetworkResultPublisher<Comment?>
 }
 
 public final class DefaultGenerateCommentUseCase: GenerateCommentUseCase {
@@ -22,7 +22,7 @@ public final class DefaultGenerateCommentUseCase: GenerateCommentUseCase {
         self.repository = repository
     }
     
-    public func execute(request: GenerateCommentUseCaseRequestValue) -> NetworkResultPublisher<CommentEntity?> {
+    public func execute(request: GenerateCommentUseCaseRequestValue) -> NetworkResultPublisher<Comment?> {
         repository.generateComment(request: request)
     }
 }

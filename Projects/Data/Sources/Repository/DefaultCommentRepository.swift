@@ -16,7 +16,7 @@ public final class DefaultCommentRepository: CommentRepository {
     
     public init() { }
     
-    public func generateComment(request: GenerateCommentUseCaseRequestValue) -> NetworkResultPublisher<CommentEntity?> {
+    public func generateComment(request: GenerateCommentUseCaseRequestValue) -> NetworkResultPublisher<Comment?> {
         
         var urlComponents = networkService.baseUrlComponents
         urlComponents?.path = basePath
@@ -33,7 +33,7 @@ public final class DefaultCommentRepository: CommentRepository {
         }
     }
     
-    public func fetchComments(topicId: Int, page: Int) -> NetworkResultPublisher<(PageEntity, [CommentEntity])?> {
+    public func fetchComments(topicId: Int, page: Int) -> NetworkResultPublisher<(Paging, [Comment])?> {
         
         var urlComponents = networkService.baseUrlComponents
         urlComponents?.path = basePath

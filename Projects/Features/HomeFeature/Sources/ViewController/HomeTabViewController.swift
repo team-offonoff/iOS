@@ -14,10 +14,6 @@ import HomeFeatureInterface
 import Core
 import Domain
 
-protocol Choiceable: AnyObject {
-    func choice(option: ChoiceTemp.Option)
-}
-
 final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, DefaultHomeCoordinator>{
 
     init(viewModel: any HomeTabViewModel){
@@ -93,7 +89,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
             
             func handleError(code: SerivceError) {
                 switch code {
-                case .votedByAuthor:
+                case .votedByAuthor, .emptyAuthorization:
                     //선택지 원위치로 돌리기
                     currentTopicCell?.moveChoicesOriginalPosition()
                 default:
@@ -127,7 +123,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         }
         
         func bindSelectionSuccess() {
-            viewModel.choiceSuccess
+            viewModel.voteSuccess
                 .receive(on: RunLoop.main)
                 .sink{ [weak self] choice in
                     self?.currentTopicCell?.select(choice: choice)
@@ -147,11 +143,10 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         func bindImageExpandNotification() {
             //Image Choice Content에서 notification post
             NotificationCenter.default
-                .publisher(for: Notification.Name(TopicTemp.Action.expandImage.identifier), object: currentTopicCell)
+                .publisher(for: Notification.Name(Topic.Action.expandImage.identifier), object: currentTopicCell)
                 .receive(on: DispatchQueue.main)
                 .sink{ [weak self] receive in
-                    //TODO: #55 이후 키값 변경 예정
-                    if let choice = receive.userInfo?["Choice"] as? Choice {
+                    if let choice = receive.userInfo?[Choice.identifier] as? Choice {
                         self?.coordinator?.startImagePopUp(choice: choice)
                     }
                 }
@@ -196,9 +191,9 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
     
     func show(_ sender: DelegateSender) {
         switch sender.identifier {
-        case Literal.BottomSheet.topic:
+        case Topic.Action.showBottomSheet.identifier:
             coordinator?.startTopicBottomSheet()
-        case Literal.BottomSheet.chat:
+        case Comment.Action.showBottomSheet.identifier:
             coordinator?.startCommentBottomSheet(topicId: viewModel.currentTopic.id)
         default:
             return
@@ -206,9 +201,9 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
     }
 }
 
-extension HomeTabViewController: Choiceable {
-    func choice(option: ChoiceTemp.Option) {
+extension HomeTabViewController: VoteDelegate {
+    func vote(choice: Choice.Option) {
         print(choice)
-        viewModel.choice(option: option)
+        viewModel.vote(choice: choice)
     }
 }
