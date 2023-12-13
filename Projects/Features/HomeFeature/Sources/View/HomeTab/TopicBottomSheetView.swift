@@ -35,7 +35,7 @@ final class TopicBottomSheetView: BaseView {
 
         func addItems() {
             TopicTemp.Action.forBottomSheet.forEach{ action in
-                let item = ItemStackView(function: action)
+                let item = ItemStackView(action: action)
                 item.tag = tag(of: action)
                 item.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(functionTap)))
                 itemsStackView.addArrangedSubview(item)
@@ -55,7 +55,7 @@ final class TopicBottomSheetView: BaseView {
             .publisher
             .sink{ [weak self] view in
                 guard let item = view as? ItemStackView else { return }
-                self?.delegate?.tap(function: item.function)
+                self?.delegate?.tap(action: item.action)
             }
             .store(in: &cancellable)
     }
@@ -76,12 +76,12 @@ extension TopicBottomSheetView {
             }
         }
         
-        let function: TopicTemp.Action
+        let action: TopicTemp.Action
         
-        init(function: TopicTemp.Action) {
-            self.function = function
+        init(action: TopicTemp.Action) {
+            self.action = action
             super.init()
-            titleLabel.text = function.title
+            titleLabel.text = action.content.title
         }
         
         required init(coder: NSCoder) {
@@ -112,36 +112,8 @@ extension TopicBottomSheetView {
         }
         
         private func setElement() {
-            iconImageView.image = isDisabled ? function.disabledIcon : function.defaultIcon
+            iconImageView.image = isDisabled ? action.content.disabledIcon : action.content.defaultIcon
             titleLabel.textColor = isDisabled ? Color.black20 : Color.black
-        }
-    }
-}
-
-extension TopicTemp.Action {
-    
-    var defaultIcon: UIImage {
-        switch self {
-        case .hide:     return Image.hide
-        case .report:   return Image.report
-        case .reset:    return Image.resetEnable
-        default:        fatalError()
-        }
-    }
-    
-    var disabledIcon: UIImage? {
-        switch self {
-        case .reset:    return Image.resetDisable
-        default:        return nil
-        }
-    }
-    
-    var title: String {
-        switch self {
-        case .hide:     return "이런 토픽은 안볼래요"
-        case .report:   return "신고하기"
-        case .reset:    return "투표 다시 하기"
-        default:        fatalError()
         }
     }
 }

@@ -17,7 +17,7 @@ import HomeFeatureInterface
 import Domain
 
 protocol TopicBottomSheetGestureDelegate: AnyObject {
-    func tap(function: TopicTemp.Action)
+    func tap(action: TopicTemp.Action)
 }
 
 final class TopicBottomSheetViewController: UIViewController{
@@ -96,8 +96,8 @@ final class TopicBottomSheetViewController: UIViewController{
 }
 
 extension TopicBottomSheetViewController: TopicBottomSheetGestureDelegate {
-    func tap(function: TopicTemp.Action) {
-        switch function {
+    func tap(action: TopicTemp.Action) {
+        switch action {
         case .hide:
             viewModel.hideTopic()
         case .report:
