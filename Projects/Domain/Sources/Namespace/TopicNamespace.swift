@@ -47,6 +47,7 @@ extension Topic {
         case reset
         case report
         case hide
+        case showBottomSheet
         
         public var identifier: String {
             Topic.identifier + Action.identifier + String(describing: self)
