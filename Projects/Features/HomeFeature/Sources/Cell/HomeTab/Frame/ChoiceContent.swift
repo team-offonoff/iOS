@@ -100,7 +100,7 @@ extension HomeTopicCollectionViewCell {
         private lazy var buttonStackView: UIStackView = {
             let stackView = UIStackView(axis: .vertical, spacing: 4)
             stackView.addArrangedSubviews([imageExpandIcon])
-            stackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(action)))
+            stackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
             return stackView
         }()
 //        private let textExpandButton: UIButton = {
@@ -127,7 +127,7 @@ extension HomeTopicCollectionViewCell {
                     name: NSNotification.Name(Topic.Action.expandImage.identifier),
                     object: self,
                     //TODO: #55 이후 키값 변경 예정
-                    userInfo: ["Choice": choice]
+                    userInfo: [Choice.identifier: choice]
                 )
         }
         

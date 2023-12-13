@@ -146,8 +146,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
                 .publisher(for: Notification.Name(Topic.Action.expandImage.identifier), object: currentTopicCell)
                 .receive(on: DispatchQueue.main)
                 .sink{ [weak self] receive in
-                    //TODO: #55 이후 키값 변경 예정
-                    if let choice = receive.userInfo?["Choice"] as? Choice {
+                    if let choice = receive.userInfo?[Choice.identifier] as? Choice {
                         self?.coordinator?.startImagePopUp(choice: choice)
                     }
                 }
