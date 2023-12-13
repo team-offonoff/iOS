@@ -10,6 +10,7 @@ import UIKit
 import ABKit
 import Domain
 import Combine
+import FeatureDependency
 
 final class TopicBottomSheetView: BaseView {
     
@@ -17,7 +18,7 @@ final class TopicBottomSheetView: BaseView {
         itemsStackView.viewWithTag(tag(of: TopicTemp.Action.reset)) as? ItemStackView
     }
     
-    weak var delegate: TopicBottomSheetGestureDelegate?
+    weak var delegate: TopicActionDelegate?
     
     private var cancellable: Set<AnyCancellable> = []
     
@@ -55,7 +56,7 @@ final class TopicBottomSheetView: BaseView {
             .publisher
             .sink{ [weak self] view in
                 guard let item = view as? ItemStackView else { return }
-                self?.delegate?.tap(action: item.action)
+                self?.delegate?.action(item.action)
             }
             .store(in: &cancellable)
     }
