@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum TopicTemp {
+extension Topic {
     
     private static let identifier = "Topic."
         
@@ -49,7 +49,7 @@ public enum TopicTemp {
         case hide
         
         public var identifier: String {
-            TopicTemp.identifier + Action.identifier + String(describing: self)
+            Topic.identifier + Action.identifier + String(describing: self)
         }
     }
 }

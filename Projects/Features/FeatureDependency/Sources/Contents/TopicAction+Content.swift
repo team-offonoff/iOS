@@ -11,7 +11,7 @@ import UIKit
 import ABKit
 import Domain
 
-extension TopicTemp.Action {
+extension Topic.Action {
 
     public var content: TopicActionContent {
         switch self {

@@ -15,7 +15,7 @@ import FeatureDependency
 final class TopicBottomSheetView: BaseView {
     
     var choiceResetItem: ItemStackView? {
-        itemsStackView.viewWithTag(tag(of: TopicTemp.Action.reset)) as? ItemStackView
+        itemsStackView.viewWithTag(tag(of: Topic.Action.reset)) as? ItemStackView
     }
     
     weak var delegate: TopicActionDelegate?
@@ -35,7 +35,7 @@ final class TopicBottomSheetView: BaseView {
         addItems()
 
         func addItems() {
-            TopicTemp.Action.forBottomSheet.forEach{ action in
+            Topic.Action.forBottomSheet.forEach{ action in
                 let item = ItemStackView(action: action)
                 item.tag = tag(of: action)
                 item.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(functionTap)))
@@ -61,7 +61,7 @@ final class TopicBottomSheetView: BaseView {
             .store(in: &cancellable)
     }
     
-    private func tag(of action: TopicTemp.Action) -> Int {
+    private func tag(of action: Topic.Action) -> Int {
         action.hashValue
     }
 }
@@ -77,9 +77,9 @@ extension TopicBottomSheetView {
             }
         }
         
-        let action: TopicTemp.Action
+        let action: Topic.Action
         
-        init(action: TopicTemp.Action) {
+        init(action: Topic.Action) {
             self.action = action
             super.init()
             titleLabel.text = action.content.title
