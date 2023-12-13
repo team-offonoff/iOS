@@ -38,7 +38,7 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
     
     public var errorHandler: PassthroughSubject<Domain.ErrorContent, Never> = PassthroughSubject()
     
-    private var pageInfo: PageEntity?
+    private var pageInfo: Paging?
     
     public func viewDidLoad() {
         fetchComments()

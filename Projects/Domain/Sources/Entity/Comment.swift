@@ -8,12 +8,12 @@
 
 import Foundation
 
-public struct CommentEntity {
+public struct Comment {
 
     public init(
         commentId: Int,
         topicId: Int,
-        writer: CommentEntity.WriterEntity,
+        writer: Comment.WriterEntity,
         content: String,
         likes: Int,
         hates: Int

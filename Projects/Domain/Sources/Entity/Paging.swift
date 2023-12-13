@@ -1,5 +1,5 @@
 //
-//  PageEntity.swift
+//  Paging.swift
 //  Domain
 //
 //  Created by 박소윤 on 2023/12/12.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct PageEntity{
+public struct Paging{
     
     public init(
         page: Int,
