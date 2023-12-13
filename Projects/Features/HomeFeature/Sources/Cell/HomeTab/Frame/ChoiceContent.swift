@@ -38,35 +38,40 @@ extension HomeTopicCollectionViewCell {
         
         init(choice: Choice) {
             self.choice = choice
-            contentLabel.text = choice.content.text
         }
         
         required init?(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
         
-        private let contentLabel: UILabel = {
+        private lazy var contentLabel: UILabel = {
             let label = UILabel()
-            label.setTypo(Pretendard.semibold20, setLineSpacing: true)
+            label.text = choice.content.text
+            let typo = label.text!.count > 20 ? Pretendard.semibold16 : Pretendard.semibold20
+            label.setTypo(typo, setLineSpacing: true)
             label.textColor = Color.white
             label.numberOfLines = 0
-            label.lineBreakMode = .byWordWrapping
+            label.textAlignment = .center
             return label
         }()
         
         func setALayout() {
             contentLabel.snp.makeConstraints{
+                $0.width.equalTo(87)
+                $0.top.equalToSuperview().offset(19)
                 $0.centerY.centerX.equalToSuperview()
                 $0.leading.equalTo(visibleWidth+44)
-                $0.trailing.equalToSuperview().inset(44)
+                $0.trailing.equalToSuperview().inset(49)
             }
         }
         
         func setBLayout() {
             contentLabel.snp.makeConstraints{
+                $0.width.equalTo(87)
+                $0.top.equalToSuperview().offset(19)
                 $0.centerY.centerX.equalToSuperview()
                 $0.leading.equalToSuperview().inset(44)
-                $0.trailing.equalToSuperview().inset(visibleWidth+44)
+                $0.trailing.equalToSuperview().inset(visibleWidth+49)
             }
         }
     }
@@ -126,7 +131,6 @@ extension HomeTopicCollectionViewCell {
                 .post(
                     name: NSNotification.Name(Topic.Action.expandImage.identifier),
                     object: self,
-                    //TODO: #55 이후 키값 변경 예정
                     userInfo: [Choice.identifier: choice]
                 )
         }
