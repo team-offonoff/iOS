@@ -8,7 +8,6 @@
 
 import UIKit
 import ABKit
-import Core
 import Domain
 
 extension HomeTopicCollectionViewCell {

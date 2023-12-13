@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 import ABKit
 import Domain
-import Core
 
 extension HomeTopicCollectionViewCell {
     

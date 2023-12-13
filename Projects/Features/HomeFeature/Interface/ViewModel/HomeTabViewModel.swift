@@ -9,7 +9,6 @@
 import Foundation
 import Combine
 import Domain
-import Core
 import FeatureDependency
 
 public protocol HomeTabViewModel: TopicPageControllableViewModel, TimerControllableViewModel, TopicChoiceableViewModel, TopicBottomSheetViewModel, ErrorHandleable {
