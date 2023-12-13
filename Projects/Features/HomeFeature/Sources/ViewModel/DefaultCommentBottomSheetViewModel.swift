@@ -53,7 +53,9 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
                 if result.isSuccess, let (pageInfo, data) = result.data {
                     //TODO: 페이징 코드 추가
                     self.pageInfo = pageInfo
-                    self.comments.append(contentsOf: data.map{ .init(comment: $0) })
+                    self.comments = [CommentListItemViewModel](repeating: .init(), count: 10)
+//                    self.comments.append(contentsOf: data.map{ _ in .init() })
+                    self.reloadData?()
                 }
                 else if let error = result.error {
                     self.errorHandler.send(error)

@@ -84,6 +84,7 @@ final class CommentBottomSheetViewController: UIViewController {
     func bind() {
         viewModel.reloadData = {
             DispatchQueue.main.async {
+                self.headerView.fill(self.viewModel.commentsCount)
                 self.tableView.reloadData()
             }
         }

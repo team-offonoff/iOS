@@ -10,6 +10,15 @@ import Foundation
 import Domain
 
 public struct CommentListItemViewModel {
+    
+    public init() {
+        self.profileImageUrl = URL(string: "http://ab.")!
+        self.nickname = "닉네임닉네임"
+        self.date = "2일전" //comment.date
+        self.choice = "A. 일이삼사오육칠팔구십일이삼사오육칠팔구십" //comment.choice
+        self.content = "왜들 그리 다운돼있어? 뭐가 문제야 say something 분위기가 겁나 싸해 요새는 이런 게 유행인가 왜들 그리 재미없어? 아 그건 나도 마찬가지"
+        self.likeCount = String(129)
+    }
 
     public init(
         comment: Comment
