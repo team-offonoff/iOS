@@ -93,7 +93,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
             
             func handleError(code: SerivceError) {
                 switch code {
-                case .votedByAuthor:
+                case .votedByAuthor, .emptyAuthorization:
                     //선택지 원위치로 돌리기
                     currentTopicCell?.moveChoicesOriginalPosition()
                 default:

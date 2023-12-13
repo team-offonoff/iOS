@@ -82,37 +82,10 @@ extension HomeTopicCollectionViewCell {
         }
         
         func fill(choice: Choice) {
-            contentView.backgroundColor = choice.option.backgroundColor
+            contentView.backgroundColor = choice.option.content.color.withAlphaComponent(0.2)
             contentLabel.text = choice.content.text
-            choiceLabel.textColor = choice.option.choiceTextColor
-            choiceLabel.text = choice.option.title
-        }
-        
-    }
-}
-
-private extension ChoiceTemp.Option {
-    
-    var backgroundColor: UIColor {
-        switch self {
-        case .A:    return Color.mainA20
-        case .B:    return Color.mainB20
-        }
-    }
-    
-    var choiceTextColor: UIColor {
-        switch self {
-        case .A:
-            return Color.mainA.withAlphaComponent(0.4)
-        case .B:
-            return Color.mainB.withAlphaComponent(0.4)
-        }
-    }
-    
-    var title: String {
-        switch self {
-        case .A:    return "A"
-        case .B:    return "B"
+            choiceLabel.textColor = choice.option.content.color.withAlphaComponent(0.4)
+            choiceLabel.text = choice.option.content.title
         }
     }
 }
