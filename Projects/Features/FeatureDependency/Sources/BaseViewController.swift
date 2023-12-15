@@ -13,13 +13,13 @@ import ABKit
 
 open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: UIViewController {
     
-    public let headerView: H
+    public let headerView: H?
     public let mainView: M
     
     public weak var coordinator: C?
     public var cancellables: Set<AnyCancellable> = []
     
-    public init(headerView: H, mainView: M){
+    public init(headerView: H?, mainView: M){
         self.headerView = headerView
         self.mainView = mainView
         super.init(nibName: nil, bundle: nil)
@@ -53,6 +53,7 @@ open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: U
     }
     
     private func setHeaderView(){
+        guard let headerView = headerView else { return }
         view.addSubview(headerView)
         headerView.snp.makeConstraints{
             $0.top.equalTo(view.safeAreaLayoutGuide)
@@ -68,7 +69,12 @@ open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: U
     private func setMainView(){
         view.addSubview(mainView)
         mainView.snp.makeConstraints{
-            $0.top.equalTo(headerView.snp.bottom)
+            if let headerView = headerView{
+                $0.top.equalTo(headerView.snp.bottom)
+            }
+            else {
+                $0.top.equalTo(view.safeAreaLayoutGuide)
+            }
             $0.leading.trailing.bottom.equalToSuperview()
         }
     }
