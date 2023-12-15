@@ -75,7 +75,9 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         func viewModel() -> CommentBottomSheetViewModel {
             DefaultCommentBottomSheetViewModel(
                 topicId: topicId,
-                fetchCommentsUseCase: DefaultFetchCommentsUseCase(repository: commentRepository)
+                fetchCommentsUseCase: DefaultFetchCommentsUseCase(repository: commentRepository),
+                patchCommentLikeUseCase: DefaultPatchCommentLikeStateUseCase(repository: commentRepository),
+                patchCommentDislikeUseCase: DefaultPatchCommentDislikeStateUseCase(repository: commentRepository)
             )
         }
     }
