@@ -10,19 +10,22 @@ import Foundation
 import Domain
 import Core
 import FeatureDependency
+import Combine
 
-public protocol CommentBottomSheetViewModel:
-    CommentBottomSheetViewModelInput,
-    CommentBottomSheetViewModelOutput,
-    ErrorHandleable{
-}
+public typealias CommentBottomSheetViewModel = CommentBottomSheetViewModelInput & CommentBottomSheetViewModelOutput & ErrorHandleable
 
 public protocol CommentBottomSheetViewModelInput {
-    func viewDidLoad()
+    func fetchComments()
+    func toggleLikeState(at index: Int)
+    func toggleDislikeState(at index: Int)
+    func delete(at index: Int)
 }
 
 public protocol CommentBottomSheetViewModelOutput {
-    var commentsCount: String { get }
     var comments: [CommentListItemViewModel] { get }
+    var commentsCountTitle: String { get }
     var reloadData: (() -> Void)? { get set }
+    var toggleLikeState: PassthroughSubject<Index, Never> { get }
+    var toggleDislikeState: PassthroughSubject<Index, Never> { get }
+    var deleteItem: PassthroughSubject<Index, Never> { get }
 }
