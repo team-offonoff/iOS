@@ -26,7 +26,7 @@ public extension UIColor{
 
 public struct Color{
     
-    public static let homeBackground = UIColor(r: 36, g: 32, b: 54, alpha: 1)
+    public static let background = UIColor(r: 36, g: 32, b: 54, alpha: 1)
     
     public static let mainA = UIColor(r: 208, g: 67, b: 118)
     public static let mainA20 = mainA.withAlphaComponent(0.2)
