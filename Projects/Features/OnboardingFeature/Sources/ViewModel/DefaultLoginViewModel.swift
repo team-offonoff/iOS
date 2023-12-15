@@ -48,7 +48,7 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
         
         // response success
         response
-            .filter{ $0.code == .success }
+            .filter{ $0.isSuccess }
             .compactMap{ $0.data }
             .sink{ [weak self] in
 
@@ -70,7 +70,7 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
         
         // response fail
         let failResponse = response
-            .filter{ $0.code != .success }
+            .filter{ $0.isSuccess}
             .sink{
                 print("fail:", $0)
             }

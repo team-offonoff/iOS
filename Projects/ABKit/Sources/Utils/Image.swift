@@ -16,6 +16,12 @@ extension UIImage{
 
 public struct Image{
     
+    //MARK: Login
+    
+    public static let logo = UIImage.load(name: "logo")
+    public static let loginApple = UIImage.load(name: "login_apple")
+    public static let loginKakao = UIImage.load(name: "login_kakao")
+    
     //MARK: Tab
     public static let tabHomeSelect = UIImage.load(name: "tab_home_select")
     public static let tabHomeDeselect = UIImage.load(name: "tab_home_deselect")

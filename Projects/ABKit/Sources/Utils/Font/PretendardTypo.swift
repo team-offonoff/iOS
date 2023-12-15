@@ -22,6 +22,7 @@ public enum Pretendard {
     public static let medium16: TypoCase = Medium16()
 
     public static let bold15: TypoCase = Bold15()
+    public static let bold16: TypoCase = Bold16()
     public static let bold18: TypoCase = Bold18()
     public static let bold24: TypoCase = Bold24()
 
@@ -86,6 +87,11 @@ extension Pretendard{
     struct Bold15: TypoCase {
         let font: UIFont = ABKitFontFamily.Pretendard.bold.font(size: 15)
         let lineHeight: CGFloat? = nil
+    }
+    
+    struct Bold16: TypoCase {
+        let font: UIFont = ABKitFontFamily.Pretendard.bold.font(size: 16)
+        let lineHeight: CGFloat? = 22.4
     }
     
     struct Bold18: TypoCase {

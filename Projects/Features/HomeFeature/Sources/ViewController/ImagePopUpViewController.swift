@@ -18,7 +18,7 @@ final class ImagePopUpViewController: BaseViewController<BaseHeaderView, ImagePo
     
     init(choice: Choice) {
         self.choice = choice
-        super.init(headerView: BaseHeaderView(), mainView: ImagePopUpView())
+        super.init(headerView: nil, mainView: ImagePopUpView())
     }
     
     required init?(coder: NSCoder) {
@@ -50,16 +50,13 @@ final class ImagePopUpViewController: BaseViewController<BaseHeaderView, ImagePo
     
     override func initialize() {
         
-        modifyHeader()
+        modifyViewLayout()
         addCloseTarget()
         mainView.fill(choice)
         
-        func modifyHeader() {
-            headerView.snp.updateConstraints{
-                $0.height.equalTo(0)
-            }
-            mainView.snp.updateConstraints{
-                $0.top.equalTo(headerView.snp.bottom).offset(-(Device.safeAreaInsets?.top ?? 0))
+        func modifyViewLayout() {
+            mainView.snp.remakeConstraints{
+                $0.top.leading.trailing.bottom.equalToSuperview()
             }
         }
         
