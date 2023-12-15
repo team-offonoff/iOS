@@ -9,8 +9,11 @@
 import Foundation
 import UIKit
 import ABKit
-
+import Combine
 import HomeFeatureInterface
+import FeatureDependency
+import Domain
+import Core
 
 final class CommentBottomSheetViewController: UIViewController {
     
@@ -32,6 +35,7 @@ final class CommentBottomSheetViewController: UIViewController {
         tableView.registers(cellTypes: [CommentBottomSheetTableViewCell.self])
         return tableView
     }()
+    private var cancellable: Set<AnyCancellable> = []
     
     override func viewDidLoad() {
         hierarchy()
@@ -39,7 +43,7 @@ final class CommentBottomSheetViewController: UIViewController {
         initialize()
         modalSetting()
         bind()
-        viewModel.viewDidLoad()
+        viewModel.fetchComments()
     }
     
     private func modalSetting(){
@@ -78,15 +82,53 @@ final class CommentBottomSheetViewController: UIViewController {
     func initialize() {
         tableView.delegate = self
         tableView.dataSource = self
-        headerView.fill(viewModel.commentsCount)
     }
     
     func bind() {
+        
         viewModel.reloadData = {
             DispatchQueue.main.async {
-                self.headerView.fill(self.viewModel.commentsCount)
+                self.headerView.fill(self.viewModel.commentsCountTitle)
                 self.tableView.reloadData()
             }
+        }
+        
+        viewModel.toggleLikeState
+            .receive(on: DispatchQueue.main)
+            .sink{ [weak self] index in
+                guard let self = self else { return }
+                let cell = self.tableView.cellForRow(at: .init(row: index), cellType: CommentBottomSheetTableViewCell.self)
+                cell?.state(isLike: self.viewModel.comments[index].isLike, count: self.viewModel.comments[index].likeCountString)
+            }
+            .store(in: &cancellable)
+        
+        viewModel.toggleDislikeState
+            .receive(on: DispatchQueue.main)
+            .sink{ [weak self] index in
+                guard let self = self else { return }
+                let cell = self.tableView.cellForRow(at: .init(row: index), cellType: CommentBottomSheetTableViewCell.self)
+                cell?.state(isDislike: self.viewModel.comments[index].isDislike)
+            }
+            .store(in: &cancellable)
+    }
+}
+
+extension CommentBottomSheetViewController: TapDelegate {
+    
+    func tap(_ recognizer: DelegateSender) {
+        
+        guard let indexPath = recognizer.data as? IndexPath else { return }
+        let index = indexPath.row
+        
+        switch recognizer.identifier {
+        case Comment.State.like.identifier:
+            viewModel.toggleLikeState(at: index)
+            
+        case Comment.State.dislike.identifier:
+            viewModel.toggleDislikeState(at: index)
+            
+        default:
+            fatalError()
         }
     }
 }
@@ -100,6 +142,7 @@ extension CommentBottomSheetViewController: UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(for: indexPath, cellType: CommentBottomSheetTableViewCell.self)
         cell.fill(viewModel.comments[indexPath.row])
+        cell.delegate = self
         return cell
     }
 }
