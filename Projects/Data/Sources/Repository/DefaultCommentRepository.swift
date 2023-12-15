@@ -50,5 +50,35 @@ public final class DefaultCommentRepository: CommentRepository {
         return dataTask(request: urlRequest, responseType: PagingContentResponseDTO<CommentResponseDTO>.self)
     }
     
+    public func patchLikeState(commentId: Int, isLike: Bool) -> NetworkResultPublisher<Any?> {
+        
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = basePath + path(commentId) + path("like")
+        urlComponents?.queryItems = [
+            .init(name: "enable", value: String(isLike))
+        ]
+        
+        guard let urlRequest = urlComponents?.toURLRequest(method: .post) else {
+            fatalError("json encoding or url parsing error")
+        }
+        
+        return dataTask(request: urlRequest)
+    }
+    
+    public func patchDislikeState(commentId: Int, isDislike: Bool) -> NetworkResultPublisher<Any?> {
+        
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = basePath + path(commentId) + path("hate")
+        urlComponents?.queryItems = [
+            .init(name: "enable", value: String(isDislike))
+        ]
+        
+        guard let urlRequest = urlComponents?.toURLRequest(method: .post) else {
+            fatalError("json encoding or url parsing error")
+        }
+        
+        return dataTask(request: urlRequest)
+    }
+    
     
 }
