@@ -44,7 +44,7 @@ open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: U
     
     private func defaultStyle(){
         navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = Color.white
+        view.backgroundColor = Color.background
     }
     
     private func layout(){

@@ -42,10 +42,6 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         viewModel.stopTimer()
     }
     
-    public override func style() {
-        view.backgroundColor = Color.homeBackground
-    }
-    
     override func initialize() {
         
         setDelegate()

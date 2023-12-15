@@ -33,10 +33,6 @@ class LoginViewController: BaseViewController<BaseHeaderView, LoginView, Default
         return authorizationController
     }()
     
-    override func style() {
-        view.backgroundColor = Color.background
-    }
-    
     override func initialize() {
         addButtonFrameElementsTarget()
     }
