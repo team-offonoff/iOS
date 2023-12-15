@@ -9,19 +9,19 @@
 import Foundation
 import UIKit
 
-public extension UITableView{
+extension UITableView{
     
-    final func registers(cellTypes: [BaseTableViewCell.Type]){
+    public final func registers(cellTypes: [BaseTableViewCell.Type]){
         cellTypes.forEach{
             register(cellType: $0)
         }
     }
     
-    final func register<T: BaseTableViewCell>(cellType: T.Type) {
+    public final func register<T: BaseTableViewCell>(cellType: T.Type) {
         register(cellType.self, forCellReuseIdentifier: cellType.cellIdentifier)
     }
     
-    final func dequeueReusableCell<T: BaseTableViewCell>(for indexPath: IndexPath, cellType: T.Type = T.self) -> T {
+    public final func dequeueReusableCell<T: BaseTableViewCell>(for indexPath: IndexPath, cellType: T.Type = T.self) -> T {
         let bareCell = dequeueReusableCell(withIdentifier: cellType.cellIdentifier, for: indexPath)
         guard let cell = bareCell as? T else {
           fatalError(
@@ -33,7 +33,7 @@ public extension UITableView{
         return cell
     }
     
-    final func cellForItem<T: BaseTableViewCell>(at indexPath: IndexPath, cellType: T.Type) -> T? {
+    public final func cellForRow<T: BaseTableViewCell>(at indexPath: IndexPath, cellType: T.Type) -> T? {
         cellForRow(at: indexPath) as? T
     }
 }
