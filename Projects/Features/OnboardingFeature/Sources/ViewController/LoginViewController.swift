@@ -19,7 +19,7 @@ class LoginViewController: BaseViewController<BaseHeaderView, LoginView, Default
     
     init(viewModel: any LoginViewModel){
         self.viewModel = viewModel
-        super.init(headerView: BaseHeaderView(), mainView: LoginView())
+        super.init(headerView: nil, mainView: LoginView())
     }
     
     required init?(coder: NSCoder) {
@@ -33,13 +33,17 @@ class LoginViewController: BaseViewController<BaseHeaderView, LoginView, Default
         return authorizationController
     }()
     
+    override func style() {
+        view.backgroundColor = Color.background
+    }
+    
     override func initialize() {
         addButtonFrameElementsTarget()
     }
     
     private func addButtonFrameElementsTarget(){
-        mainView.buttonFrame.kakaoLoginButton.addTarget(self, action: #selector(startKakaoLogin), for: .touchUpInside)
-        mainView.buttonFrame.appleLoginButton.addTarget(self, action: #selector(startAppleLogin), for: .touchUpInside)
+        mainView.buttonGroup.kakaoLogin.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(startKakaoLogin)))
+        mainView.buttonGroup.appleLogin.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(startAppleLogin)))
     }
     
     override func bind() {
@@ -55,12 +59,22 @@ class LoginViewController: BaseViewController<BaseHeaderView, LoginView, Default
         }
     }
     
-    @objc private func startKakaoLogin(){
-        viewModel.startKakaoLogin()
+    @objc private func startKakaoLogin(_ recognizer: UITapGestureRecognizer){
+        recognizer.view
+            .publisher
+            .sink{ [weak self] _ in
+                self?.viewModel.startKakaoLogin()
+            }
+            .store(in: &cancellables)
     }
     
-    @objc private func startAppleLogin(){
-        appleAuthorizationController.performRequests()
+    @objc private func startAppleLogin(_ recognizer: UITapGestureRecognizer){
+        recognizer.view
+            .publisher
+            .sink{ [weak self] _ in
+                self?.appleAuthorizationController.performRequests()
+            }
+            .store(in: &cancellables)
     }
     
 }
@@ -72,10 +86,7 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization){
-        switch authorization.credential {
-        case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            viewModel.startAppleLogin(credential: appleIDCredential)
-        default: return
-        }
+        guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else { return }
+        viewModel.startAppleLogin(credential: appleIDCredential)
     }
 }
