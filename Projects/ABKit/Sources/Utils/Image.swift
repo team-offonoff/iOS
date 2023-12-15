@@ -31,10 +31,16 @@ public struct Image{
     public static let tabMyDeselect = UIImage.load(name: "tab_my_deselect")
     public static let tabGenerateTopic = UIImage.load(name: "tab_generate_topic")
     
-    //MARK: Home
+    //MARK: Comment
     
     public static let chatLike = UIImage.load(name: "chat_like")
     public static let chatDislike = UIImage.load(name: "chat_dislike")
+    public static let chatLikeActivate = UIImage.load(name: "chat_like_activate")
+    public static let chatDislikeActivate = UIImage.load(name: "chat_dislike_activate")
+    
+    
+    //MARK: Home
+
     public static let close = UIImage.load(name: "close")
     public static let choiceTextExpand = UIImage.load(name: "choice_text_expand")
     public static let choiceImageExpand = UIImage.load(name: "choice_image_expand")
