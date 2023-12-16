@@ -9,9 +9,14 @@
 import Foundation
 import UIKit
 import ABKit
+import Combine
+import Domain
+import FeatureDependency
 import HomeFeatureInterface
 
 final class CommentBottomSheetTableViewCell: BaseTableViewCell {
+    
+    weak var delegate: TapDelegate?
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -74,8 +79,9 @@ final class CommentBottomSheetTableViewCell: BaseTableViewCell {
     }()
     
     private let likeStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 12)
-    private let likeContent: LikeContentView = LikeContentView(icon: Image.chatLike)
-    private let dislikeContent: LikeContentView = LikeContentView(icon: Image.chatDislike)
+    private let likeContent: LikeContentView = LikeContentView(state: .like)
+    private let dislikeContent: LikeContentView = LikeContentView(state: .dislike)
+    private var cancellable: Set<AnyCancellable> = []
     
     override func hierarchy() {
         topStackView.addArrangedSubviews([nicknameLabel, dotView, dateLabel])
@@ -112,12 +118,38 @@ final class CommentBottomSheetTableViewCell: BaseTableViewCell {
         }
     }
     
+    override func initialize() {
+        likeContent.button.tapPublisher
+            .sink{ [weak self] _ in
+                guard let self = self else { return }
+                self.delegate?.tap(.init(identifier: Comment.State.like.identifier, data: self.indexPath))
+            }
+            .store(in: &cancellable)
+        
+        dislikeContent.button.tapPublisher
+            .sink{ [weak self] _ in
+                guard let self = self else { return }
+                self.delegate?.tap(.init(identifier: Comment.State.dislike.identifier, data: self.indexPath))
+            }
+            .store(in: &cancellable)
+    }
+    
     func fill(_ comment: CommentListItemViewModel) {
         nicknameLabel.text = comment.nickname
         dateLabel.text = comment.date
         choiceLabel.text = comment.choice
         contentLabel.text = comment.content
-        likeContent.countLabel.text = comment.likeCount
+        state(isLike: comment.isLike, count: comment.likeCountString)
+        state(isDislike: comment.isDislike)
+    }
+    
+    func state(isLike: Bool, count: String) {
+        likeContent.button.isSelected = isLike
+        likeContent.countLabel.text = count
+    }
+    
+    func state(isDislike: Bool) {
+        dislikeContent.button.isSelected = isDislike
     }
 }
 
@@ -125,29 +157,33 @@ extension CommentBottomSheetTableViewCell {
     
     private class LikeContentView: BaseStackView {
         
-        init(icon: UIImage) {
+        private let state: Comment.State
+        
+        init(state: Comment.State) {
+            self.state = state
             super.init()
-            iconImageView.image = icon
+            setButtonImage()
         }
         
         required init(coder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
         
-        private let iconImageView: UIImageView = {
-            let imageView = UIImageView()
-            imageView.snp.makeConstraints{
+        let button: UIButton = {
+            let button = UIButton()
+            button.snp.makeConstraints{
                 $0.width.height.equalTo(22)
             }
-            return imageView
+            return button
         }()
-        
         let countLabel: UILabel = {
             let label = UILabel()
             label.textColor = Color.black60
             label.setTypo(Pretendard.regular13)
             return label
         }()
+        
+        private var cancellable: Set<AnyCancellable> = []
         
         override func style() {
             axis = .horizontal
@@ -156,7 +192,12 @@ extension CommentBottomSheetTableViewCell {
         }
         
         override func hierarchy() {
-            addArrangedSubviews([iconImageView, countLabel])
+            addArrangedSubviews([button, countLabel])
+        }
+        
+        private func setButtonImage() {
+            button.setImage(state.content.activateIcon, for: .selected)
+            button.setImage(state.content.defaultIcon, for: .normal)
         }
     }
 }

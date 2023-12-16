@@ -10,9 +10,14 @@ import Foundation
 
 public struct DelegateSender {
     
-    public init(identifier: String) {
+    public init(
+        identifier: String,
+        data: Any? = nil
+    ) {
         self.identifier = identifier
+        self.data = data
     }
     
     public let identifier: String
+    public let data: Any?
 }

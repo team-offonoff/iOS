@@ -12,10 +12,23 @@ extension Comment {
     
     public static let identifier = "Comment."
     
+    public enum State: Identifiable{
+        
+        public static let identifier = "State."
+        
+        case like
+        case dislike
+    }
+    
     public enum Action {
         
         public static let identifier = "Action."
         
+        case fetch
+        case register
+        case delete
+        case like
+        case dislike
         case showBottomSheet
         
         public var identifier: String {
