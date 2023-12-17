@@ -80,7 +80,8 @@ public class DefaultHomeCoordinator: HomeCoordinator {
                 topicId: topicId,
                 fetchCommentsUseCase: DefaultFetchCommentsUseCase(repository: commentRepository),
                 patchCommentLikeUseCase: DefaultPatchCommentLikeStateUseCase(repository: commentRepository),
-                patchCommentDislikeUseCase: DefaultPatchCommentDislikeStateUseCase(repository: commentRepository)
+                patchCommentDislikeUseCase: DefaultPatchCommentDislikeStateUseCase(repository: commentRepository),
+                deleteCommentUseCase: DefaultDeleteCommentUseCase(repository: commentRepository)
             )
             return commentBottomSheetViewModel!
         }
@@ -92,13 +93,13 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         navigationController.present(popUpViewController, animated: false)
     }
     
-    public func startWritersBottomSheet() {
+    public func startWritersBottomSheet(index: Int) {
         guard let viewModel = commentBottomSheetViewModel else { return }
-        commentBottomSheet?.present(WritersCommentBottomSheetViewController(viewModel: viewModel), animated: true)
+        commentBottomSheet?.present(WritersCommentBottomSheetViewController(index: index, viewModel: viewModel), animated: true)
     }
     
-    public func startOthersBottomSheet() {
+    public func startOthersBottomSheet(index: Int) {
         guard let viewModel = commentBottomSheetViewModel else { return }
-        commentBottomSheet?.present(OthersCommnetBottomSheetViewController(viewModel: viewModel), animated: true)
+        commentBottomSheet?.present(OthersCommnetBottomSheetViewController(index: index, viewModel: viewModel), animated: true)
     }
 }

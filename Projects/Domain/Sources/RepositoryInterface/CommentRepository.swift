@@ -13,4 +13,6 @@ public protocol CommentRepository: Repository {
     func fetchComments(topicId: Int, page: Int) -> NetworkResultPublisher<(Paging, [Comment])?>
     func patchLikeState(commentId: Int, isLike: Bool) -> NetworkResultPublisher<Any?>
     func patchDislikeState(commentId: Int, isDislike: Bool) -> NetworkResultPublisher<Any?>
+    func deleteComment(commentId: Int) -> NetworkResultPublisher<Any?>
 }
+

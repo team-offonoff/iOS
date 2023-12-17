@@ -80,5 +80,16 @@ public final class DefaultCommentRepository: CommentRepository {
         return dataTask(request: urlRequest)
     }
     
+    public func deleteComment(commentId: Int) -> NetworkResultPublisher<Any?> {
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = basePath + path(commentId)
+
+        guard let urlRequest = urlComponents?.toURLRequest(method: .delete) else {
+            fatalError("json encoding or url parsing error")
+        }
+        
+        return dataTask(request: urlRequest)
+    }
+    
     
 }

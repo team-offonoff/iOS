@@ -15,7 +15,8 @@ import Domain
 
 public final class OthersCommnetBottomSheetViewController: BaseBottomSheetViewController {
     
-    public init(viewModel: any OthersCommentBottomSheetViewModel) {
+    public init(index: Int, viewModel: any OthersCommentBottomSheetViewModel) {
+        self.index = index
         self.viewModel = viewModel
         super.init(actions: [Comment.Action.report])
     }
@@ -24,6 +25,7 @@ public final class OthersCommnetBottomSheetViewController: BaseBottomSheetViewCo
         fatalError("init(coder:) has not been implemented")
     }
     
+    private let index: Int
     private let viewModel: any OthersCommentBottomSheetViewModel
     
     public override func bind() {

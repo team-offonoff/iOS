@@ -85,6 +85,8 @@ final class CommentBottomSheetViewController: UIViewController {
     
     func bind() {
         
+        //MARK: view model output
+        
         viewModel.reloadData = {
             DispatchQueue.main.async {
                 self.headerView.fill(self.viewModel.commentsCountTitle)
@@ -109,6 +111,15 @@ final class CommentBottomSheetViewController: UIViewController {
                 cell?.state(isDislike: self.viewModel.comments[index].isDislike)
             }
             .store(in: &cancellable)
+        
+        viewModel.deleteItem
+            .receive(on: DispatchQueue.main)
+            .sink{ [weak self] index in
+                guard let self = self else  { return }
+                self.headerView.fill(self.viewModel.commentsCountTitle)
+                self.tableView.deleteRows(at: [IndexPath(row: index)], with: .fade)
+            }
+            .store(in: &cancellable)
     }
 }
 
@@ -128,10 +139,10 @@ extension CommentBottomSheetViewController: TapDelegate {
             
         case Comment.Action.tapEtc.identifier:
             if viewModel.isWriterItem(at: index) {
-                coordinator?.startWritersBottomSheet()
+                coordinator?.startWritersBottomSheet(index: index)
             }
             else {
-                coordinator?.startOthersBottomSheet()
+                coordinator?.startOthersBottomSheet(index: index)
             }
             
         default:
