@@ -13,4 +13,6 @@ public protocol HomeCoordinator: Coordinator {
     func startTopicBottomSheet()
     func startCommentBottomSheet(topicId: Int)
     func startImagePopUp(choice: Choice)
+    func startWritersBottomSheet()
+    func startOthersBottomSheet()
 }

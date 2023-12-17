@@ -63,8 +63,7 @@ open class BaseBottomSheetViewController: UIViewController {
         func layout() {
             view.addSubviews([mainView])
             mainView.snp.makeConstraints{
-                $0.top.equalToSuperview()
-                $0.bottom.lessThanOrEqualToSuperview().inset(18)
+                $0.bottom.equalToSuperview().inset(18 + (Device.safeAreaInsets?.bottom ?? 0))
                 $0.leading.trailing.equalToSuperview().inset(6)
             }
         }
