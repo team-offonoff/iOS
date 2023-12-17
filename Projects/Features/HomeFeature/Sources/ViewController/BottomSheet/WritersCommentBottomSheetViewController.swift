@@ -15,7 +15,8 @@ import Domain
 
 public final class WritersCommentBottomSheetViewController: BaseBottomSheetViewController {
     
-    public init(viewModel: any WritersCommentBottomSheetViewModel) {
+    public init(index: Int, viewModel: any WritersCommentBottomSheetViewModel) {
+        self.index = index
         self.viewModel = viewModel
         super.init(actions: [Comment.Action.modify, Comment.Action.delete])
     }
@@ -24,6 +25,7 @@ public final class WritersCommentBottomSheetViewController: BaseBottomSheetViewC
         fatalError("init(coder:) has not been implemented")
     }
     
+    private let index: Int
     private let viewModel: any WritersCommentBottomSheetViewModel
     
     public override func initialize() {
@@ -31,7 +33,12 @@ public final class WritersCommentBottomSheetViewController: BaseBottomSheetViewC
     }
     
     public override func bind() {
-        
+        viewModel.deleteItem
+            .receive(on: DispatchQueue.main)
+            .sink{ [weak self] _ in
+                self?.dismiss(animated: true)
+            }
+            .store(in: &cancellable)
     }
     
     public override func tap(action: BottomSheetAction) {
@@ -40,7 +47,7 @@ public final class WritersCommentBottomSheetViewController: BaseBottomSheetViewC
             break
             
         case Comment.Action.delete:
-            break
+            viewModel.delete(at: index)
         
         default:    fatalError()
         }
