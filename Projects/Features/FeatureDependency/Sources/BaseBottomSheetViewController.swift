@@ -42,6 +42,7 @@ open class BaseBottomSheetViewController: UIViewController {
         layout()
         addItems()
         initialize()
+        bind()
         
         func modalSetting() {
            
