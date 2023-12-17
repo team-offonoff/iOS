@@ -20,19 +20,18 @@ extension Comment {
         case dislike
     }
     
-    public enum Action {
+    public enum Action: Identifiable {
         
         public static let identifier = "Action."
         
         case fetch
         case register
+        case report
+        case modify
         case delete
         case like
         case dislike
+        case tapEtc
         case showBottomSheet
-        
-        public var identifier: String {
-            Comment.identifier + Action.identifier + String(describing: self)
-        }
     }
 }

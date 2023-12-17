@@ -72,35 +72,4 @@ public final class TopicBottomSheetViewController: BaseBottomSheetViewController
             fatalError("매개변수로 잘못된 액션 전달")
         }
     }
-    
-}
-
-extension Topic.Action: BottomSheetAction {
-
-    public var content: BottomSheetActionContent {
-        switch self {
-        case .hide:     return HideTopicActionContent()
-        case .report:   return ReportTopicActionContent()
-        case .reset:    return ResetTopicActionContent()
-        default: fatalError()
-        }
-    }
-}
-
-fileprivate struct HideTopicActionContent: BottomSheetActionContent {
-    public let defaultIcon: UIImage = Image.hide
-    public let disabledIcon: UIImage? = nil
-    public let title: String = "이런 토픽은 안볼래요"
-}
-
-fileprivate struct ReportTopicActionContent: BottomSheetActionContent {
-    public let defaultIcon: UIImage = Image.report
-    public let disabledIcon: UIImage? = nil
-    public let title: String = "신고하기"
-}
-
-fileprivate struct ResetTopicActionContent: BottomSheetActionContent {
-    public let defaultIcon: UIImage = Image.resetEnable
-    public let disabledIcon: UIImage? = Image.resetDisable
-    public let title: String = "투표 다시 하기"
 }

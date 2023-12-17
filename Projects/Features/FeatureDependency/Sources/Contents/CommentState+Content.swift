@@ -1,5 +1,5 @@
 //
-//  Comment+Content.swift
+//  CommentState+Content.swift
 //  FeatureDependency
 //
 //  Created by 박소윤 on 2023/12/15.
