@@ -13,9 +13,6 @@ import Data
 
 public class DefaultHomeCoordinator: HomeCoordinator {
     
-    private var window: UIWindow?
-    private let navigationController: UINavigationController
-    
     required public init(window: UIWindow?){
         self.window = window
         self.navigationController = UINavigationController()
@@ -26,10 +23,13 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         self.navigationController = navigationController
     }
     
-    private lazy var homeViewModel: HomeTabViewModel = generateHomeViewModel()
-    
+    private var window: UIWindow?
+    private var commentBottomSheet: CommentBottomSheetViewController?
+    private var commentBottomSheetViewModel: CommentBottomSheetViewModel?
+    private let navigationController: UINavigationController
     private let topicRepository: TopicRepository = DefaultTopicRepository()
     private let commentRepository: CommentRepository = DefaultCommentRepository()
+    private lazy var homeViewModel: HomeTabViewModel = generateHomeViewModel()
     
     private func generateHomeViewModel() -> HomeTabViewModel {
         
@@ -69,16 +69,20 @@ public class DefaultHomeCoordinator: HomeCoordinator {
     
     public func startCommentBottomSheet(topicId: Int) {
         
-        let bottomSheetViewController = CommentBottomSheetViewController(viewModel: viewModel())
-        navigationController.present(bottomSheetViewController, animated: true)
+        commentBottomSheet = CommentBottomSheetViewController(viewModel: viewModel())
+        commentBottomSheet?.coordinator = self
+        if let commentBottomSheet = commentBottomSheet {
+            navigationController.present(commentBottomSheet, animated: true)
+        }
         
         func viewModel() -> CommentBottomSheetViewModel {
-            DefaultCommentBottomSheetViewModel(
+            commentBottomSheetViewModel = DefaultCommentBottomSheetViewModel(
                 topicId: topicId,
                 fetchCommentsUseCase: DefaultFetchCommentsUseCase(repository: commentRepository),
                 patchCommentLikeUseCase: DefaultPatchCommentLikeStateUseCase(repository: commentRepository),
                 patchCommentDislikeUseCase: DefaultPatchCommentDislikeStateUseCase(repository: commentRepository)
             )
+            return commentBottomSheetViewModel!
         }
     }
     
@@ -86,5 +90,15 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         let popUpViewController = ImagePopUpViewController(choice: choice)
         popUpViewController.modalPresentationStyle = .overFullScreen
         navigationController.present(popUpViewController, animated: false)
+    }
+    
+    public func startWritersBottomSheet() {
+        guard let viewModel = commentBottomSheetViewModel else { return }
+        commentBottomSheet?.present(WritersCommentBottomSheetViewController(viewModel: viewModel), animated: true)
+    }
+    
+    public func startOthersBottomSheet() {
+        guard let viewModel = commentBottomSheetViewModel else { return }
+        commentBottomSheet?.present(OthersCommnetBottomSheetViewController(viewModel: viewModel), animated: true)
     }
 }

@@ -132,6 +132,13 @@ final class CommentBottomSheetTableViewCell: BaseTableViewCell {
                 self.delegate?.tap(.init(identifier: Comment.State.dislike.identifier, data: self.indexPath))
             }
             .store(in: &cancellable)
+        
+        moreButton.tapPublisher
+            .sink{ [weak self] _ in
+                guard let self = self else { return }
+                self.delegate?.tap(.init(identifier: Comment.Action.tapEtc.identifier, data: self.indexPath))
+            }
+            .store(in: &cancellable)
     }
     
     func fill(_ comment: CommentListItemViewModel) {

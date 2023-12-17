@@ -17,8 +17,6 @@ import Core
 
 final class CommentBottomSheetViewController: UIViewController {
     
-    private var viewModel: any CommentBottomSheetViewModel
-    
     init(viewModel: CommentBottomSheetViewModel){
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -28,6 +26,10 @@ final class CommentBottomSheetViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    public weak var coordinator: HomeCoordinator?
+    private var viewModel: any CommentBottomSheetViewModel
+    private var cancellable: Set<AnyCancellable> = []
+    
     private let headerView: CommentHeaderView = CommentHeaderView()
     private let tableView: UITableView = {
         let tableView: UITableView = UITableView()
@@ -35,7 +37,6 @@ final class CommentBottomSheetViewController: UIViewController {
         tableView.registers(cellTypes: [CommentBottomSheetTableViewCell.self])
         return tableView
     }()
-    private var cancellable: Set<AnyCancellable> = []
     
     override func viewDidLoad() {
         hierarchy()
@@ -57,8 +58,6 @@ final class CommentBottomSheetViewController: UIViewController {
             })
         }
         sheetPresentationController.prefersScrollingExpandsWhenScrolledToEdge = false
-        
-        loadViewIfNeeded()
         
         func detents() -> [CGFloat] {
             [Device.height-273, Device.height-52]
@@ -126,6 +125,14 @@ extension CommentBottomSheetViewController: TapDelegate {
             
         case Comment.State.dislike.identifier:
             viewModel.toggleDislikeState(at: index)
+            
+        case Comment.Action.tapEtc.identifier:
+            if viewModel.isWriterItem(at: index) {
+                coordinator?.startWritersBottomSheet()
+            }
+            else {
+                coordinator?.startOthersBottomSheet()
+            }
             
         default:
             fatalError()
