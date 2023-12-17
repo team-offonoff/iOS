@@ -41,8 +41,14 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
     public var comments: [CommentListItemViewModel] = []
     public let toggleLikeState: PassthroughSubject<Index, Never> = PassthroughSubject()
     public let toggleDislikeState: PassthroughSubject<Index, Never> = PassthroughSubject()
+    public let reportItem: PassthroughSubject<Index, Never> = PassthroughSubject()
+    public let modifyItem: PassthroughSubject<Index, Never> = PassthroughSubject()
     public let deleteItem: PassthroughSubject<Index, Never> = PassthroughSubject()
     public let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
+    
+    public func isWriterItem(at index: Int) -> Bool {
+        index % 2 == 0 ? true : false //comments[index].userId == userId
+    }
 }
 
 //MARK: - INPUT
@@ -53,16 +59,16 @@ extension DefaultCommentBottomSheetViewModel {
             .execute(topicId: topicId, page: pageInfo?.page ?? 0)
             .sink{ [weak self] result in
                 guard let self = self else { return }
-                if result.isSuccess, let (pageInfo, data) = result.data {
+//                if result.isSuccess, let (pageInfo, data) = result.data {
                     //TODO: 페이징 코드 추가
-                    self.pageInfo = pageInfo
+//                    self.pageInfo = pageInfo
                     self.comments = [CommentListItemViewModel](repeating: .init(), count: 10)
 //                    self.comments.append(contentsOf: data.map{ _ in .init() })
                     self.reloadData?()
-                }
-                else if let error = result.error {
-                    self.errorHandler.send(error)
-                }
+//                }
+//                else if let error = result.error {
+//                    self.errorHandler.send(error)
+//                }
             }
             .store(in: &cancellable)
     }
@@ -105,7 +111,15 @@ extension DefaultCommentBottomSheetViewModel {
             .store(in: &cancellable)
     }
     
+    public func modify(at index: Int, content: String) {
+        
+    }
+    
     public func delete(at index: Int) {
+        
+    }
+    
+    public func report(at index: Int) {
         
     }
 }

@@ -12,13 +12,14 @@ import Core
 import FeatureDependency
 import Combine
 
-public typealias CommentBottomSheetViewModel = CommentBottomSheetViewModelInput & CommentBottomSheetViewModelOutput & ErrorHandleable
+public typealias CommentBottomSheetViewModel = CommentBottomSheetViewModelInput & CommentBottomSheetViewModelOutput & ErrorHandleable & WritersCommentBottomSheetViewModel & OthersCommentBottomSheetViewModel
+public typealias WritersCommentBottomSheetViewModel = WritersCommentBottomSheetViewModelInput & WritersCommentBottomSheetViewModelOutput
+public typealias OthersCommentBottomSheetViewModel = OthersCommentBottomSheetViewModelInput & OthersCommentBottomSheetViewModelOutput
 
 public protocol CommentBottomSheetViewModelInput {
     func fetchComments()
     func toggleLikeState(at index: Int)
     func toggleDislikeState(at index: Int)
-    func delete(at index: Int)
 }
 
 public protocol CommentBottomSheetViewModelOutput {
@@ -27,5 +28,27 @@ public protocol CommentBottomSheetViewModelOutput {
     var reloadData: (() -> Void)? { get set }
     var toggleLikeState: PassthroughSubject<Index, Never> { get }
     var toggleDislikeState: PassthroughSubject<Index, Never> { get }
+    func isWriterItem(at index: Int) -> Bool
+}
+
+public protocol WritersCommentBottomSheetViewModelInput {
+    func modify(at index: Int, content: String)
+    func delete(at index: Int)
+}
+
+public protocol WritersCommentBottomSheetViewModelOutput {
+    var modifyItem: PassthroughSubject<Index, Never> { get }
     var deleteItem: PassthroughSubject<Index, Never> { get }
 }
+
+public protocol OthersCommentBottomSheetViewModelInput {
+    func report(at index: Int)
+}
+
+public protocol OthersCommentBottomSheetViewModelOutput {
+    var reportItem: PassthroughSubject<Index, Never> { get }
+}
+
+
+
+
