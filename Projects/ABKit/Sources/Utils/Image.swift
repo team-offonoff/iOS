@@ -31,6 +31,15 @@ public struct Image{
     public static let tabMyDeselect = UIImage.load(name: "tab_my_deselect")
     public static let tabGenerateTopic = UIImage.load(name: "tab_generate_topic")
     
+    //MARK: BottomSheet
+    
+    public static let modify = UIImage.load(name: "modify")
+    public static let delete = UIImage.load(name: "delete")
+    public static let hide = UIImage.load(name: "hide")
+    public static let report = UIImage.load(name: "report")
+    public static let resetEnable = UIImage.load(name: "reset_enable")
+    public static let resetDisable = UIImage.load(name: "reset_disable")
+    
     //MARK: Comment
     
     public static let chatLike = UIImage.load(name: "chat_like")
@@ -44,10 +53,6 @@ public struct Image{
     public static let close = UIImage.load(name: "close")
     public static let choiceTextExpand = UIImage.load(name: "choice_text_expand")
     public static let choiceImageExpand = UIImage.load(name: "choice_image_expand")
-    public static let hide = UIImage.load(name: "hide")
-    public static let report = UIImage.load(name: "report")
-    public static let resetEnable = UIImage.load(name: "reset_enable")
-    public static let resetDisable = UIImage.load(name: "reset_disable")
     public static let slide = UIImage.load(name: "slide")
     public static let dot = UIImage.load(name: "dot")
     public static let homeArrow = UIImage.load(name: "home_arrow")
