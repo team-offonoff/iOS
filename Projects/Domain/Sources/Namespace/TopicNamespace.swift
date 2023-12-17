@@ -39,7 +39,6 @@ extension Topic {
     public enum Action: String {
         
         private static let identifier = "Action."
-        public static let forBottomSheet: [Action] = [.hide, .report, .reset]
         
         case choiceA
         case choiceB

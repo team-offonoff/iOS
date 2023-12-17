@@ -14,59 +14,30 @@ import HomeFeatureInterface
 import FeatureDependency
 import Domain
 
-final class TopicBottomSheetViewController: UIViewController{
+public final class TopicBottomSheetViewController: BaseBottomSheetViewController {
     
-    private let viewModel: any TopicBottomSheetViewModel
-    
-    init(viewModel: TopicBottomSheetViewModel) {
+    public init(viewModel: TopicBottomSheetViewModel){
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
+        super.init(actions: [Topic.Action.hide, Topic.Action.report, Topic.Action.reset])
     }
     
-    required public init?(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var cancellable: Set<AnyCancellable> = []
-    private let mainView: TopicBottomSheetView = TopicBottomSheetView()
+    private let viewModel: TopicBottomSheetViewModel
     
-    override func viewDidLoad() {
-        modalSetting()
-        layout()
-        initialize()
-        bind()
-    }
-
-    private func modalSetting(){
+    public override func initialize() {
         
-        guard let sheetPresentationController = sheetPresentationController else { return }
-
-        let detent = UISheetPresentationController.Detent.custom(resolver: { _ in
-            return 190 + 18
-        })
-
-        sheetPresentationController.prefersGrabberVisible = false
-        sheetPresentationController.detents = [detent]
-
-        loadViewIfNeeded()
-    }
-    
-    private func layout(){
-        view.addSubviews([mainView])
-        mainView.snp.makeConstraints{
-            $0.top.equalToSuperview()
-            $0.height.equalTo(190)
-            $0.leading.trailing.equalToSuperview().inset(6)
+        setResetEnableState()
+        
+        func setResetEnableState() {
+            guard let index = actions.map({ $0 as! Topic.Action }).firstIndex(where: { $0 == Topic.Action.reset }) else { return }
+            mainView.itemViews[index].isDisabled = !viewModel.canChoiceReset
         }
     }
     
-    private func initialize() {
-        mainView.delegate = self
-        mainView.choiceResetItem?.isDisabled = !viewModel.canChoiceReset
-    }
-    
-    private func bind() {
-        
+    public override func bind() {
         viewModel.successTopicAction
             .receive(on: DispatchQueue.main)
             .sink{ action in
@@ -87,10 +58,9 @@ final class TopicBottomSheetViewController: UIViewController{
             self.dismiss(animated: true)
         }
     }
-}
-
-extension TopicBottomSheetViewController: TopicActionDelegate {
-    func action(_ action: Topic.Action) {
+    
+    public override func tap(action: BottomSheetAction) {
+        guard let action = action as? Topic.Action else { return }
         switch action {
         case .hide:
             viewModel.hideTopic()
@@ -102,4 +72,35 @@ extension TopicBottomSheetViewController: TopicActionDelegate {
             fatalError("매개변수로 잘못된 액션 전달")
         }
     }
+    
+}
+
+extension Topic.Action: BottomSheetAction {
+
+    public var content: BottomSheetActionContent {
+        switch self {
+        case .hide:     return HideTopicActionContent()
+        case .report:   return ReportTopicActionContent()
+        case .reset:    return ResetTopicActionContent()
+        default: fatalError()
+        }
+    }
+}
+
+fileprivate struct HideTopicActionContent: BottomSheetActionContent {
+    public let defaultIcon: UIImage = Image.hide
+    public let disabledIcon: UIImage? = nil
+    public let title: String = "이런 토픽은 안볼래요"
+}
+
+fileprivate struct ReportTopicActionContent: BottomSheetActionContent {
+    public let defaultIcon: UIImage = Image.report
+    public let disabledIcon: UIImage? = nil
+    public let title: String = "신고하기"
+}
+
+fileprivate struct ResetTopicActionContent: BottomSheetActionContent {
+    public let defaultIcon: UIImage = Image.resetEnable
+    public let disabledIcon: UIImage? = Image.resetDisable
+    public let title: String = "투표 다시 하기"
 }
