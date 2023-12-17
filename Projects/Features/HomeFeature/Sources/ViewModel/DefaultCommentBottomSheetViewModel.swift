@@ -20,18 +20,20 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
     private let fetchCommentsUseCase: any FetchCommentsUseCase
     private let patchCommentLikeUseCase: any PatchCommentLikeStateUseCase
     private let patchCommentDislikeUseCase: any PatchCommentDislikeStateUseCase
-//    private let deleteCommentUseCase: any
+    private let deleteCommentUseCase: any DeleteCommentUseCase
     
     public init(
         topicId: Int,
         fetchCommentsUseCase: any FetchCommentsUseCase,
         patchCommentLikeUseCase: any PatchCommentLikeStateUseCase,
-        patchCommentDislikeUseCase: any PatchCommentDislikeStateUseCase
+        patchCommentDislikeUseCase: any PatchCommentDislikeStateUseCase,
+        deleteCommentUseCase: any DeleteCommentUseCase
     ) {
         self.topicId = topicId
         self.fetchCommentsUseCase = fetchCommentsUseCase
         self.patchCommentLikeUseCase = patchCommentLikeUseCase
         self.patchCommentDislikeUseCase = patchCommentDislikeUseCase
+        self.deleteCommentUseCase = deleteCommentUseCase
         super.init()
     }
     
@@ -62,7 +64,7 @@ extension DefaultCommentBottomSheetViewModel {
 //                if result.isSuccess, let (pageInfo, data) = result.data {
                     //TODO: 페이징 코드 추가
 //                    self.pageInfo = pageInfo
-                    self.comments = [CommentListItemViewModel](repeating: .init(), count: 10)
+                    self.comments = [CommentListItemViewModel](repeating: .init(), count: 2)
 //                    self.comments.append(contentsOf: data.map{ _ in .init() })
                     self.reloadData?()
 //                }
@@ -116,7 +118,21 @@ extension DefaultCommentBottomSheetViewModel {
     }
     
     public func delete(at index: Int) {
-        
+        deleteCommentUseCase
+            .execute(commentId: comments[index].id)
+            .sink{ [weak self] result in
+                guard let self = self else { return }
+                if result.isSuccess {
+                    defer {
+                        self.deleteItem.send(index)
+                    }
+                    self.comments.remove(at: index)
+                }
+                else if let error = result.error {
+                    self.errorHandler.send(error)
+                }
+            }
+            .store(in: &cancellable)
     }
     
     public func report(at index: Int) {
