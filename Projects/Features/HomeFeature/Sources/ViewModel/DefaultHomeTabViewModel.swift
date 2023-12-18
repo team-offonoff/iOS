@@ -55,7 +55,6 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     @Published private var currentIndexPath: IndexPath = IndexPath(row: 0, section: 0)
     
     override func bind(){
-        topics[0].votedChoice = topics[0].aOption
         willMovePage
             .sink{ [weak self] _ in
                 self?.startTimer()
@@ -64,24 +63,25 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
     
     func viewDidLoad() {
-//        bindTopics()
+        bindTopics()
     }
     
-    private func bindTopics(){
-
-        let task = fetchTopicsUseCase.execute()
-
-        task.filter{ $0.isSuccess }
-            .map{ $0.data }
-            .sink(receiveValue: { [weak self] topics in
-                defer {
-                    self?.reloadTopics.send(())
+    private func bindTopics() {
+        fetchTopicsUseCase
+            .execute(keywordId: nil, paging: nil, sort: nil)
+            .sink{ [weak self] result in
+                guard let self = self else { return }
+                if result.isSuccess, let (_, topics) = result.data {
+                    defer {
+                        self.reloadTopics.send(())
+                    }
+                    self.topics = topics.map{ HomeTopicItemViewModel.init(topic: $0) }
                 }
-                self?.topics = topics.map{ HomeTopicItemViewModel.init(topic: $0) }
-            })
+                else if let error = result.error {
+                    self.errorHandler.send(error)
+                }
+            }
             .store(in: &cancellable)
-        
-//        task.filter{ $0.code != .success }
     }
     
     //MARK: topic page control
