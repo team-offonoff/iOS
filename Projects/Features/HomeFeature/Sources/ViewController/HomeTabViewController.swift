@@ -35,7 +35,9 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
     private let viewModel: any HomeTabViewModel
     
     override func viewDidAppear(_ animated: Bool) {
-        viewModel.startTimer()
+        if viewModel.topics.count > 0 {
+            viewModel.startTimer()
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {

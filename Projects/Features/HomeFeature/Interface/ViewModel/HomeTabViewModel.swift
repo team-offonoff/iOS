@@ -33,7 +33,7 @@ public protocol TopicPageControlViewModel {
     var topics: [HomeTopicItemViewModel] { get }
     var canMovePrevious: Bool { get }
     var canMoveNext: Bool { get }
-    var willMovePage: Published<IndexPath>.Publisher { get }
+    var willMovePage: AnyPublisher<IndexPath, Never> { get }
     var reloadTopics: PassthroughSubject<Void, Never> { get }
     func moveNextTopic()
     func movePreviousTopic()

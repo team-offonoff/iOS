@@ -39,7 +39,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         topics[currentIndexPath.row]
     }
     
-    var willMovePage: Published<IndexPath>.Publisher{ $currentIndexPath }
+    var willMovePage: AnyPublisher<IndexPath, Never>{ $currentIndexPath.filter{ _ in self.topics.count > 0 }.eraseToAnyPublisher() }
     var voteSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
     let successTopicAction: PassthroughSubject<Topic.Action, Never> = PassthroughSubject()
