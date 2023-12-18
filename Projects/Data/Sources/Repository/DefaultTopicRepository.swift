@@ -31,21 +31,23 @@ public final class DefaultTopicRepository: TopicRepository {
         
         func makeDTO() -> TopicGenerateRequestDTO {
             .init(
-                topicSide: request.side.rawValue,
-                topicTitle: request.title,
-                choices: makeChoiceDTO(),
+                side: Mapper.dto(topicSide: request.side),
+                keywordName: request.keyword.name,
+                title: request.title,
+                choices: makeChoicesDTO(),
                 deadline: request.deadline
             )
         }
         
-        func makeChoiceDTO() -> [ChoiceGenerateRequestDTO] {
-            request.choices.map{ choice in
-                    .init(
-                        choiceOption: choice.option.rawValue,
-                        choiceContentRequest: .init(
-                            type: "IMAGE_TEXT",
-                            imageUrl: String(describing: choice.content.imageURL),
-                            text: choice.content.text
+        func makeChoicesDTO() -> [TopicGenerateRequestDTO.ChoiceRequestDTO] {
+            request.choices
+                .map{ choice in
+                        .init(
+                            choiceOption: Mapper.dto(choiceOption: choice.option),
+                            choiceContentRequest: .init(
+                                type: "IMAGE_TEXT",
+                                imageUrl: String(describing: choice.content.imageURL),
+                                text: choice.content.text
                         )
                     )
             }

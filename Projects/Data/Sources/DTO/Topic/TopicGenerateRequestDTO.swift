@@ -10,19 +10,22 @@ import Foundation
 import Domain
 
 struct TopicGenerateRequestDTO: Encodable {
-    let topicSide: String
-    let topicTitle: String
-    let choices: [ChoiceGenerateRequestDTO]
+    
+    let side: String
+    let keywordName: String
+    let title: String
+    let choices: [ChoiceRequestDTO]
     let deadline: Int
-}
-
-struct ChoiceGenerateRequestDTO: Encodable {
-    let choiceOption: String
-    let choiceContentRequest: ChoiceContentRequestModel
-}
-
-struct ChoiceContentRequestModel: Encodable {
-    let type: String
-    let imageUrl: String
-    let text: String
+    
+    struct ChoiceRequestDTO: Encodable {
+        
+        let choiceOption: String
+        let choiceContentRequest: ContentRequestDTO
+        
+        struct ContentRequestDTO: Encodable {
+            let type: String
+            let imageUrl: String
+            let text: String
+        }
+    }
 }
