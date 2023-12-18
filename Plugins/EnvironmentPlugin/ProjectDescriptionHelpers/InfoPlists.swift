@@ -8,6 +8,7 @@ public extension Project {
         
         //KEY 관리
         "KAKAO_APP_KEY": "$(KAKAO_APP_KEY)",
+        "DEV_TOKEN": "$(DEV_TOKEN)",
         
         "CFBundleShortVersionString": "1.0.0",
         "CFBundleDevelopmentRegion": "ko",
@@ -58,6 +59,7 @@ public extension Project {
         
         //KEY 관리
         "KAKAO_APP_KEY": "$(KAKAO_APP_KEY)",
+        "DEV_TOKEN": "$(DEV_TOKEN)",
         
         "CFBundleShortVersionString": "1.0.0",
         "CFBundleDevelopmentRegion": "ko",
