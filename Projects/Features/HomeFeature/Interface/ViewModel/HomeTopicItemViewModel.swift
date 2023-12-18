@@ -22,7 +22,7 @@ public struct HomeTopicItemViewModel {
     public let likeCount: String
     public let aOption: Choice
     public let bOption: Choice
-    public var votedChoice: Choice?
+    public var selectedOption: Choice?
 }
 
 extension HomeTopicItemViewModel {
@@ -37,17 +37,17 @@ extension HomeTopicItemViewModel {
         self.deadline = topic.deadline
         self.chatCount = ABFormat.count(1000) + " 개"
         self.likeCount = ABFormat.count(1200) + " 명"
-        self.aOption = topic.choices.first(where: { $0.option == .A })!
-        self.bOption = topic.choices.first(where: { $0.option == .B })!
-        self.votedChoice = nil
+        self.aOption = .init(id: 0, content: .init(text: "10년 전 과거로 가기", imageURL: nil), option: .A) //topic.choices.first(where: { $0.option == .A })!
+        self.bOption = .init(id: 0, content: .init(text: "10년 전 과거로 가기", imageURL: nil), option: .B)//topic.choices.first(where: { $0.option == .B })!
+        self.selectedOption = nil
     }
     
     public var isVoted: Bool {
-        votedChoice != nil
+        selectedOption != nil
     }
 }
 
-private extension TopicSide {
+private extension Topic.Side {
     var title: String {
         switch self {
         case .A:    return "A 사이드"

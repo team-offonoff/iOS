@@ -22,7 +22,10 @@ public final class NetworkService {
     }
 
     private var token: String? {
-        UserManager.shared.accessToken
+        if let devToken = Bundle.main.infoDictionary?["DEV_TOKEN"] as? String {
+            return devToken
+        }
+        return UserManager.shared.accessToken
     }
     
     public var baseUrlComponents: URLComponents? {

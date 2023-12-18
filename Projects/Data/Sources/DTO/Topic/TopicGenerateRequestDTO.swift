@@ -11,7 +11,6 @@ import Domain
 
 struct TopicGenerateRequestDTO: Encodable {
     let topicSide: String
-    let categoryId: Int
     let topicTitle: String
     let choices: [ChoiceGenerateRequestDTO]
     let deadline: Int

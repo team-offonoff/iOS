@@ -190,7 +190,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
     func binding(data: HomeTopicItemViewModel) {
         if data.isVoted {
-            guard let choice = data.votedChoice else { return }
+            guard let choice = data.selectedOption else { return }
             select(choice: choice)
         }
         else {

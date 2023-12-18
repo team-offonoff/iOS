@@ -33,13 +33,13 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         super.init()
     }
 
-    var topics: [HomeTopicItemViewModel] = [.init(topic: TestData.topicA), .init(topic: TestData.topicImage), .init(topic: TestData.topicA), .init(topic: TestData.topicB)]
+    var topics: [HomeTopicItemViewModel] = [.init(topic: TestData.topicData1), .init(topic: TestData.topicData2), .init(topic: TestData.topicData3), .init(topic: TestData.topicData4)]
     
     var currentTopic: HomeTopicItemViewModel {
         topics[currentIndexPath.row]
     }
     
-    var willMovePage: Published<IndexPath>.Publisher{ $currentIndexPath }
+    var willMovePage: AnyPublisher<IndexPath, Never>{ $currentIndexPath.filter{ _ in self.topics.count > 0 }.eraseToAnyPublisher() }
     var voteSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
     let successTopicAction: PassthroughSubject<Topic.Action, Never> = PassthroughSubject()
@@ -55,7 +55,6 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     @Published private var currentIndexPath: IndexPath = IndexPath(row: 0, section: 0)
     
     override func bind(){
-        topics[0].votedChoice = topics[0].aOption
         willMovePage
             .sink{ [weak self] _ in
                 self?.startTimer()
@@ -64,24 +63,25 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
     
     func viewDidLoad() {
-//        bindTopics()
+        bindTopics()
     }
     
-    private func bindTopics(){
-
-        let task = fetchTopicsUseCase.execute()
-
-        task.filter{ $0.isSuccess }
-            .map{ $0.data }
-            .sink(receiveValue: { [weak self] topics in
-                defer {
-                    self?.reloadTopics.send(())
+    private func bindTopics() {
+        fetchTopicsUseCase
+            .execute(keywordId: nil, paging: nil, sort: nil)
+            .sink{ [weak self] result in
+                guard let self = self else { return }
+                if result.isSuccess, let (_, topics) = result.data {
+                    defer {
+                        self.reloadTopics.send(())
+                    }
+                    self.topics = topics.map{ HomeTopicItemViewModel.init(topic: $0) }
                 }
-                self?.topics = topics.map{ HomeTopicItemViewModel.init(topic: $0) }
-            })
+                else if let error = result.error {
+                    self.errorHandler.send(error)
+                }
+            }
             .store(in: &cancellable)
-        
-//        task.filter{ $0.code != .success }
     }
     
     //MARK: topic page control
@@ -161,13 +161,13 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
-                    self.topics[self.currentIndexPath.row].votedChoice = {
+                    self.topics[self.currentIndexPath.row].selectedOption = {
                         switch choice {
                         case .A:    return self.topics[self.currentIndexPath.row].aOption
                         case .B:    return self.topics[self.currentIndexPath.row].bOption
                         }
                     }()
-                    self.selectedOption = self.topics[self.currentIndexPath.row].votedChoice
+                    self.selectedOption = self.topics[self.currentIndexPath.row].selectedOption
                 }
                 else if let error = result.error {
                     self.errorHandler.send(error)
@@ -207,7 +207,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
-                    self.topics[self.currentIndexPath.row].votedChoice = nil
+                    self.topics[self.currentIndexPath.row].selectedOption = nil
                     self.successTopicAction.send(Topic.Action.reset)
                     self.reloadTopics.send(())
                 }
