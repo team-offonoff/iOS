@@ -32,7 +32,6 @@ public final class DefaultTopicRepository: TopicRepository {
         func makeDTO() -> TopicGenerateRequestDTO {
             .init(
                 topicSide: request.side.rawValue,
-                categoryId: request.categoryId,
                 topicTitle: request.title,
                 choices: makeChoiceDTO(),
                 deadline: request.deadline
@@ -53,17 +52,23 @@ public final class DefaultTopicRepository: TopicRepository {
         }
     }
     
-    //임시 구현
-    public func fetchTopic() -> NetworkResultPublisher<[Topic]> {
+    public func fetchTopic(keywordId: Int?, paging: Paging?, sort: String?) -> NetworkResultPublisher<(Paging, [Topic])?> {
         
         var urlComponents = networkService.baseUrlComponents
-        urlComponents?.path = basePath
+        urlComponents?.path = basePath + path("info") + path("voting")
+//        urlComponents?.queryItems = [
+//            .init(name: "keywordId", value: keywordId),
+//            .init(name: "page", value: <#T##String?#>),
+//            .init(name: "size", value: <#T##String?#>),
+//            .init(name: "sort", value: sort)
+//
+//        ]
         
         guard let urlRequest = urlComponents?.toURLRequest(method: .get) else {
             fatalError("json encoding or url parsing error")
         }
         
-        return arrayDataTask(request: urlRequest, elementType: TopicResponseDTO.self)
+        return dataTask(request: urlRequest, responseType: PagingContentResponseDTO<TopicResponseDTO>.self)
     }
     
     public func report(topicId: Int) -> NetworkResultPublisher<Any?> {
@@ -91,7 +96,9 @@ public final class DefaultTopicRepository: TopicRepository {
         return dataTask(request: urlRequest)
         
         func makeDTO() -> GenerateVoteRequestDTO {
-            .init(choiceOption: request.choiceOption.toDTO(), votedAt: request.votedAt)
+            .init(
+                choiceOption: Mapper.dto(choiceOption: request.choiceOption),
+                votedAt: request.votedAt)
         }
     }
     
