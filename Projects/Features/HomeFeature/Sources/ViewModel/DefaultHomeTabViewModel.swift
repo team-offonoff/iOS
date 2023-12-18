@@ -161,13 +161,13 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
-                    self.topics[self.currentIndexPath.row].votedChoice = {
+                    self.topics[self.currentIndexPath.row].selectedOption = {
                         switch choice {
                         case .A:    return self.topics[self.currentIndexPath.row].aOption
                         case .B:    return self.topics[self.currentIndexPath.row].bOption
                         }
                     }()
-                    self.selectedOption = self.topics[self.currentIndexPath.row].votedChoice
+                    self.selectedOption = self.topics[self.currentIndexPath.row].selectedOption
                 }
                 else if let error = result.error {
                     self.errorHandler.send(error)
@@ -207,7 +207,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
-                    self.topics[self.currentIndexPath.row].votedChoice = nil
+                    self.topics[self.currentIndexPath.row].selectedOption = nil
                     self.successTopicAction.send(Topic.Action.reset)
                     self.reloadTopics.send(())
                 }
