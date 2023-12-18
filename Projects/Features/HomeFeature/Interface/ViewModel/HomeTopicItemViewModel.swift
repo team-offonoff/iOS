@@ -47,7 +47,7 @@ extension HomeTopicItemViewModel {
     }
 }
 
-private extension TopicSide {
+private extension Topic.Side {
     var title: String {
         switch self {
         case .A:    return "A 사이드"

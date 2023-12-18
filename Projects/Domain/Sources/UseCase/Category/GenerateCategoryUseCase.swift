@@ -28,5 +28,5 @@ public final class DefaultGenerateCategoryUseCase: GenerateCategoryUseCase {
 
 public struct GenerateCategoryUseCaseRequestValue {
     public let name: String
-    public let topicSide: TopicSide
+    public let topicSide: Topic.Side
 }
