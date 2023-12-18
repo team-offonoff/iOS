@@ -31,12 +31,12 @@ struct TopicResponseDTO: Decodable {
     
     struct ChoiceResponseDTO: Decodable {
         let choiceId: Int
-        let content: ContentResponseDTO
+        let content: ContentResponseDTO? //TODO: null 해제 필요
         let choiceOption: String
         
         struct ContentResponseDTO: Decodable {
             let text: String
-            let imageURL: String
+            let imageUrl: String
             let type: String
         }
     }
@@ -81,7 +81,8 @@ extension TopicResponseDTO.ChoiceResponseDTO: Domainable {
     func toDomain() -> Choice {
         .init(
             id: choiceId,
-            content: content.toDomain(),
+            //TODO: null 해제 필요
+            content: content?.toDomain() ?? .init(text: "choice is null", imageURL: nil),
             option: Mapper.entity(choiceOption: choiceOption)!
         )
     }
@@ -91,7 +92,8 @@ extension TopicResponseDTO.ChoiceResponseDTO.ContentResponseDTO: Domainable {
     func toDomain() -> Choice.Content {
         .init(
             text: text,
-            imageURL: URL(string: imageURL)
+            imageURL: URL(string: imageUrl),
+            type: type
         )
     }
 }
