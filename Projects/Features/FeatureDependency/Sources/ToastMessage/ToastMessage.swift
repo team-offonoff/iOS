@@ -8,82 +8,113 @@
 
 import Foundation
 import UIKit
+import Combine
 
 public final class ToastMessage {
     
-    private static let toastMessageView = ToastMessageView()
+    public static let shared: ToastMessage = ToastMessage()
     
-    private init() { }
-    
-    private static var isAnimating = false
-
-    public static func show(message: String) {
-        
-        if isAnimating { return }
-        
-        isAnimating = true
-        
-        let topViewController = topViewController()
-
-        setMessage()
-        setLayout()
-        startAnimation()
-        
-        func topViewController() -> UIWindow? {
-            UIApplication
-                .shared
-                .connectedScenes
-                .compactMap{ ($0 as? UIWindowScene)?.keyWindow }
-                .last
-        }
-        
-        func setMessage() {
-            toastMessageView.messageLabel.text = message
-        }
-        
-        func setLayout() {
-            
-            topViewController?.addSubview(toastMessageView)
-
-            toastMessageView.snp.makeConstraints{
-                $0.bottom.equalTo(topViewController!.snp.top)
-                $0.leading.trailing.equalToSuperview()
-            }
-        }
-    
-        func startAnimation() {
-            startShowingAnimation()
-        }
-        
-        func startShowingAnimation() {
-            UIView.animate(
-                withDuration: 0.5,
-                delay: 0,
-                options: .curveEaseOut,
-                animations: {
-                    topViewController?.isUserInteractionEnabled = false
-                    toastMessageView.transform = CGAffineTransform(translationX: 0, y: toastMessageView.bounds.height)
-                },
-                completion: { _ in
-                    startHidingAnimation()
-                }
-            )
-        }
-        
-        func startHidingAnimation() {
-            UIView.animate(
-                withDuration: 0.5,
-                delay: 2,
-                options: .curveEaseOut,
-                animations: {
-                    toastMessageView.transform = .identity
-                }, completion: { _ in
-                    toastMessageView.removeFromSuperview()
-                    topViewController?.isUserInteractionEnabled = true
-                    isAnimating = false
-                }
-            )
-        }
+    private init() {
+        bind()
     }
     
+    @Published private var isAnimating = false
+    private var topViewController: UIWindow?
+    private var messageQueue: [String] = []
+    private let toastMessageView = ToastMessageView()
+    private var cancellable: Set<AnyCancellable> = []
+    
+    public func register(message: String) {
+        messageQueue.append(message)
+        show()
+    }
+    
+    private func bind() {
+        $isAnimating
+            .dropFirst()
+            .filter{ !$0 }
+            .receive(on: DispatchQueue.main)
+            .sink{ _ in
+                if self.messageQueue.isEmpty { return }
+                self.show()
+            }
+            .store(in: &cancellable)
+    }
+    
+    private func show() {
+        
+        if isAnimating {
+            return
+        } else {
+            isAnimating = true
+        }
+        
+        prepare()
+        start()
+        
+        func prepare() {
+            
+            self.topViewController = topViewController()
+            setMessage()
+            setLayout()
+            
+            func topViewController() -> UIWindow? {
+                UIApplication
+                    .shared
+                    .connectedScenes
+                    .compactMap{ ($0 as? UIWindowScene)?.keyWindow }
+                    .last
+            }
+            
+            func setMessage() {
+                toastMessageView.messageLabel.text = messageQueue.removeFirst()
+            }
+            
+            func setLayout() {
+                self.topViewController?.addSubview(self.toastMessageView)
+                self.toastMessageView.snp.makeConstraints{
+                    $0.bottom.equalTo(self.topViewController!.snp.top)
+                    $0.leading.trailing.equalToSuperview()
+                }
+            }
+        }
+        
+        func start() {
+            
+            startShowingAnimation()
+            
+            func startShowingAnimation() {
+                UIView.animate(
+                    withDuration: 0.5,
+                    delay: 0,
+                    options: .curveEaseOut,
+                    animations: {
+                        self.topViewController?.isUserInteractionEnabled = false
+                        self.toastMessageView.transform = CGAffineTransform(translationX: 0, y: self.toastMessageView.bounds.height)
+                    },
+                    completion: { _ in
+                        startHidingAnimation()
+                    }
+                )
+            }
+            
+            func startHidingAnimation() {
+                UIView.animate(
+                    withDuration: 0.5,
+                    delay: 2,
+                    options: .curveEaseOut,
+                    animations: {
+                        self.toastMessageView.transform = .identity
+                    }, completion: { _ in
+                        defer {
+                            self.isAnimating = false
+                        }
+                        self.topViewController = nil
+                        self.toastMessageView.removeFromSuperview()
+                        self.topViewController?.isUserInteractionEnabled = true
+                    }
+                )
+            }
+        }
+    }
 }
