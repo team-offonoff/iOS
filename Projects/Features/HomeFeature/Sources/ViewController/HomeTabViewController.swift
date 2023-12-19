@@ -80,7 +80,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
             viewModel.errorHandler
                 .receive(on: DispatchQueue.main)
                 .sink{ error in
-                    ToastMessage.show(message: error.message)
+                    ToastMessage.shared.register(message: error.message)
                     handleError(code: error.code)
                 }
                 .store(in: &cancellables)
