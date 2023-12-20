@@ -143,11 +143,11 @@ final class CommentBottomSheetTableViewCell: BaseTableViewCell {
     
     func fill(_ comment: CommentListItemViewModel) {
         nicknameLabel.text = comment.nickname
-        dateLabel.text = comment.date
+        dateLabel.text = comment.createdAt
         choiceLabel.text = comment.choice
         contentLabel.text = comment.content
         state(isLike: comment.isLike, count: comment.likeCountString)
-        state(isDislike: comment.isDislike)
+        state(isDislike: comment.isHate)
     }
     
     func state(isLike: Bool, count: String) {

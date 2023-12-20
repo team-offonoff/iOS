@@ -61,16 +61,15 @@ extension DefaultCommentBottomSheetViewModel {
             .execute(topicId: topicId, page: pageInfo?.page ?? 0)
             .sink{ [weak self] result in
                 guard let self = self else { return }
-//                if result.isSuccess, let (pageInfo, data) = result.data {
+                if result.isSuccess, let (pageInfo, data) = result.data {
                     //TODO: 페이징 코드 추가
-//                    self.pageInfo = pageInfo
-                    self.comments = [CommentListItemViewModel](repeating: .init(), count: 2)
-//                    self.comments.append(contentsOf: data.map{ _ in .init() })
+                    self.pageInfo = pageInfo
+                    self.comments.append(contentsOf: data.map{ .init($0) })
                     self.reloadData?()
-//                }
-//                else if let error = result.error {
-//                    self.errorHandler.send(error)
-//                }
+                }
+                else if let error = result.error {
+                    self.errorHandler.send(error)
+                }
             }
             .store(in: &cancellable)
     }
@@ -97,14 +96,14 @@ extension DefaultCommentBottomSheetViewModel {
     
     public func toggleDislikeState(at index: Int) {
         patchCommentDislikeUseCase
-            .execute(commentId: comments[index].id, isDislike: !comments[index].isDislike)
+            .execute(commentId: comments[index].id, isDislike: !comments[index].isHate)
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
                     defer {
                         self.toggleDislikeState.send(index)
                     }
-                    self.comments[index].isDislike.toggle()
+                    self.comments[index].isHate.toggle()
                 }
                 else if let error = result.error {
                     self.errorHandler.send(error)

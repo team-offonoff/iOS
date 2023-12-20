@@ -11,18 +11,22 @@ import Domain
 
 struct CommentResponseDTO: Decodable {
     
-    struct WriterResponseDTO: Decodable {
-        let id: Int
-        let nickname: String
-        let profileImageURl: String
-    }
-    
     let commentId: Int
     let topicId: Int
     let writer: WriterResponseDTO
+    let writersVotedOption: String?
     let content: String
-    let likes: Int
-    let hates: Int
+    let likeCount: Int
+    let hateCount: Int
+    let liked: Bool
+    let hated: Bool
+    let createdAt: String
+    
+    struct WriterResponseDTO: Decodable {
+        let id: Int
+        let nickname: String
+        let profileImageURl: String?
+    }
 }
 
 extension CommentResponseDTO: Domainable {
@@ -31,15 +35,23 @@ extension CommentResponseDTO: Domainable {
             commentId: commentId,
             topicId: topicId,
             writer: writer.toDomain(),
+            votedOption: Mapper.entity(choiceOption: writersVotedOption),
             content: content,
-            likes: likes,
-            hates: hates
+            likeCount: likeCount,
+            hateCount: hateCount,
+            isLike: liked,
+            isHate: hated,
+            createdAt: createdAt
         )
     }
 }
 
 extension CommentResponseDTO.WriterResponseDTO: Domainable {
     func toDomain() -> Comment.WriterEntity {
-        .init(id: id, nickname: nickname, profileImageURl: URL(string: profileImageURl)!)
+        .init(
+            id: id,
+            nickname: nickname,
+            profileImageURl: URL(string: profileImageURl ?? "")
+        )
     }
 }
