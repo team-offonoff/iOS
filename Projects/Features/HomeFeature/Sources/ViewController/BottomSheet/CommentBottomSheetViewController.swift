@@ -108,7 +108,7 @@ final class CommentBottomSheetViewController: UIViewController {
             .sink{ [weak self] index in
                 guard let self = self else { return }
                 let cell = self.tableView.cellForRow(at: .init(row: index), cellType: CommentBottomSheetTableViewCell.self)
-                cell?.state(isDislike: self.viewModel.comments[index].isDislike)
+                cell?.state(isDislike: self.viewModel.comments[index].isHate)
             }
             .store(in: &cancellable)
         

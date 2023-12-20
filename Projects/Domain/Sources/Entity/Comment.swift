@@ -9,44 +9,56 @@
 import Foundation
 
 public struct Comment {
-
+    
+    public let commentId: Int
+    public let topicId: Int
+    public let writer: WriterEntity
+    public let votedOption: Choice.Option?
+    public let content: String
+    public let likeCount: Int
+    public let hateCount: Int
+    public let isLike: Bool
+    public let isHate: Bool
+    public let createdAt: String //TODO: 타입 변경 필요
+    
     public init(
         commentId: Int,
         topicId: Int,
         writer: Comment.WriterEntity,
+        votedOption: Choice.Option? = nil,
         content: String,
-        likes: Int,
-        hates: Int
+        likeCount: Int,
+        hateCount: Int,
+        isLike: Bool,
+        isHate: Bool,
+        createdAt: String
     ) {
         self.commentId = commentId
         self.topicId = topicId
         self.writer = writer
+        self.votedOption = votedOption
         self.content = content
-        self.likes = likes
-        self.hates = hates
+        self.likeCount = likeCount
+        self.hateCount = hateCount
+        self.isLike = isLike
+        self.isHate = isHate
+        self.createdAt = createdAt
     }
-    
+
     public struct WriterEntity {
+        
+        public let id: Int
+        public let nickname: String
+        public let profileImageURl: URL?
         
         public init(
             id: Int,
             nickname: String,
-            profileImageURl: URL
+            profileImageURl: URL?
         ) {
             self.id = id
             self.nickname = nickname
             self.profileImageURl = profileImageURl
         }
-        
-        public let id: Int
-        public let nickname: String
-        public let profileImageURl: URL
     }
-    
-    public let commentId: Int
-    public let topicId: Int
-    public let writer: WriterEntity
-    public let content: String
-    public let likes: Int
-    public let hates: Int
 }
