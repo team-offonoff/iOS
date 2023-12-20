@@ -92,6 +92,10 @@ extension HomeTopicCollectionViewCell {
             optionLabel.text = option.content.title
         }
         
+        func removeContent() {
+            content = nil
+        }
+        
         func fill(_ choice: Choice) {
 
             content = {

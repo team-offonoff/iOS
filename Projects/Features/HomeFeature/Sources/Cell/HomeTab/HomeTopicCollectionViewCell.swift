@@ -29,6 +29,11 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     private let choiceStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 15)
     private let informationStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 7)
     
+    override func prepareForReuse() {
+        choiceGroup.aChoiceView.removeContent()
+        choiceGroup.bChoiceView.removeContent()
+    }
+    
     override func hierarchy() {
 
         baseView.addSubviews([etcGroup.realTimeTitleLabel, topicGroup.titleLabel, profileStackView, choiceGroup.swipeableView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.etcButton, chat])
