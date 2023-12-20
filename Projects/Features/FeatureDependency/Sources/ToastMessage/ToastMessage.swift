@@ -12,33 +12,20 @@ import Combine
 
 public final class ToastMessage {
     
-    public static let shared: ToastMessage = ToastMessage()
-    
     private init() {
-        bind()
+
     }
     
-    @Published private var isAnimating = false
+    public static let shared: ToastMessage = ToastMessage()
+    private let toastMessageView = ToastMessageView()
+    private var isAnimating = false
     private var topViewController: UIWindow?
     private var messageQueue: [String] = []
-    private let toastMessageView = ToastMessageView()
     private var cancellable: Set<AnyCancellable> = []
     
     public func register(message: String) {
         messageQueue.append(message)
         show()
-    }
-    
-    private func bind() {
-        $isAnimating
-            .dropFirst()
-            .filter{ !$0 }
-            .receive(on: DispatchQueue.main)
-            .sink{ _ in
-                if self.messageQueue.isEmpty { return }
-                self.show()
-            }
-            .store(in: &cancellable)
     }
     
     private func show() {
@@ -108,12 +95,19 @@ public final class ToastMessage {
                     }, completion: { _ in
                         defer {
                             self.isAnimating = false
+                            restart()
                         }
                         self.topViewController = nil
                         self.toastMessageView.removeFromSuperview()
                         self.topViewController?.isUserInteractionEnabled = true
                     }
                 )
+            }
+        }
+        
+        func restart() {
+            if !messageQueue.isEmpty {
+                show()
             }
         }
     }
