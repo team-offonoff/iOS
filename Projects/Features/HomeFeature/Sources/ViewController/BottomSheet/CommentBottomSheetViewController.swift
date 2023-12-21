@@ -40,6 +40,9 @@ final class CommentBottomSheetViewController: UIViewController {
     
     private let normalStateY: CGFloat
     private let expandStateY: CGFloat = (Device.safeAreaInsets?.top ?? 0) + 10
+    private lazy var normalHeight: CGFloat = Device.height - normalStateY
+    private lazy var expandHeight: CGFloat = Device.height - expandStateY
+    
     private let contentView: UIView = {
        let view = UIView()
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -82,7 +85,7 @@ final class CommentBottomSheetViewController: UIViewController {
         contentView.snp.makeConstraints{
             $0.top.equalToSuperview().offset(normalStateY)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(Device.height - expandStateY)
+            $0.height.equalTo(normalHeight)
         }
         grabberView.snp.makeConstraints{
             $0.top.equalToSuperview().offset(8)
@@ -108,7 +111,10 @@ final class CommentBottomSheetViewController: UIViewController {
         }
         
         func addGestureRecognizer() {
-            headerView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(panGesture)))
+            let recognizer = UIPanGestureRecognizer(target: self, action: #selector(panGesture))
+            recognizer.delegate = self
+            headerView.addGestureRecognizer(recognizer)
+            
         }
     }
     
@@ -187,12 +193,12 @@ final class CommentBottomSheetViewController: UIViewController {
                 return
             }
             
-            let location: CGFloat = {
+            let (location, height): (CGFloat, CGFloat) = {
                 switch state {
                 case .normal:
-                    return normalStateY
+                    return (normalStateY, normalHeight)
                 case .expand:
-                    return expandStateY
+                    return (expandStateY, expandHeight)
                 default:
                     fatalError()
                 }
@@ -202,11 +208,27 @@ final class CommentBottomSheetViewController: UIViewController {
                 withDuration: 0.5,
                 animations: {
                     self.contentView.frame.origin = CGPoint(x: 0, y: location)
+                },
+                completion: { _ in
+                    self.contentView.snp.updateConstraints{
+                        $0.height.equalTo(height)
+                    }
                 }
             )
         default:
             return
         }
+    }
+}
+
+extension CommentBottomSheetViewController: UIGestureRecognizerDelegate {
+    //바텀시트 스와이프가 시작되기 전, 테이블 뷰의 크기 잠시 늘림
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        contentView.snp.updateConstraints{
+            $0.height.equalTo(expandHeight)
+        }
+        contentView.layoutIfNeeded()
+        return true
     }
 }
 
