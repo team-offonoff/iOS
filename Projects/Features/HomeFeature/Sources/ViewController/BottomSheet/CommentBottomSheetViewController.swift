@@ -30,6 +30,7 @@ final class CommentBottomSheetViewController: UIViewController {
     private var viewModel: any CommentBottomSheetViewModel
     private var cancellable: Set<AnyCancellable> = []
     
+    private let contentView: UIView = UIView()
     private let headerView: CommentHeaderView = CommentHeaderView()
     private let tableView: UITableView = {
         let tableView: UITableView = UITableView()
@@ -42,33 +43,21 @@ final class CommentBottomSheetViewController: UIViewController {
         hierarchy()
         layout()
         initialize()
-        modalSetting()
         bind()
         viewModel.fetchComments()
     }
-    
-    private func modalSetting(){
-        
-        guard let sheetPresentationController = sheetPresentationController else { return }
 
-        sheetPresentationController.prefersGrabberVisible = true
-        sheetPresentationController.detents = detents().map{ detent in
-            UISheetPresentationController.Detent.custom(resolver: { _ in
-                return detent
-            })
-        }
-        sheetPresentationController.prefersScrollingExpandsWhenScrolledToEdge = false
-        
-        func detents() -> [CGFloat] {
-            [Device.height-273, Device.height-52]
-        }
-    }
-
-    func hierarchy() {
-        view.addSubviews([headerView, tableView])
+    private func hierarchy() {
+        view.addSubview(contentView)
+        contentView.addSubviews([headerView, tableView])
     }
     
-    func layout() {
+    private func layout() {
+        contentView.snp.makeConstraints{
+            $0.top.equalToSuperview().offset(250) //TODO: offset 값 조정
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(Device.height-100)
+        }
         headerView.snp.makeConstraints{
             $0.top.leading.trailing.equalToSuperview()
         }
@@ -78,12 +67,22 @@ final class CommentBottomSheetViewController: UIViewController {
         }
     }
     
-    func initialize() {
-        tableView.delegate = self
-        tableView.dataSource = self
+    private func initialize() {
+        
+        setTableViewDelegate()
+        addGestureRecognizer()
+        
+        func setTableViewDelegate() {
+            tableView.delegate = self
+            tableView.dataSource = self
+        }
+        
+        func addGestureRecognizer() {
+            headerView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(panGesture)))
+        }
     }
     
-    func bind() {
+    private func bind() {
         
         //MARK: view model output
         
@@ -121,6 +120,69 @@ final class CommentBottomSheetViewController: UIViewController {
             }
             .store(in: &cancellable)
     }
+    
+    //MARK: Bottom Sheet Gesture
+    
+    private enum State {
+        case normal
+        case expand
+        case dismiss
+    }
+    private var state: State = .normal
+    private var originalPoint: CGPoint = CGPoint()
+    
+    @objc private func panGesture(_ recognizer: UIPanGestureRecognizer) {
+        let translation = recognizer.translation(in: headerView)
+        switch recognizer.state {
+        case .began:
+            originalPoint = contentView.frame.origin
+        case .changed:
+            contentView.frame.origin = CGPoint(x: 0, y: originalPoint.y + translation.y)
+            if abs(translation.y) >= 50 {
+                if state == .normal && translation.y <= 0{
+                    state = .expand
+                }
+                else if state == .expand && translation.y > 0 {
+                    state = .normal
+                    recognizer.state = .ended
+                }
+                else if state == .normal && translation.y > 0 {
+                    state = .dismiss
+                }
+            }
+        case .ended:
+            
+            if state == .dismiss {
+                dismiss(animated: true)
+                return
+            }
+            
+            let location: CGPoint = {
+                switch state {
+                case .normal:
+                    return CGPoint(x: 0, y: 250)
+                case .expand:
+                    return CGPoint(x: 0, y: Device.safeAreaInsets?.top ?? 0 + 15)
+                default:
+                    fatalError()
+                }
+            }()
+            
+            UIView.animate(
+                withDuration: 0.5,
+                animations: {
+                    self.contentView.frame.origin = location
+                }
+            )
+        default:
+            return
+        }
+    }
+    
+    func detents(){
+        [Device.height-273, Device.height-52]
+    }
+    
 }
 
 extension CommentBottomSheetViewController: TapDelegate {
