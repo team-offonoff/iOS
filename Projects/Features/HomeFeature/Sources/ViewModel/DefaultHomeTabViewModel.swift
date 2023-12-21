@@ -40,12 +40,13 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
     
     var willMovePage: AnyPublisher<IndexPath, Never>{ $currentIndexPath.filter{ _ in self.topics.count > 0 }.eraseToAnyPublisher() }
-    var voteSuccess: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
+    var successVote: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
-    let successTopicAction: PassthroughSubject<Topic.Action, Never> = PassthroughSubject()
+    let failVote: PassthroughSubject<Void, Never> = PassthroughSubject()
     let reloadTopics: PassthroughSubject<Void, Never> = PassthroughSubject()
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
     let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
+    let successTopicAction: PassthroughSubject<Topic.Action, Never> = PassthroughSubject()
     
     private var timer: Timer?
     
@@ -169,8 +170,11 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
                     }()
                     self.selectedOption = self.topics[self.currentIndexPath.row].selectedOption
                 }
-                else if let error = result.error {
-                    self.errorHandler.send(error)
+                else {
+                    if let error = result.error {
+                        self.errorHandler.send(error)
+                    }
+                    self.failVote.send(())
                 }
             }.store(in: &cancellable)
     }

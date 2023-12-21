@@ -188,10 +188,9 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
                 animations: {
                 self.choiceStackView.alpha = 0
                 },
-                completion: { _ in
-                    self.choiceStackView.isHidden = true
-                    self.choiceStackView.center.x = self.center.x
-                    self.choiceStackView.alpha = 1
+                completion: { [weak self] _ in
+                    guard let self = self else { return }
+                    self.initializeChoiceView()
                     self.delegate?.vote(choice: option)
                 }
             )
@@ -199,8 +198,10 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         }
     }
     
-    func moveChoicesOriginalPosition() {
-        choiceStackView.frame.origin = originalPoint
+    private func initializeChoiceView() {
+        choiceStackView.isHidden = true
+        choiceStackView.center.x = center.x
+        choiceStackView.alpha = 1
     }
     
     func binding(data: HomeTopicItemViewModel) {
@@ -244,6 +245,10 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     
     func standardOfCommentBottomSheetNormalState() -> UIView{
         profileStackView
+    }
+    
+    func failVote() {
+        choiceStackView.isHidden = false
     }
 }
 

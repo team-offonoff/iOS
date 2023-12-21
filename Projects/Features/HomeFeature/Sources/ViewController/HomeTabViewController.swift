@@ -75,25 +75,15 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         bindTimer()
         bindSelectionSuccess()
         bindImageExpandNotification()
+        bindFailVote()
         
         func bindError() {
             viewModel.errorHandler
                 .receive(on: DispatchQueue.main)
                 .sink{ error in
                     ToastMessage.shared.register(message: error.message)
-                    handleError(code: error.code)
                 }
                 .store(in: &cancellables)
-            
-            func handleError(code: SerivceError) {
-                switch code {
-                case .votedByAuthor, .emptyAuthorization:
-                    //선택지 원위치로 돌리기
-                    currentTopicCell?.moveChoicesOriginalPosition()
-                default:
-                    return
-                }
-            }
         }
         
         func bindReloadTopics(){
@@ -121,7 +111,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         }
         
         func bindSelectionSuccess() {
-            viewModel.voteSuccess
+            viewModel.successVote
                 .receive(on: RunLoop.main)
                 .sink{ [weak self] choice in
                     self?.currentTopicCell?.select(choice: choice)
@@ -147,6 +137,16 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
                     if let choice = receive.userInfo?[Choice.identifier] as? Choice {
                         self?.coordinator?.startImagePopUp(choice: choice)
                     }
+                }
+                .store(in: &cancellables)
+        }
+        
+        func bindFailVote() {
+            viewModel.failVote
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] in
+                    guard let self = self else { return }
+                    self.currentTopicCell?.failVote()
                 }
                 .store(in: &cancellables)
         }

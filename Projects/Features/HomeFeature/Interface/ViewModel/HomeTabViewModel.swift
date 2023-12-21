@@ -25,7 +25,8 @@ public protocol TopicBottomSheetViewModel {
 }
 
 public protocol TopicVoteViewModel {
-    var voteSuccess: AnyPublisher<Choice, Never> { get }
+    var successVote: AnyPublisher<Choice, Never> { get }
+    var failVote: PassthroughSubject<Void, Never> { get }
     func vote(choice: Choice.Option)
 }
 
