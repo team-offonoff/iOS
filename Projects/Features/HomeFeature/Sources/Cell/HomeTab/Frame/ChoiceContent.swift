@@ -20,12 +20,6 @@ protocol ChoiceContent{
     func setBLayout()
 }
 
-extension ChoiceContent {
-    var visibleWidth: CGFloat {
-        UIScreen.main.bounds.size.width/2 + 7.5 - 55
-    }
-}
-
 extension HomeTopicCollectionViewCell {
     
     final class TextChoiceContent: ChoiceContent {
@@ -60,7 +54,7 @@ extension HomeTopicCollectionViewCell {
                 $0.width.equalTo(87)
                 $0.top.equalToSuperview().offset(19)
                 $0.centerY.centerX.equalToSuperview()
-                $0.leading.equalTo(visibleWidth+44)
+                $0.leading.equalTo(ChoiceView.unvisibleWidth+44)
                 $0.trailing.equalToSuperview().inset(49)
             }
         }
@@ -71,7 +65,7 @@ extension HomeTopicCollectionViewCell {
                 $0.top.equalToSuperview().offset(19)
                 $0.centerY.centerX.equalToSuperview()
                 $0.leading.equalToSuperview().inset(44)
-                $0.trailing.equalToSuperview().inset(visibleWidth+49)
+                $0.trailing.equalToSuperview().inset(ChoiceView.unvisibleWidth+49)
             }
         }
     }
@@ -138,7 +132,7 @@ extension HomeTopicCollectionViewCell {
         func setALayout() {
             buttonStackView.snp.makeConstraints{
                 $0.top.equalToSuperview().offset(6)
-                $0.leading.equalToSuperview().offset(visibleWidth+6)
+                $0.leading.equalToSuperview().offset(ChoiceView.unvisibleWidth+6)
             }
             imageView.snp.makeConstraints{
                 $0.top.bottom.trailing.equalToSuperview().inset(6)
@@ -148,7 +142,7 @@ extension HomeTopicCollectionViewCell {
         func setBLayout() {
             buttonStackView.snp.makeConstraints{
                 $0.top.equalToSuperview().offset(6)
-                $0.trailing.equalToSuperview().inset(visibleWidth+6)
+                $0.trailing.equalToSuperview().inset(ChoiceView.unvisibleWidth+6)
             }
             imageView.snp.makeConstraints{
                 $0.top.bottom.leading.equalToSuperview().inset(6)

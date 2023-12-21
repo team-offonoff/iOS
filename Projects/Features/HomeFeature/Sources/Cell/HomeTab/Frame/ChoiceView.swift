@@ -14,6 +14,12 @@ extension HomeTopicCollectionViewCell {
     
     class ChoiceView: BaseView {
         
+        static let spacing: CGFloat = 15
+        static let extraWidth: CGFloat = 100
+        static let unvisibleWidth: CGFloat = Device.width + extraWidth
+        static let visibleWidth: CGFloat = (Device.width-15)/2
+        static let width: CGFloat = unvisibleWidth + visibleWidth
+        
         private let option: Choice.Option
         
         init(option: Choice.Option) {
@@ -54,7 +60,7 @@ extension HomeTopicCollectionViewCell {
         override func layout() {
             
             self.snp.makeConstraints{
-                $0.width.equalTo(Device.width-55)
+                $0.width.equalTo(ChoiceView.width)
                 $0.height.equalTo(148)
             }
 
@@ -64,7 +70,7 @@ extension HomeTopicCollectionViewCell {
             func setGradient() {
                 gradientLayer.frame = CGRect(
                     x: 0, y: 0,
-                    width: Device.width-55, height: 148
+                    width: ChoiceView.width, height: 148
                 )
                 layer.addSublayer(gradientLayer)
                 bringSubviewToFront(optionLabel)
@@ -75,14 +81,12 @@ extension HomeTopicCollectionViewCell {
                 case .A:
                     optionLabel.snp.makeConstraints{
                         $0.centerY.equalToSuperview().offset(20)
-                        $0.leading.equalToSuperview().offset(71)
-                        $0.trailing.equalToSuperview().offset(-95)
+                        $0.trailing.equalToSuperview().inset((Device.width-15)/2-85)
                     }
                 case .B:
                     optionLabel.snp.makeConstraints{
                         $0.centerY.equalToSuperview().offset(20)
-                        $0.leading.equalToSuperview().offset(107)
-                        $0.trailing.equalToSuperview().offset(-83)
+                        $0.leading.equalToSuperview().offset((Device.width-15)/2-77)
                     }
                 }
             }
