@@ -17,7 +17,15 @@ import Core
 
 final class CommentBottomSheetViewController: UIViewController {
     
-    init(viewModel: CommentBottomSheetViewModel){
+    ///Summary
+    ///
+    ///Discussion/Overview
+    ///
+    /// - Parameters:
+    ///     - standard: 댓글 바텀시트의 기준으로 삼는 뷰의 maxY 값
+    ///
+    init(standard: CGFloat, viewModel: CommentBottomSheetViewModel){
+        self.normalStateY = standard + 42
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -30,7 +38,25 @@ final class CommentBottomSheetViewController: UIViewController {
     private var viewModel: any CommentBottomSheetViewModel
     private var cancellable: Set<AnyCancellable> = []
     
-    private let contentView: UIView = UIView()
+    private let normalStateY: CGFloat
+    private let expandStateY: CGFloat = (Device.safeAreaInsets?.top ?? 0) + 10
+    private let contentView: UIView = {
+       let view = UIView()
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        view.layer.cornerRadius = 10
+        view.layer.masksToBounds = true
+        return view
+    }()
+    private let grabberView: UIView = {
+       let view = UIView()
+        view.backgroundColor = Color.black.withAlphaComponent(0.1)
+        view.layer.cornerRadius = 4/2
+        view.snp.makeConstraints{
+            $0.width.equalTo(40)
+            $0.height.equalTo(4)
+        }
+        return view
+    }()
     private let headerView: CommentHeaderView = CommentHeaderView()
     private let tableView: UITableView = {
         let tableView: UITableView = UITableView()
@@ -49,14 +75,18 @@ final class CommentBottomSheetViewController: UIViewController {
 
     private func hierarchy() {
         view.addSubview(contentView)
-        contentView.addSubviews([headerView, tableView])
+        contentView.addSubviews([headerView, tableView, grabberView])
     }
     
     private func layout() {
         contentView.snp.makeConstraints{
-            $0.top.equalToSuperview().offset(250) //TODO: offset 값 조정
+            $0.top.equalToSuperview().offset(normalStateY)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(Device.height-100)
+            $0.height.equalTo(Device.height - expandStateY)
+        }
+        grabberView.snp.makeConstraints{
+            $0.top.equalToSuperview().offset(8)
+            $0.centerX.equalToSuperview()
         }
         headerView.snp.makeConstraints{
             $0.top.leading.trailing.equalToSuperview()
@@ -137,7 +167,7 @@ final class CommentBottomSheetViewController: UIViewController {
         case .began:
             originalPoint = contentView.frame.origin
         case .changed:
-            contentView.frame.origin = CGPoint(x: 0, y: originalPoint.y + translation.y)
+            contentView.frame.origin.y = originalPoint.y + translation.y
             if abs(translation.y) >= 50 {
                 if state == .normal && translation.y <= 0{
                     state = .expand
@@ -157,12 +187,12 @@ final class CommentBottomSheetViewController: UIViewController {
                 return
             }
             
-            let location: CGPoint = {
+            let location: CGFloat = {
                 switch state {
                 case .normal:
-                    return CGPoint(x: 0, y: 250)
+                    return normalStateY
                 case .expand:
-                    return CGPoint(x: 0, y: Device.safeAreaInsets?.top ?? 0 + 15)
+                    return expandStateY
                 default:
                     fatalError()
                 }
@@ -171,18 +201,13 @@ final class CommentBottomSheetViewController: UIViewController {
             UIView.animate(
                 withDuration: 0.5,
                 animations: {
-                    self.contentView.frame.origin = location
+                    self.contentView.frame.origin = CGPoint(x: 0, y: location)
                 }
             )
         default:
             return
         }
     }
-    
-    func detents(){
-        [Device.height-273, Device.height-52]
-    }
-    
 }
 
 extension CommentBottomSheetViewController: TapDelegate {

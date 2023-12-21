@@ -67,9 +67,9 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         navigationController.present(TopicBottomSheetViewController(viewModel: homeViewModel), animated: true)
     }
     
-    public func startCommentBottomSheet(topicId: Int) {
+    public func startCommentBottomSheet(standard: CGFloat, topicId: Int) {
         
-        commentBottomSheet = CommentBottomSheetViewController(viewModel: viewModel())
+        commentBottomSheet = CommentBottomSheetViewController(standard: standard, viewModel: viewModel())
         commentBottomSheet?.coordinator = self
         commentBottomSheet?.modalPresentationStyle = .custom
         if let commentBottomSheet = commentBottomSheet {
