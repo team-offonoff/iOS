@@ -6,12 +6,13 @@
 //  Copyright © 2023 AB. All rights reserved.
 //
 
+import Foundation
 import FeatureDependency
 import Domain
 
 public protocol HomeCoordinator: Coordinator {
     func startTopicBottomSheet()
-    func startCommentBottomSheet(topicId: Int)
+    func startCommentBottomSheet(standard: CGFloat, topicId: Int)
     func startImagePopUp(choice: Choice)
     func startWritersBottomSheet(index: Int)
     func startOthersBottomSheet(index: Int)

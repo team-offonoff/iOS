@@ -192,10 +192,18 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
         case Topic.Action.showBottomSheet.identifier:
             coordinator?.startTopicBottomSheet()
         case Comment.Action.showBottomSheet.identifier:
-            coordinator?.startCommentBottomSheet(topicId: viewModel.currentTopic.id)
+            coordinator?
+                .startCommentBottomSheet(
+                    standard: standardOfCommentBottomSheet(),
+                    topicId: viewModel.currentTopic.id
+                )
         default:
             return
         }
+    }
+    
+    private func standardOfCommentBottomSheet() -> CGFloat {
+        view.convert((currentTopicCell?.standardOfCommentBottomSheetNormalState().frame)!, from: currentTopicCell).maxY
     }
 }
 

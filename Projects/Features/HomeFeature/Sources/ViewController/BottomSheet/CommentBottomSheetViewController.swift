@@ -17,7 +17,15 @@ import Core
 
 final class CommentBottomSheetViewController: UIViewController {
     
-    init(viewModel: CommentBottomSheetViewModel){
+    ///Summary
+    ///
+    ///Discussion/Overview
+    ///
+    /// - Parameters:
+    ///     - standard: 댓글 바텀시트의 기준으로 삼는 뷰의 maxY 값
+    ///
+    init(standard: CGFloat, viewModel: CommentBottomSheetViewModel){
+        self.normalStateY = standard + 42
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -30,6 +38,28 @@ final class CommentBottomSheetViewController: UIViewController {
     private var viewModel: any CommentBottomSheetViewModel
     private var cancellable: Set<AnyCancellable> = []
     
+    private let normalStateY: CGFloat
+    private let expandStateY: CGFloat = (Device.safeAreaInsets?.top ?? 0) + 10
+    private lazy var normalHeight: CGFloat = Device.height - normalStateY
+    private lazy var expandHeight: CGFloat = Device.height - expandStateY
+    
+    private let contentView: UIView = {
+       let view = UIView()
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        view.layer.cornerRadius = 10
+        view.layer.masksToBounds = true
+        return view
+    }()
+    private let grabberView: UIView = {
+       let view = UIView()
+        view.backgroundColor = Color.black.withAlphaComponent(0.1)
+        view.layer.cornerRadius = 4/2
+        view.snp.makeConstraints{
+            $0.width.equalTo(40)
+            $0.height.equalTo(4)
+        }
+        return view
+    }()
     private let headerView: CommentHeaderView = CommentHeaderView()
     private let tableView: UITableView = {
         let tableView: UITableView = UITableView()
@@ -42,33 +72,25 @@ final class CommentBottomSheetViewController: UIViewController {
         hierarchy()
         layout()
         initialize()
-        modalSetting()
         bind()
         viewModel.fetchComments()
     }
-    
-    private func modalSetting(){
-        
-        guard let sheetPresentationController = sheetPresentationController else { return }
 
-        sheetPresentationController.prefersGrabberVisible = true
-        sheetPresentationController.detents = detents().map{ detent in
-            UISheetPresentationController.Detent.custom(resolver: { _ in
-                return detent
-            })
-        }
-        sheetPresentationController.prefersScrollingExpandsWhenScrolledToEdge = false
-        
-        func detents() -> [CGFloat] {
-            [Device.height-273, Device.height-52]
-        }
-    }
-
-    func hierarchy() {
-        view.addSubviews([headerView, tableView])
+    private func hierarchy() {
+        view.addSubview(contentView)
+        contentView.addSubviews([headerView, tableView, grabberView])
     }
     
-    func layout() {
+    private func layout() {
+        contentView.snp.makeConstraints{
+            $0.top.equalToSuperview().offset(normalStateY)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(normalHeight)
+        }
+        grabberView.snp.makeConstraints{
+            $0.top.equalToSuperview().offset(8)
+            $0.centerX.equalToSuperview()
+        }
         headerView.snp.makeConstraints{
             $0.top.leading.trailing.equalToSuperview()
         }
@@ -78,12 +100,25 @@ final class CommentBottomSheetViewController: UIViewController {
         }
     }
     
-    func initialize() {
-        tableView.delegate = self
-        tableView.dataSource = self
+    private func initialize() {
+        
+        setTableViewDelegate()
+        addGestureRecognizer()
+        
+        func setTableViewDelegate() {
+            tableView.delegate = self
+            tableView.dataSource = self
+        }
+        
+        func addGestureRecognizer() {
+            let recognizer = UIPanGestureRecognizer(target: self, action: #selector(panGesture))
+            recognizer.delegate = self
+            headerView.addGestureRecognizer(recognizer)
+            
+        }
     }
     
-    func bind() {
+    private func bind() {
         
         //MARK: view model output
         
@@ -120,6 +155,80 @@ final class CommentBottomSheetViewController: UIViewController {
                 self.tableView.deleteRows(at: [IndexPath(row: index)], with: .fade)
             }
             .store(in: &cancellable)
+    }
+    
+    //MARK: Bottom Sheet Gesture
+    
+    private enum State {
+        case normal
+        case expand
+        case dismiss
+    }
+    private var state: State = .normal
+    private var originalPoint: CGPoint = CGPoint()
+    
+    @objc private func panGesture(_ recognizer: UIPanGestureRecognizer) {
+        let translation = recognizer.translation(in: headerView)
+        switch recognizer.state {
+        case .began:
+            originalPoint = contentView.frame.origin
+        case .changed:
+            contentView.frame.origin.y = originalPoint.y + translation.y
+            if abs(translation.y) >= 50 {
+                if state == .normal && translation.y <= 0{
+                    state = .expand
+                }
+                else if state == .expand && translation.y > 0 {
+                    state = .normal
+                    recognizer.state = .ended
+                }
+                else if state == .normal && translation.y > 0 {
+                    state = .dismiss
+                }
+            }
+        case .ended:
+            
+            if state == .dismiss {
+                dismiss(animated: true)
+                return
+            }
+            
+            let (location, height): (CGFloat, CGFloat) = {
+                switch state {
+                case .normal:
+                    return (normalStateY, normalHeight)
+                case .expand:
+                    return (expandStateY, expandHeight)
+                default:
+                    fatalError()
+                }
+            }()
+            
+            UIView.animate(
+                withDuration: 0.5,
+                animations: {
+                    self.contentView.frame.origin = CGPoint(x: 0, y: location)
+                },
+                completion: { _ in
+                    self.contentView.snp.updateConstraints{
+                        $0.height.equalTo(height)
+                    }
+                }
+            )
+        default:
+            return
+        }
+    }
+}
+
+extension CommentBottomSheetViewController: UIGestureRecognizerDelegate {
+    //바텀시트 스와이프가 시작되기 전, 테이블 뷰의 크기 잠시 늘림
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        contentView.snp.updateConstraints{
+            $0.height.equalTo(expandHeight)
+        }
+        contentView.layoutIfNeeded()
+        return true
     }
 }
 

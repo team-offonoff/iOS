@@ -241,6 +241,10 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         
         chat.canUserInteraction = value
     }
+    
+    func standardOfCommentBottomSheetNormalState() -> UIView{
+        profileStackView
+    }
 }
 
 extension HomeTopicCollectionViewCell {
