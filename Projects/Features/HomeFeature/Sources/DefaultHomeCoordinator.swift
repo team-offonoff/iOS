@@ -71,6 +71,7 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         
         commentBottomSheet = CommentBottomSheetViewController(viewModel: viewModel())
         commentBottomSheet?.coordinator = self
+        commentBottomSheet?.modalPresentationStyle = .custom
         if let commentBottomSheet = commentBottomSheet {
             navigationController.present(commentBottomSheet, animated: true)
         }
