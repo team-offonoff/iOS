@@ -19,6 +19,15 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     weak var delegate: (VoteDelegate & TopicBottomSheetDelegate & ChatBottomSheetDelegate)?
     private var cancellable: Set<AnyCancellable> = []
     
+    // 스와이프 제스처 관련 프로퍼티
+    private enum SwipeState {
+        case choiceA
+        case choiceB
+        case normal
+    }
+    private var state: SwipeState = .normal
+    private var originalPoint: CGPoint = CGPoint()
+    
     private let topicGroup: TopicGroup = TopicGroup()
     private let userGroup: UserGroup = UserGroup()
     private let choiceGroup: ChoiceGroup = ChoiceGroup()
@@ -111,15 +120,18 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     }
     
     override func initialize() {
-        
-        etcGroup.etcButton.tapPublisher
-            .sink{ [weak self] _ in
-                self?.delegate?.show(DelegateSender(identifier: Topic.Action.showBottomSheet.identifier))
-            }
-            .store(in: &cancellable)
-        
+
+        addTarget()
         addTapGesture()
         addPanGesture()
+        
+        func addTarget(){
+            etcGroup.etcButton.tapPublisher
+                .sink{ [weak self] _ in
+                    self?.delegate?.show(DelegateSender(identifier: Topic.Action.showBottomSheet.identifier))
+                }
+                .store(in: &cancellable)
+        }
         
         func addTapGesture() {
             chat.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(chatTapGesture)))
@@ -137,32 +149,42 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         delegate?.show(DelegateSender(identifier: Comment.Action.showBottomSheet.identifier))
     }
     
-    enum SwipeState {
-        case choiceA
-        case choiceB
-        case normal
-    }
-    
-    private var originalPoint: CGPoint = CGPoint()
-    private var state: SwipeState = .normal
-    
     @objc private func panGesture(_ recognizer: UIPanGestureRecognizer) {
+        
         let translation = recognizer.translation(in: choiceStackView)
+        
         switch recognizer.state {
+            
         case .began:
-            state = .normal
-            originalPoint = choiceStackView.frame.origin
+            
+            initializeState()
+            
+            func initializeState() {
+                state = .normal
+                originalPoint = choiceStackView.frame.origin
+            }
+            
         case .changed:
-            choiceStackView.frame.origin = CGPoint(x: originalPoint.x + translation.x, y: originalPoint.y)
-            if abs(translation.x) >= Device.width/2 {
-                if state == .normal && translation.x <= 0{
-                    state = .choiceB
-                }
-                else if state == .normal && translation.x >= 0{
-                    state = .choiceA
+            
+            moveChoiceView()
+            changeState()
+            
+            func moveChoiceView() {
+                choiceStackView.frame.origin = CGPoint(x: originalPoint.x + translation.x, y: originalPoint.y)
+            }
+            
+            func changeState() {
+                if abs(translation.x) >= Device.width/2 {
+                    if state == .normal && translation.x <= 0{
+                        state = .choiceB
+                    }
+                    else if state == .normal && translation.x >= 0{
+                        state = .choiceA
+                    }
                 }
             }
         case .ended:
+            
             let (option, movePoint): (Choice.Option?, CGPoint) = {
                 switch state {
                 case .normal:
@@ -174,33 +196,54 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
                 }
             }()
             
-            UIView.animate(
-                withDuration: 0.4,
-                animations: {
-                    self.choiceStackView.frame.origin = movePoint
-                }
-            )
+            startVoteAnimate()
+            startFadeAnimation()
             
-            guard let option = option else { return }
-            UIView.animate(
-                withDuration: 0.6,
-                delay: 0.3,
-                animations: {
-                self.choiceStackView.alpha = 0
-                },
-                completion: { _ in
-                    self.choiceStackView.isHidden = true
-                    self.choiceStackView.center.x = self.center.x
-                    self.choiceStackView.alpha = 1
-                    self.delegate?.vote(choice: option)
+            func startVoteAnimate() {
+                UIView.animate(
+                    withDuration: 0.4,
+                    animations: {
+                        self.choiceStackView.frame.origin = movePoint
+                    }
+                )
+            }
+            
+            func startFadeAnimation() {
+                // option 값이 nil인 경우(normal 상태), fade 애니메이션을 진행하지 않는다
+                guard let option = option else { return }
+                
+                UIView.animate(
+                    withDuration: 0.6,
+                    delay: 0.3,
+                    animations: {
+                        self.choiceStackView.alpha = 0
+                    },
+                    completion: { [weak self] _ in
+                        guard let self = self else { return }
+                        initializeChoiceView()
+                        self.delegate?.vote(choice: option)
+                    }
+                )
+                
+                func initializeChoiceView() {
+                    choiceStackView.isHidden = true
+                    choiceStackView.center.x = center.x
+                    choiceStackView.alpha = 1
                 }
-            )
-        default:    return
+            }
+    
+        default:
+            return
         }
     }
+}
+
+//MARK: Input
+
+extension HomeTopicCollectionViewCell {
     
-    func moveChoicesOriginalPosition() {
-        choiceStackView.frame.origin = originalPoint
+    func binding(timer: TimerInfo) {
+        topicGroup.timer.binding(data: timer)
     }
     
     func binding(data: HomeTopicItemViewModel) {
@@ -222,10 +265,6 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         chat.likeCountFrame.binding(data.likeCount)
     }
     
-    func binding(timer: TimerInfo) {
-        topicGroup.timer.binding(data: timer)
-    }
-    
     func select(choice: Choice){
         choiceGroup.completeView.fill(choice: choice)
         toggle(isVoted: true)
@@ -242,10 +281,20 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         chat.canUserInteraction = value
     }
     
+    func failVote() {
+        choiceStackView.isHidden = false
+    }
+}
+
+//MARK: Output
+
+extension HomeTopicCollectionViewCell {
     func standardOfCommentBottomSheetNormalState() -> UIView{
         profileStackView
     }
 }
+
+//MARK: UI
 
 extension HomeTopicCollectionViewCell {
     
