@@ -10,6 +10,10 @@ import UIKit
 
 public class HeaderView: BaseHeaderView, HeaderTouchable {
     
+    public convenience init(title: String){
+        self.init(title: title, icon: nil, selectedIcon: nil)
+    }
+    
     public convenience init(icon: UIImage){
         self.init(title: nil, icon: icon, selectedIcon: nil)
     }
@@ -20,6 +24,7 @@ public class HeaderView: BaseHeaderView, HeaderTouchable {
     
     public init(title: String?, icon: UIImage?, selectedIcon: UIImage?){
         super.init()
+        self.titleLabel.text = title
         self.rightItem.setImage(icon, for: .normal)
         self.rightItem.setImage(selectedIcon, for: .selected)
     }
@@ -28,13 +33,23 @@ public class HeaderView: BaseHeaderView, HeaderTouchable {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private let titleLabel: UILabel = {
+       let label = UILabel()
+        label.textColor = Color.white
+        label.setTypo(Pretendard.semibold20)
+        return label
+    }()
+    
     public lazy var rightItem: UIButton = UIButton()
     
     public override func hierarchy() {
-        addSubviews([rightItem])
+        addSubviews([titleLabel, rightItem])
     }
     
     public override func layout() {
+        titleLabel.snp.makeConstraints{
+            $0.centerX.centerY.equalToSuperview()
+        }
         rightItem.snp.makeConstraints{
             $0.centerY.equalToSuperview()
             $0.trailing.equalToSuperview().inset(20)
