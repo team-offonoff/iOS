@@ -42,4 +42,10 @@ public class InsetTextField: UITextField {
         clearButtonRect.origin.x -= clearButtonOffset;
         return clearButtonRect
     }
+    
+    public override func rightViewRect(forBounds bounds: CGRect) -> CGRect {
+        var rightViewRect = super.rightViewRect(forBounds: bounds)
+        rightViewRect.origin.x -= 12
+        return rightViewRect
+    }
 }
