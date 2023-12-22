@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import ABKit
 import FeatureDependency
 import OnboardingFeatureInterface
@@ -15,7 +16,7 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
     
     public init(viewModel: any SignUpViewModel){
         self.viewModel = viewModel
-        super.init(headerView: BaseHeaderView(), mainView: SignUpView())
+        super.init(headerView: HeaderView(title: "회원정보 입력"), mainView: SignUpView())
     }
     
     required init?(coder: NSCoder) {
@@ -24,16 +25,24 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
     
     private let viewModel: any SignUpViewModel
     
+    public override func initialize() {
+        mainView.jobView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showBottomSheet)))
+    }
+    
+    @objc private func showBottomSheet() {
+
+    }
+    
     public override func bind() {
         input()
     }
     
     private func input() {
-        viewModel.input(
-            SignUpViewModelInputValue(
-                nicknamePublisher: mainView.nicknameFrame.textField.textPublisher,
-                birthdayPublisher: mainView.birthdayFrame.textField.textPublisher,
-                genderPublisher: mainView.genderFrame.elementPublisher
-            ))
+//        viewModel.input(
+//            SignUpViewModelInputValue(
+//                nicknamePublisher: mainView.nicknameFrame.textField.textPublisher,
+//                birthdayPublisher: mainView.birthdayFrame.textField.textPublisher,
+//                genderPublisher: mainView.genderFrame.elementPublisher
+//            ))
     }
 }

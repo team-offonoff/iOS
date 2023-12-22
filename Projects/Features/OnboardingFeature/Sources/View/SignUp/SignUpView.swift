@@ -19,67 +19,81 @@ extension Gender: RadioButtonData {
 
 public final class SignUpView: BaseView {
     
-    private let frameStackView: UIStackView = UIStackView(axis: .vertical, spacing: 20)
-    let nicknameFrame: TextFieldFrame = TextFieldFrame()
-    let birthdayFrame: TextFieldFrame = {
-        let frame = TextFieldFrame()
-        frame.textField.keyboardType = .numberPad
-        return frame
-    }()
-    let genderFrame: RadioButtonView = {
-        let view = RadioButtonView(elements: Gender.allCases, cellType: GenderRadioButtonCell.self)
-        view.axis = .horizontal
-        view.spacing = 10
-        view.distribution = .equalSpacing
+    let nicknameView: SubtitleView = SubtitleView(
+        subtitle: "AB에서 사용할 닉네임을 정해주세요.",
+        content: OnboardingTextFieldView(placeholder: "한글, 영문, 숫자 최대 8자")
+    )
+    let birthdayView: SubtitleView<OnboardingTextFieldView> = {
+        let view = SubtitleView(
+            subtitle: "생년월일을 입력해주세요.",
+            content: OnboardingTextFieldView(placeholder: "YYYY/MM/DD")
+        )
+        view.contentView.textField.keyboardType = .numberPad
         return view
     }()
-    let jobFrame: DropDownFrame = DropDownFrame()
+    let genderView: SubtitleView<RadioButtonView> = {
+        let view = SubtitleView(
+            subtitle: "성별을 선택해주세요.",
+            content: RadioButtonView(elements: Gender.allCases, cellType: GenderRadioButtonCell.self)
+        )
+        view.contentView.axis = .horizontal
+        view.contentView.spacing = 11
+        view.contentView.distribution = .fillEqually
+        return view
+    }()
+    let jobView: SubtitleView<DropDownView> = {
+        let view = SubtitleView(subtitle: "직업을 선택해주세요.", content: DropDownView(placeholder: "직업 선택하기"))
+        return view
+    }()
+    let ctaButton: CTAButton = {
+        let button = CTAButton(title: "AB 시작하기")
+        button.isEnabled = false
+        return button
+    }()
     
     public override func hierarchy() {
-        addSubviews([frameStackView])
-        frameStackView.addArrangedSubviews([nicknameFrame, birthdayFrame, genderFrame, jobFrame])
+        addSubviews([nicknameView, birthdayView, genderView, jobView, ctaButton])
     }
     
     public override func layout() {
-        frameStackView.snp.makeConstraints{
-            $0.centerX.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().inset(50)
+        nicknameView.snp.makeConstraints{
+            $0.top.equalToSuperview().offset(51)
+            $0.leading.trailing.equalToSuperview().inset(nicknameView.defaultSideOffset)
         }
+        birthdayView.snp.makeConstraints{
+            $0.top.equalTo(nicknameView.snp.bottom).offset(21)
+            $0.leading.trailing.equalToSuperview().inset(birthdayView.defaultSideOffset)
+        }
+        genderView.snp.makeConstraints{
+            $0.top.equalTo(birthdayView.snp.bottom).offset(21)
+            $0.leading.trailing.equalToSuperview().inset(genderView.defaultSideOffset)
+        }
+        jobView.snp.makeConstraints{
+            $0.top.equalTo(genderView.snp.bottom).offset(48)
+            $0.leading.trailing.equalToSuperview().inset(jobView.defaultSideOffset)
+        }
+        ctaButton.snp.makeConstraints{
+            $0.top.greaterThanOrEqualTo(jobView.snp.bottom).offset(82)
+            $0.bottom.equalToSuperview().inset(ctaButton.defaultOffset.bottom)
+            $0.leading.trailing.equalToSuperview().inset(ctaButton.defaultOffset.side)
+        }
+
     }
 }
 
 extension SignUpView {
     
-    final class TextFieldFrame: BaseStackView {
-        let textField: UITextField = {
-            let textfield = UITextField()
-            textfield.layer.borderColor = Color.black20.cgColor
-            textfield.layer.borderWidth = 1
-            return textfield
-        }()
-        override func hierarchy() {
-            addArrangedSubview(textField)
-        }
-    }
-    
-    final class DropDownFrame: BaseStackView {
-        let textField: UITextField = {
-            let textfield = UITextField()
-            textfield.layer.borderColor = Color.black20.cgColor
-            textfield.layer.borderWidth = 1
-            return textfield
-        }()
-        override func hierarchy() {
-            addArrangedSubview(textField)
-        }
-    }
-    
-    final class GenderRadioButtonCell: BaseView, RadioButtonCell {
+    class GenderRadioButtonCell: BaseView, RadioButtonCell {
         
-        var titleLabel: UILabel = UILabel()
+        var titleLabel: UILabel = {
+            let label = UILabel()
+            label.textColor = Color.subPurple
+            label.setTypo(Pretendard.bold16)
+            return label
+        }()
         
         override func style() {
-            layer.borderWidth = 1
+            layer.cornerRadius = 10
         }
         
         override func hierarchy() {
@@ -87,20 +101,24 @@ extension SignUpView {
         }
         
         override func layout() {
+            self.snp.makeConstraints{
+                $0.height.equalTo(59)
+            }
             titleLabel.snp.makeConstraints{
-                $0.top.bottom.equalToSuperview().inset(20)
-                $0.leading.trailing.equalToSuperview().inset(50)
+                $0.centerX.centerY.equalToSuperview()
             }
         }
         
         func select() {
-            layer.borderColor = UIColor.black.cgColor
-            titleLabel.textColor = .black
+            layer.borderWidth = 0
+            layer.borderColor = nil
+            backgroundColor = Color.subNavy2
         }
         
         func deselect() {
-            layer.borderColor = UIColor.gray.cgColor
-            titleLabel.textColor = .gray
+            layer.borderWidth = 1
+            layer.borderColor = Color.subPurple.withAlphaComponent(0.4).cgColor
+            backgroundColor = Color.transparent
         }
     }
 }
