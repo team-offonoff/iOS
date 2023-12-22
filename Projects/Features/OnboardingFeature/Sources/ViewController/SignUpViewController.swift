@@ -26,7 +26,12 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
     private let viewModel: any SignUpViewModel
     
     public override func initialize() {
+        setNicknameLimitCount()
         mainView.jobView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showBottomSheet)))
+        
+        func setNicknameLimitCount() {
+            mainView.nicknameView.contentView.limitCount = viewModel.nicknameLimitCount
+        }
     }
     
     @objc private func showBottomSheet() {
@@ -34,15 +39,31 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
     }
     
     public override func bind() {
+        
         input()
-    }
-    
-    private func input() {
-//        viewModel.input(
-//            SignUpViewModelInputValue(
-//                nicknamePublisher: mainView.nicknameFrame.textField.textPublisher,
-//                birthdayPublisher: mainView.birthdayFrame.textField.textPublisher,
-//                genderPublisher: mainView.genderFrame.elementPublisher
-//            ))
+        bindNicknameValidation()
+        
+        func input() {
+            viewModel.input(
+                SignUpViewModelInputValue(
+                    nicknameEditingEnd: mainView.nicknameView.contentView.textField.publisher(for: .editingDidEnd)
+                )
+                
+            )
+        }
+        
+        func bindNicknameValidation() {
+            viewModel.nicknameValidation
+                .sink{ [weak self] (isValid, message) in
+                    guard let self = self else { return }
+                    if isValid {
+                        self.mainView.nicknameView.contentView.setComplete()
+                    }
+                    else if let message = message {
+                        self.mainView.nicknameView.contentView.error(message: message)
+                    }
+                }
+                .store(in: &cancellables)
+        }
     }
 }
