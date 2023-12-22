@@ -10,8 +10,9 @@ import Combine
 import UIKit
 
 public extension UITextField {
-    var textPublisher: AnyPublisher<String, Never> {
-        controlPublisher(for: .editingChanged)
+    
+    func publisher(for event: UIControl.Event) -> AnyPublisher<String, Never> {
+        controlPublisher(for: event)
             .map{ $0 as! UITextField }
             .map { $0.text ?? "" }
             .eraseToAnyPublisher()
