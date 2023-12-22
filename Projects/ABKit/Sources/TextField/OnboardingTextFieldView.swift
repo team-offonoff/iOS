@@ -42,6 +42,14 @@ public final class OnboardingTextFieldView: BaseView {
     }
     
     @Published public var state: State = .empty
+    ///글자 제한 수를 설정할 경우, 자동으로 카운팅이 동작하며, Lable에 개수를 업데이트한다.
+    public var limitCount: Int? {
+        didSet {
+            if limitCount != nil {
+                bindTextCount()
+            }
+        }
+    }
     
     public let textField: InsetTextField = {
         let textField = InsetTextField()
@@ -52,14 +60,12 @@ public final class OnboardingTextFieldView: BaseView {
     }()
     public let countLabel: UILabel = {
         let label = UILabel()
-        label.text = "0/8"
         label.textColor = Color.subPurple
         label.setTypo(Pretendard.semibold14)
         return label
     }()
     public let errorLabel: UILabel = {
         let label = UILabel()
-        label.text = "* 한글, 영문, 숫자만 가능해요."
         label.textColor = Color.subPurple2
         label.setTypo(Pretendard.semibold13)
         return label
@@ -124,6 +130,22 @@ public final class OnboardingTextFieldView: BaseView {
                     case .error:        return ErrorStateConfiguration()
                     case .complete:     return CompleteStateConfiguration()
                     }
+                }
+            }
+            .store(in: &cancellable)
+    }
+    
+    private func bindTextCount() {
+        textField.publisher(for: .editingChanged)
+            .sink{ [weak self] in
+                
+                guard let self = self, let limitCount = self.limitCount else { return }
+                
+                if $0.count == 0 {
+                    self.state = .empty
+                } else {
+                    self.state = .editing
+                    self.countLabel.text = "\($0.count)/\(limitCount)"
                 }
             }
             .store(in: &cancellable)
