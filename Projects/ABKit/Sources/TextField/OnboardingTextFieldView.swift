@@ -41,7 +41,10 @@ public final class OnboardingTextFieldView: BaseView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @Published public var state: State = .empty
+    @Published private var state: State = .empty
+    
+    private let placeholder: String
+    private var cancellable: Set<AnyCancellable> = []
     ///글자 제한 수를 설정할 경우, 자동으로 카운팅이 동작하며, Lable에 개수를 업데이트한다.
     public var limitCount: Int? {
         didSet {
@@ -58,21 +61,18 @@ public final class OnboardingTextFieldView: BaseView {
         textField.layer.cornerRadius = 10
         return textField
     }()
-    public let countLabel: UILabel = {
+    private let countLabel: UILabel = {
         let label = UILabel()
         label.textColor = Color.subPurple
         label.setTypo(Pretendard.semibold14)
         return label
     }()
-    public let errorLabel: UILabel = {
+    private let errorLabel: UILabel = {
         let label = UILabel()
         label.textColor = Color.subPurple2
         label.setTypo(Pretendard.semibold13)
         return label
     }()
-    
-    private let placeholder: String
-    private var cancellable: Set<AnyCancellable> = []
     
     public override func style() {
 
