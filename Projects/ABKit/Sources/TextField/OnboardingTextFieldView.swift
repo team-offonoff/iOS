@@ -152,6 +152,23 @@ public final class OnboardingTextFieldView: BaseView {
     }
 }
 
+//MARK: Input
+
+extension OnboardingTextFieldView {
+    public func error(message: String) {
+        if (textField.text ?? "").count == 0 {
+            state = .empty
+            return
+        }
+        state = .error
+        errorLabel.text = message
+    }
+    
+    public func setComplete() {
+        state = .complete
+    }
+}
+
 fileprivate struct EmptyStateConfiguration: OnboardingTextFieldViewConfiguration {
     let backgroundColor: UIColor = Color.transparent
     let strokeWidth: CGFloat? = 1
