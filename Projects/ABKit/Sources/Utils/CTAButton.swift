@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public class CTAButton: UIButton {
+public final class CTAButton: UIButton {
     
     public init(title: String) {
         self.title = title
@@ -27,7 +27,6 @@ public class CTAButton: UIButton {
     
     private func style() {
         layer.cornerRadius = 10
-        updateConfiguration()
     }
     
     private func initialize() {
