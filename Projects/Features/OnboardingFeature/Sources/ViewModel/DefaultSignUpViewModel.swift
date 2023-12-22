@@ -13,47 +13,42 @@ import OnboardingFeatureInterface
 import Core
 
 public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
-
-//    public init(){
-//        super.init()
-//    }
-    
+   
     public let jobs: [Job] = Job.allCases
+    public let nicknameValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
     
-    public let selectedJob: CurrentValueSubject<Job?, Never> = CurrentValueSubject(.none)
-    public let moveHome: PassthroughSubject<Void, Never> = PassthroughSubject()
-    
-//    private let signUpUseCase: any SignUpUseCase
+    public let nicknameLimitCount: Int = 8
     
     public func input(_ input: SignUpViewModelInputValue) {
         
-        let nicknamePublisher = input.nicknamePublisher
-            .filter{ nickname in
-                Regex.validate(data: nickname, pattern: .nickname)
+        input.nicknameEditingEnd
+            .sink{ [weak self] nickname in
+                
+                guard let self = self else { return }
+                
+                self.nicknameValidation.send(validation())
+                
+                func validation() -> (Bool, String?) {
+                    if nickname.count > self.nicknameLimitCount || nickname.count == 0 {
+                        return (false, "")
+                    }
+                    else if !Regex.validate(data: nickname, pattern: .nickname) {
+                        return (false, "한글, 영문, 숫자만 가능해요.")
+                    }
+                    else {
+                        return (true, nil)
+                    }
+                }
             }
-        
-        let birthdayPublisher = input.birthdayPublisher
-            .filter{ birthday in
-                birthday.count == 8
-            }
-        
-        let jobPublisher = selectedJob
-//            .filter{ job in
-//                job != .none
-//            }
-        
-        let combinePublisher = nicknamePublisher
-            .combineLatest(
-                birthdayPublisher,
-                input.genderPublisher,
-                selectedJob
-            )
+            .store(in: &cancellable)
+//
+//        let combinePublisher = nicknamePublisher
+//            .combineLatest(
+//                birthdayPublisher,
+//                input.gender
+//            )
 //            .flatMap{
 //                signUpUseCase.execute()
 //            }
-    }
-    
-    public func selectJob(_ job: Job) {
-        selectedJob.send(job)
     }
 }

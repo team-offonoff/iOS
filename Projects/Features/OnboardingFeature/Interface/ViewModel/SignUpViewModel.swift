@@ -17,32 +17,30 @@ public protocol SignUpViewModelInput {
 public struct SignUpViewModelInputValue {
     
     public init(
-        nicknamePublisher: AnyPublisher<String, Never>,
-        birthdayPublisher: AnyPublisher<String, Never>,
-        genderPublisher: AnyPublisher<Gender, Never>
+        nicknameEditingEnd: AnyPublisher<String, Never>
     ) {
-        self.nicknamePublisher = nicknamePublisher
-        self.birthdayPublisher = birthdayPublisher
-        self.genderPublisher = genderPublisher
+        self.nicknameEditingEnd = nicknameEditingEnd
     }
-
-    public let nicknamePublisher: AnyPublisher<String, Never>
-    public let birthdayPublisher: AnyPublisher<String, Never>
-    public let genderPublisher: AnyPublisher<Gender, Never>
+    
+    public let nicknameEditingEnd: AnyPublisher<String, Never>
+//    public let birthdayText: AnyPublisher<String, Never>
+//    public let gender: AnyPublisher<Gender, Never>
 }
 
 public protocol SignUpViewModelOutput {
-    var moveHome: PassthroughSubject<Void, Never> { get }
+    var nicknameLimitCount: Int { get }
+    ///닉네임의 유효성과 닉네임이 유효하지 않은 경우의 에러 메시지를 방출
+    var nicknameValidation: PassthroughSubject<(Bool, String?), Never> { get }
+//    var isBirthdayValid: PassthroughSubject<(Bool, String), Never> { get }
+//    var canMove: PassthroughSubject<Bool, Never> { get }
+//    var moveHome: (() -> Void) { get set }
+//    var failSignUp: PassthroughSubject<Void, Never> { get }
 }
 
-public protocol JobSelectable {
-    var jobs: [Job] { get }
-    var selectedJob: CurrentValueSubject<Job?, Never> { get }
-    func selectJob(_: Job)
-}
+//public protocol JobSelectable {
+//    var jobs: [Job] { get }
+//    var selectedJob: CurrentValueSubject<Job?, Never> { get }
+//    func selectJob(_ job: Job)
+//}
 
-public protocol SignUpViewModel:
-    SignUpViewModelInput,
-    SignUpViewModelOutput,
-    JobSelectable {
-}
+public typealias SignUpViewModel = SignUpViewModelInput & SignUpViewModelOutput
