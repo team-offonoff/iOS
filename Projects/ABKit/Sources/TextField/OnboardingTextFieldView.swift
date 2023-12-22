@@ -41,7 +41,7 @@ public final class OnboardingTextFieldView: BaseView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @Published public var state: State = .editing
+    @Published public var state: State = .empty
     
     public let textField: InsetTextField = {
         let textField = InsetTextField()
@@ -133,7 +133,7 @@ public final class OnboardingTextFieldView: BaseView {
 fileprivate struct EmptyStateConfiguration: OnboardingTextFieldViewConfiguration {
     let backgroundColor: UIColor = Color.transparent
     let strokeWidth: CGFloat? = 1
-    let strokeColor: UIColor? = Color.subPurple
+    let strokeColor: UIColor? = Color.subPurple.withAlphaComponent(0.4)
     let isCountLabelHidden: Bool = true
     let isErrorLabelHidden: Bool = true
 }
@@ -141,7 +141,7 @@ fileprivate struct EmptyStateConfiguration: OnboardingTextFieldViewConfiguration
 fileprivate struct EditingStateConfiguration: OnboardingTextFieldViewConfiguration {
     let backgroundColor: UIColor = Color.transparent
     let strokeWidth: CGFloat? = 1
-    let strokeColor: UIColor? = Color.subPurple
+    let strokeColor: UIColor? = Color.subPurple.withAlphaComponent(0.4)
     let isCountLabelHidden: Bool = false
     let isErrorLabelHidden: Bool = true
 }
