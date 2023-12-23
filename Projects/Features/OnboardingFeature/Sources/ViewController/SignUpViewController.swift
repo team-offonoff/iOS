@@ -26,12 +26,18 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
     private let viewModel: any SignUpViewModel
     
     public override func initialize() {
+        
         setNicknameLimitCount()
+        
         mainView.jobView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showBottomSheet)))
         
         func setNicknameLimitCount() {
             mainView.nicknameView.contentView.limitCount = viewModel.nicknameLimitCount
         }
+    }
+    
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
     }
     
     @objc private func showBottomSheet() {
@@ -43,6 +49,7 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
         input()
         bindNicknameValidation()
         bindBirthdayValidation()
+        bindCanMove()
         
         func input() {
             viewModel.input(
@@ -80,6 +87,15 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
                 else if let message = message {
                     self.mainView.birthdayView.contentView.error(message: message)
                 }
+            }
+            .store(in: &cancellables)
+    }
+    
+    func bindCanMove() {
+        viewModel.canMove
+            .sink{ [weak self] canMove in
+                guard let self = self else { return }
+                self.mainView.ctaButton.isEnabled = canMove
             }
             .store(in: &cancellables)
     }

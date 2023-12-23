@@ -17,6 +17,7 @@ public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
     public let jobs: [Job] = Job.allCases
     public let nicknameValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
     public let birthdayValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
+    public let canMove: PassthroughSubject<Bool, Never> = PassthroughSubject()
     
     public let nicknameLimitCount: Int = 8
     public let birthdayLimitCount: Int = 8
@@ -61,14 +62,23 @@ public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
                 
             }
             .store(in: &cancellable)
-//
-//        let combinePublisher = nicknamePublisher
-//            .combineLatest(
-//                birthdayPublisher,
-//                input.gender
-//            )
-//            .flatMap{
-//                signUpUseCase.execute()
-//            }
+
+        //TODO: 직업 추가하기
+        nicknameValidation
+            .combineLatest(
+                birthdayValidation,
+                input.gender
+            )
+            .sink{ [weak self] nickname, birthday, _ in
+                
+                guard let self = self else { return }
+                
+                self.canMove.send(canMove())
+                
+                func canMove() -> Bool {
+                    nickname.0 && birthday.0
+                }
+            }
+            .store(in: &cancellable)
     }
 }
