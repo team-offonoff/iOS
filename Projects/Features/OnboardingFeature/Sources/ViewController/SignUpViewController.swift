@@ -23,7 +23,7 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let viewModel: any SignUpViewModel
+    private var viewModel: any SignUpViewModel
     
     public override func initialize() {
         
@@ -50,15 +50,17 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
         bindNicknameValidation()
         bindBirthdayValidation()
         bindCanMove()
+        bindMoveHome()
+        bindError()
         
         func input() {
             viewModel.input(
                 SignUpViewModelInputValue(
                     nicknameEditingEnd: mainView.nicknameView.contentView.textField.publisher(for: .editingDidEnd),
                     birthdayEditingEnd: mainView.birthdayView.contentView.textField.publisher(for: .editingDidEnd),
-                    gender: mainView.genderView.contentView.elementPublisher
+                    gender: mainView.genderView.contentView.elementPublisher,
+                    moveNext: mainView.ctaButton.tapPublisher
                 )
-                
             )
         }
         
@@ -96,6 +98,22 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
             .sink{ [weak self] canMove in
                 guard let self = self else { return }
                 self.mainView.ctaButton.isEnabled = canMove
+            }
+            .store(in: &cancellables)
+    }
+    
+    func bindMoveHome() {
+        viewModel.moveHome = { //[weak self] in
+            DispatchQueue.main.async{
+                print("move home")
+            }
+        }
+    }
+    
+    func bindError() {
+        viewModel.errorHandler
+            .sink{ error in
+                ToastMessage.shared.register(message: error.message)
             }
             .store(in: &cancellables)
     }
