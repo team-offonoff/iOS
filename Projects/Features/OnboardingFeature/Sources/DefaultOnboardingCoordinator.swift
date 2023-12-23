@@ -57,7 +57,7 @@ public class DefaultOnboardingCoordinator: OnboardingCoordinator {
         navigationController.pushViewController(viewController, animated: true)
         
         func getViewModel() -> SignUpViewModel {
-            DefaultSignUpViewModel()
+            DefaultSignUpViewModel(signUpUseCase: DefaultSignUpUseCase(repository: DefaultAuthRepository()))
         }
     }
     
