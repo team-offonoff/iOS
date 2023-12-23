@@ -42,11 +42,13 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
         
         input()
         bindNicknameValidation()
+        bindBirthdayValidation()
         
         func input() {
             viewModel.input(
                 SignUpViewModelInputValue(
-                    nicknameEditingEnd: mainView.nicknameView.contentView.textField.publisher(for: .editingDidEnd)
+                    nicknameEditingEnd: mainView.nicknameView.contentView.textField.publisher(for: .editingDidEnd),
+                    birthdayEditingEnd: mainView.birthdayView.contentView.textField.publisher(for: .editingDidEnd)
                 )
                 
             )
@@ -65,5 +67,19 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
                 }
                 .store(in: &cancellables)
         }
+    }
+    
+    func bindBirthdayValidation() {
+        viewModel.birthdayValidation
+            .sink{ [weak self] (isValid, message) in
+                guard let self = self else { return }
+                if isValid {
+                    self.mainView.birthdayView.contentView.setComplete()
+                }
+                else if let message = message {
+                    self.mainView.birthdayView.contentView.error(message: message)
+                }
+            }
+            .store(in: &cancellables)
     }
 }
