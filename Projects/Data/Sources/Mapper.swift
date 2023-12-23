@@ -34,4 +34,12 @@ struct Mapper{
     static func dto(choiceOption: Choice.Option) -> String {
         choiceOptionMap[choiceOption]!
     }
+    
+    //MARK: Gender
+    
+    private static let genderMap: [Gender: String] = [.man: "MALE", .woman: "FEMALE"]
+    
+    static func dto(gender: Gender) -> String {
+        genderMap[gender]!
+    }
 }

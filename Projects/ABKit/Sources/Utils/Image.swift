@@ -16,6 +16,8 @@ extension UIImage{
 
 public struct Image{
     
+    public static let arrowDown = UIImage.load(name: "arrow_down")
+    
     //MARK: Login
     
     public static let logo = UIImage.load(name: "logo")

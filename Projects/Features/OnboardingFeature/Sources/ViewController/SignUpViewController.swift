@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import ABKit
 import FeatureDependency
 import OnboardingFeatureInterface
@@ -15,25 +16,105 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
     
     public init(viewModel: any SignUpViewModel){
         self.viewModel = viewModel
-        super.init(headerView: BaseHeaderView(), mainView: SignUpView())
+        super.init(headerView: HeaderView(title: "회원정보 입력"), mainView: SignUpView())
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let viewModel: any SignUpViewModel
+    private var viewModel: any SignUpViewModel
     
-    public override func bind() {
-        input()
+    public override func initialize() {
+        
+        setNicknameLimitCount()
+        
+        mainView.jobView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showBottomSheet)))
+        
+        func setNicknameLimitCount() {
+            mainView.nicknameView.contentView.limitCount = viewModel.nicknameLimitCount
+        }
     }
     
-    private func input() {
-        viewModel.input(
-            SignUpViewModelInputValue(
-                nicknamePublisher: mainView.nicknameFrame.textField.textPublisher,
-                birthdayPublisher: mainView.birthdayFrame.textField.textPublisher,
-                genderPublisher: mainView.genderFrame.elementPublisher
-            ))
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+    
+    @objc private func showBottomSheet() {
+
+    }
+    
+    public override func bind() {
+        
+        input()
+        bindNicknameValidation()
+        bindBirthdayValidation()
+        bindCanMove()
+        bindMoveHome()
+        bindError()
+        
+        func input() {
+            viewModel.input(
+                SignUpViewModelInputValue(
+                    nicknameEditingEnd: mainView.nicknameView.contentView.textField.publisher(for: .editingDidEnd),
+                    birthdayEditingEnd: mainView.birthdayView.contentView.textField.publisher(for: .editingDidEnd),
+                    gender: mainView.genderView.contentView.elementPublisher,
+                    moveNext: mainView.ctaButton.tapPublisher
+                )
+            )
+        }
+        
+        func bindNicknameValidation() {
+            viewModel.nicknameValidation
+                .sink{ [weak self] (isValid, message) in
+                    guard let self = self else { return }
+                    if isValid {
+                        self.mainView.nicknameView.contentView.setComplete()
+                    }
+                    else if let message = message {
+                        self.mainView.nicknameView.contentView.error(message: message)
+                    }
+                }
+                .store(in: &cancellables)
+        }
+    }
+    
+    func bindBirthdayValidation() {
+        viewModel.birthdayValidation
+            .sink{ [weak self] (isValid, message) in
+                guard let self = self else { return }
+                if isValid {
+                    self.mainView.birthdayView.contentView.setComplete()
+                }
+                else if let message = message {
+                    self.mainView.birthdayView.contentView.error(message: message)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    func bindCanMove() {
+        viewModel.canMove
+            .sink{ [weak self] canMove in
+                guard let self = self else { return }
+                self.mainView.ctaButton.isEnabled = canMove
+            }
+            .store(in: &cancellables)
+    }
+    
+    func bindMoveHome() {
+        viewModel.moveHome = { //[weak self] in
+            DispatchQueue.main.async{
+                print("move home")
+            }
+        }
+    }
+    
+    func bindError() {
+        viewModel.errorHandler
+            .sink{ error in
+                ToastMessage.shared.register(message: error.message)
+            }
+            .store(in: &cancellables)
     }
 }

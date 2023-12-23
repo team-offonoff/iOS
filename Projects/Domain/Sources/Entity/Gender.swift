@@ -1,8 +1,8 @@
 //
 //  Gender.swift
-//  Core
+//  Domain
 //
-//  Created by 박소윤 on 2023/11/15.
+//  Created by 박소윤 on 2023/12/23.
 //  Copyright © 2023 AB. All rights reserved.
 //
 
