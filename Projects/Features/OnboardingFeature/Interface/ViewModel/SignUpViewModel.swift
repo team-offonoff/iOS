@@ -8,7 +8,8 @@
 
 import Foundation
 import Combine
-import Core
+import Domain
+import FeatureDependency
 
 public protocol SignUpViewModelInput {
     func input(_ input: SignUpViewModelInputValue)
@@ -19,16 +20,19 @@ public struct SignUpViewModelInputValue {
     public init(
         nicknameEditingEnd: AnyPublisher<String, Never>,
         birthdayEditingEnd: AnyPublisher<String, Never>,
-        gender: AnyPublisher<Gender, Never>
+        gender: AnyPublisher<Gender, Never>,
+        moveNext: AnyPublisher<Void, Never>
     ) {
         self.nicknameEditingEnd = nicknameEditingEnd
         self.birthdayEditingEnd = birthdayEditingEnd
         self.gender = gender
+        self.moveNext = moveNext
     }
     
     public let nicknameEditingEnd: AnyPublisher<String, Never>
     public let birthdayEditingEnd: AnyPublisher<String, Never>
     public let gender: AnyPublisher<Gender, Never>
+    public let moveNext: AnyPublisher<Void, Never>
 }
 
 public protocol SignUpViewModelOutput {
@@ -38,7 +42,7 @@ public protocol SignUpViewModelOutput {
     var nicknameValidation: PassthroughSubject<(Bool, String?), Never> { get }
     var birthdayValidation: PassthroughSubject<(Bool, String?), Never> { get }
     var canMove: PassthroughSubject<Bool, Never> { get }
-//    var moveHome: (() -> Void) { get set }
+    var moveHome: (() -> Void)? { get set }
 //    var failSignUp: PassthroughSubject<Void, Never> { get }
 }
 
@@ -48,4 +52,4 @@ public protocol SignUpViewModelOutput {
 //    func selectJob(_ job: Job)
 //}
 
-public typealias SignUpViewModel = SignUpViewModelInput & SignUpViewModelOutput
+public typealias SignUpViewModel = SignUpViewModelInput & SignUpViewModelOutput & ErrorHandleable

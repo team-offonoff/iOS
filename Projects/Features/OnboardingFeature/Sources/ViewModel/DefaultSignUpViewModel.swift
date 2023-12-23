@@ -8,19 +8,39 @@
 
 import Foundation
 import Combine
-import FeatureDependency
 import OnboardingFeatureInterface
+import FeatureDependency
+import Domain
 import Core
 
 public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
-   
-    public let jobs: [Job] = Job.allCases
+    
+    public init(
+        signUpUseCase: any SignUpUseCase
+    ){
+        self.signUpUseCase = signUpUseCase
+    }
+    
+    private let signUpUseCase: any SignUpUseCase
+    private var signUpRequestValue: SignUpUseCaseRequestValue?
+    
+    //MARK: Output
+    
+    public let canMove: PassthroughSubject<Bool, Never> = PassthroughSubject()
+    public let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     public let nicknameValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
     public let birthdayValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
-    public let canMove: PassthroughSubject<Bool, Never> = PassthroughSubject()
     
+    public let jobs: [Job] = Job.allCases
     public let nicknameLimitCount: Int = 8
     public let birthdayLimitCount: Int = 8
+    
+    public var moveHome: (() -> Void)?
+}
+
+//MARK: Input
+
+extension DefaultSignUpViewModel {
     
     public func input(_ input: SignUpViewModelInputValue) {
         
@@ -62,13 +82,9 @@ public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
                 
             }
             .store(in: &cancellable)
-
-        //TODO: 직업 추가하기
+        
         nicknameValidation
-            .combineLatest(
-                birthdayValidation,
-                input.gender
-            )
+            .combineLatest(birthdayValidation, input.gender)
             .sink{ [weak self] nickname, birthday, _ in
                 
                 guard let self = self else { return }
@@ -78,6 +94,39 @@ public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
                 func canMove() -> Bool {
                     nickname.0 && birthday.0
                 }
+            }
+            .store(in: &cancellable)
+        
+        //signUpRequestValue 갱신을 위해 combine lastest로 데이터를 모으고, 조건을 검사한다.
+        canMove.combineLatest(input.nicknameEditingEnd, input.birthdayEditingEnd, input.gender)
+            .sink{ [weak self] canMove, nickname, birth, gender in
+                if canMove {
+                    self?.signUpRequestValue = SignUpUseCaseRequestValue(memberId: 0, nickname: nickname, birth: birth, gender: gender, job: "")
+                }
+                else {
+                    self?.signUpRequestValue = nil
+                }
+            }
+            .store(in: &cancellable)
+        
+        input.moveNext
+            .compactMap{ [weak self] _ in
+                self?.signUpRequestValue
+            }
+            .flatMap{ request in
+                self.signUpUseCase.execute(request: request)
+            }
+            .sink{ [weak self] result in
+                guard let self = self else { return }
+                if result.isSuccess {
+                    self.moveHome?()
+                }
+                else {
+                    if let error = result.error {
+                        self.errorHandler.send(error)
+                    }
+                }
+                
             }
             .store(in: &cancellable)
     }
