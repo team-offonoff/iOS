@@ -48,7 +48,8 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
             viewModel.input(
                 SignUpViewModelInputValue(
                     nicknameEditingEnd: mainView.nicknameView.contentView.textField.publisher(for: .editingDidEnd),
-                    birthdayEditingEnd: mainView.birthdayView.contentView.textField.publisher(for: .editingDidEnd)
+                    birthdayEditingEnd: mainView.birthdayView.contentView.textField.publisher(for: .editingDidEnd),
+                    gender: mainView.genderView.contentView.elementPublisher
                 )
                 
             )
