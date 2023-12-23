@@ -111,28 +111,47 @@ public final class OnboardingTextFieldView: BaseView {
     }
     
     private func bind() {
-        $state
-            .sink{ [weak self] state in
-                
-                guard let self = self else { return }
-                
-                let configuration = configuration()
-                self.textField.backgroundColor = configuration.backgroundColor
-                self.textField.layer.borderWidth = configuration.strokeWidth ?? 0
-                self.textField.layer.borderColor = configuration.strokeColor?.cgColor
-                self.countLabel.isHidden = configuration.isCountLabelHidden
-                self.errorLabel.isHidden = configuration.isErrorLabelHidden
-                
-                func configuration() -> OnboardingTextFieldViewConfiguration {
-                    switch state {
-                    case .empty:        return EmptyStateConfiguration()
-                    case .editing:      return EditingStateConfiguration()
-                    case .error:        return ErrorStateConfiguration()
-                    case .complete:     return CompleteStateConfiguration()
+        
+        bindState()
+        bindTextFieldEditingBegin()
+        
+        func bindState() {
+            $state
+                .sink{ [weak self] state in
+                    
+                    guard let self = self else { return }
+                    
+                    updateConfiguration()
+                    
+                    func updateConfiguration() {
+                        let configuration = configuration()
+                        self.textField.backgroundColor = configuration.backgroundColor
+                        self.textField.layer.borderWidth = configuration.strokeWidth ?? 0
+                        self.textField.layer.borderColor = configuration.strokeColor?.cgColor
+                        self.countLabel.isHidden = configuration.isCountLabelHidden
+                        self.errorLabel.isHidden = configuration.isErrorLabelHidden
+                    }
+                    
+                    func configuration() -> OnboardingTextFieldViewConfiguration {
+                        switch state {
+                        case .empty:        return EmptyStateConfiguration()
+                        case .editing:      return EditingStateConfiguration()
+                        case .error:        return ErrorStateConfiguration()
+                        case .complete:     return CompleteStateConfiguration()
+                        }
                     }
                 }
-            }
-            .store(in: &cancellable)
+                .store(in: &cancellable)
+        }
+        
+        func bindTextFieldEditingBegin() {
+            textField.publisher(for: .editingDidBegin)
+                .sink{ [weak self] _ in
+                    guard let self = self else { return }
+                    self.state = .editing
+                }
+                .store(in: &cancellable)
+        }
     }
     
     private func bindTextCount() {
@@ -141,12 +160,8 @@ public final class OnboardingTextFieldView: BaseView {
                 
                 guard let self = self, let limitCount = self.limitCount else { return }
                 
-                if $0.count == 0 {
-                    self.state = .empty
-                } else {
-                    self.state = .editing
-                    self.countLabel.text = "\($0.count)/\(limitCount)"
-                }
+                self.state = .editing
+                self.countLabel.text = "\($0.count)/\(limitCount)"
             }
             .store(in: &cancellable)
     }
@@ -158,10 +173,11 @@ extension OnboardingTextFieldView {
     public func error(message: String) {
         if (textField.text ?? "").count == 0 {
             state = .empty
-            return
         }
-        state = .error
-        errorLabel.text = message
+        else {
+            state = .error
+            errorLabel.text = message
+        }
     }
     
     public func setComplete() {
