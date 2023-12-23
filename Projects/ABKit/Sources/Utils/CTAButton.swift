@@ -60,9 +60,8 @@ public final class CTAButton: UIButton {
                     
                     func configuration() -> CTAButtonConfiguration {
                         switch button.state {
-                        case .normal:       return NormalCTAButtonConfiguration()
                         case .disabled:     return DisabledCTAButtonConfiguration()
-                        default:            fatalError()
+                        default:            return NormalCTAButtonConfiguration()
                         }
                     }
                     
