@@ -17,21 +17,24 @@ public protocol SignUpViewModelInput {
 public struct SignUpViewModelInputValue {
     
     public init(
-        nicknameEditingEnd: AnyPublisher<String, Never>
+        nicknameEditingEnd: AnyPublisher<String, Never>,
+        birthdayEditingEnd: AnyPublisher<String, Never>
     ) {
         self.nicknameEditingEnd = nicknameEditingEnd
+        self.birthdayEditingEnd = birthdayEditingEnd
     }
     
     public let nicknameEditingEnd: AnyPublisher<String, Never>
-//    public let birthdayText: AnyPublisher<String, Never>
+    public let birthdayEditingEnd: AnyPublisher<String, Never>
 //    public let gender: AnyPublisher<Gender, Never>
 }
 
 public protocol SignUpViewModelOutput {
     var nicknameLimitCount: Int { get }
+    var birthdayLimitCount: Int { get }
     ///닉네임의 유효성과 닉네임이 유효하지 않은 경우의 에러 메시지를 방출
     var nicknameValidation: PassthroughSubject<(Bool, String?), Never> { get }
-//    var isBirthdayValid: PassthroughSubject<(Bool, String), Never> { get }
+    var birthdayValidation: PassthroughSubject<(Bool, String?), Never> { get }
 //    var canMove: PassthroughSubject<Bool, Never> { get }
 //    var moveHome: (() -> Void) { get set }
 //    var failSignUp: PassthroughSubject<Void, Never> { get }

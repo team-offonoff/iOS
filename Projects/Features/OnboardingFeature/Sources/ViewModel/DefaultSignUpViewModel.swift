@@ -16,8 +16,10 @@ public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
    
     public let jobs: [Job] = Job.allCases
     public let nicknameValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
+    public let birthdayValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
     
     public let nicknameLimitCount: Int = 8
+    public let birthdayLimitCount: Int = 8
     
     public func input(_ input: SignUpViewModelInputValue) {
         
@@ -39,6 +41,24 @@ public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
                         return (true, nil)
                     }
                 }
+            }
+            .store(in: &cancellable)
+        
+        
+        input.birthdayEditingEnd
+            .sink{ [weak self] birthday in
+                
+                guard let self = self else { return }
+                
+                self.birthdayValidation.send(validation())
+                
+                func validation() -> (Bool, String?) {
+                    if birthday.count != self.birthdayLimitCount {
+                        return (false, "* 생년월일을 8자로 입력해주세요.")
+                    }
+                    return (true, nil)
+                }
+                
             }
             .store(in: &cancellable)
 //
