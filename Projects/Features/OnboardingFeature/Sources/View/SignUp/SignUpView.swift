@@ -9,7 +9,7 @@
 import Foundation
 import ABKit
 import UIKit
-import Core
+import Domain
 
 extension Gender: RadioButtonData {
     public var title: String {
