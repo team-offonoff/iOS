@@ -102,10 +102,27 @@ extension DefaultSignUpViewModel {
             .sink{ [weak self] canMove, nickname, birth, gender in
                 if canMove {
                     guard let memberId = UserManager.shared.memberId else { return }
-                    self?.signUpRequestValue = SignUpUseCaseRequestValue(memberId: memberId, nickname: nickname, birth: birth, gender: gender, job: "")
+                    self?.signUpRequestValue = SignUpUseCaseRequestValue(
+                        memberId: memberId,
+                        nickname: nickname,
+                        birth: birthFormat(),
+                        gender: gender,
+                        job: ""
+                    )
                 }
                 else {
                     self?.signUpRequestValue = nil
+                }
+                
+                func birthFormat() -> String{
+                    let formatter = DateFormatter()
+                    //입력값 기준 포맷
+                    formatter.dateFormat = "yyyyMMdd"
+                    let date = formatter.date(from: birth)!
+
+                    //서버 전송용 포맷
+                    formatter.dateFormat = "yyyy-MM-dd"
+                    return formatter.string(from: date)
                 }
             }
             .store(in: &cancellable)
@@ -127,7 +144,6 @@ extension DefaultSignUpViewModel {
                         self.errorHandler.send(error)
                     }
                 }
-                
             }
             .store(in: &cancellable)
     }
