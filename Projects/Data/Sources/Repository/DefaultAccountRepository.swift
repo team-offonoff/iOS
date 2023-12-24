@@ -34,7 +34,7 @@ public final class DefaultAuthRepository: AuthRepository {
                 memberId: request.memberId,
                 nickname: request.nickname,
                 birth: request.birth,
-                gender: Mapper.dto(gender: request.gender),
+                gender: request.gender.toDTO(),
                 job: request.job
             )
         }
