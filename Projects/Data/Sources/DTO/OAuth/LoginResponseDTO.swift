@@ -21,7 +21,7 @@ struct LoginResponseDTO: Decodable, Domainable {
         .init(
             isNewMember: newMember,
             memberId: memberId,
-            joinStatus: JoinStatus(rawValue: joinStatus),
+            joinStatus: JoinStatus.toDomain(joinStatus),
             accessToken: accessToken
         )
     }
