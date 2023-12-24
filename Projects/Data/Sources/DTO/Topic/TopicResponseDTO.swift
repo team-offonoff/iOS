@@ -55,7 +55,7 @@ extension TopicResponseDTO: Domainable {
     func toDomain() -> Topic {
         .init(
             id: topicId,
-            side: Mapper.entity(topicSide: topicSide),
+            side: Topic.Side.toDomain(topicSide),
             title: topicTitle,
             deadline: deadline,
             voteCount: voteCount,
@@ -72,7 +72,7 @@ extension TopicResponseDTO.KeywordResponseDTO: Domainable {
         .init(
             id: keywordId,
             name: keywordName,
-            topicSide: Mapper.entity(topicSide: topicSide)
+            topicSide: Topic.Side.toDomain(topicSide)
         )
     }
 }
@@ -83,7 +83,7 @@ extension TopicResponseDTO.ChoiceResponseDTO: Domainable {
             id: choiceId,
             //TODO: null 해제 필요
             content: content?.toDomain() ?? .init(text: "choice is null", imageURL: nil),
-            option: Mapper.entity(choiceOption: choiceOption)!
+            option: Choice.Option.toDomain(choiceOption)!
         )
     }
 }

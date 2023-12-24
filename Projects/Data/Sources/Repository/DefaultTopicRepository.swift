@@ -31,7 +31,7 @@ public final class DefaultTopicRepository: TopicRepository {
         
         func makeDTO() -> TopicGenerateRequestDTO {
             .init(
-                side: Mapper.dto(topicSide: request.side),
+                side: request.side.toDTO(),
                 keywordName: request.keyword.name,
                 title: request.title,
                 choices: makeChoicesDTO(),
