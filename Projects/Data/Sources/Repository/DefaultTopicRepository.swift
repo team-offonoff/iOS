@@ -31,7 +31,7 @@ public final class DefaultTopicRepository: TopicRepository {
         
         func makeDTO() -> TopicGenerateRequestDTO {
             .init(
-                side: Mapper.dto(topicSide: request.side),
+                side: request.side.toDTO(),
                 keywordName: request.keyword.name,
                 title: request.title,
                 choices: makeChoicesDTO(),
@@ -43,7 +43,7 @@ public final class DefaultTopicRepository: TopicRepository {
             request.choices
                 .map{ choice in
                         .init(
-                            choiceOption: Mapper.dto(choiceOption: choice.option),
+                            choiceOption: choice.option.toDTO(),
                             choiceContentRequest: .init(
                                 type: "IMAGE_TEXT",
                                 imageUrl: String(describing: choice.content.imageURL),
@@ -99,7 +99,7 @@ public final class DefaultTopicRepository: TopicRepository {
         
         func makeDTO() -> GenerateVoteRequestDTO {
             .init(
-                choiceOption: Mapper.dto(choiceOption: request.choiceOption),
+                choiceOption: request.choiceOption.toDTO(),
                 votedAt: request.votedAt)
         }
     }

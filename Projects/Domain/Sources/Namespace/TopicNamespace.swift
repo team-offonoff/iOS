@@ -12,7 +12,7 @@ extension Topic {
     
     private static let identifier = "Topic."
         
-    public enum Side: String {
+    public enum Side: String, CaseIterable {
         
         public static let identifier = "Side."
         

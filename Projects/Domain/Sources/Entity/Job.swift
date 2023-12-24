@@ -1,8 +1,8 @@
 //
 //  Job.swift
-//  Core
+//  Domain
 //
-//  Created by 박소윤 on 2023/11/11.
+//  Created by 박소윤 on 2023/12/24.
 //  Copyright © 2023 AB. All rights reserved.
 //
 

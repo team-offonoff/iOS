@@ -16,6 +16,6 @@ struct SignUpResponseDTO: Decodable {
 
 extension SignUpResponseDTO: Domainable {
     func toDomain() -> User {
-        .init(memberId: memberId, joinStatus: .init(rawValue: joinStatus)!)
+        .init(memberId: memberId, joinStatus: JoinStatus.toDomain(joinStatus))
     }
 }

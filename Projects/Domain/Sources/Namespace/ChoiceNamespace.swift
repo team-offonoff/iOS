@@ -12,7 +12,7 @@ extension Choice {
     
     public static let identifier: String = "Choice."
     
-    public enum Option: String {
+    public enum Option: String, CaseIterable {
         
         public static let identifier: String = "Option."
         
