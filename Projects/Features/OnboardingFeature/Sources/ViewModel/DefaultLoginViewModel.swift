@@ -16,7 +16,7 @@ import Domain
 import Combine
 import Core
 
-final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
+public final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
     
     init(
         loginUseCase: any LoginUseCase
@@ -25,63 +25,65 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
         super.init()
     }
     
-    var moveHome: (() -> Void)?
-    var moveSignUp: (() -> Void)?
+    public var moveHome: (() -> Void)?
+    public var moveSignUp: (() -> Void)?
     
     @Published private var kakaoUser: (oauthToken: KakaoSDKAuth.OAuthToken?, user: KakaoSDKUser.User?) = (nil, nil)
-    
+    public let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     private let loginUseCase: any LoginUseCase
     
-    override func bind(){
+    public override func bind(){
         bindKakaoLogin()
     }
     
     private func bindKakaoLogin() {
         
         let response = $kakaoUser
-            .filter{ $0.oauthToken != nil && $0.user != nil }
-            .compactMap{ $0.oauthToken?.idToken }
+            .filter{
+                $0.oauthToken != nil && $0.user != nil
+            }
+            .compactMap{
+                $0.oauthToken?.idToken
+            }
             .flatMap{ idToken in
                 self.loginUseCase.execute(request: .init(idToken: idToken))
             }
             .share()
         
-        // response success
         response
-            .filter{ $0.isSuccess }
-            .compactMap{ $0.data }
-            .sink{ [weak self] in
-
-                guard let isNewMember = $0.isNewMember,
-                      let accessToken = $0.accessToken else { return }
-
-                UserManager.shared.accessToken = accessToken
-                UserManager.shared.idToken = self?.kakaoUser.oauthToken?.idToken
-                UserManager.shared.email = self?.kakaoUser.user?.kakaoAccount?.email
-
-                if isNewMember {
-                    self?.moveSignUp?()
+            .sink{ [weak self] result in
+                
+                guard let self = self else { return }
+                
+                if result.isSuccess, let data = result.data {
+                    
+                    UserManager.shared.accessToken = data.accessToken
+                    UserManager.shared.memberId = data.memberId
+                    
+                    switch data.joinStatus {
+                    case .authRegistered:
+                        // 회원 정보 입력 페이지로 이동
+                        self.moveSignUp?()
+                    case .personalRegistered:
+                        // 약관 동의 페이지로 이동
+                        break
+                    case .complete:
+                        // 홈 화면으로 이동
+                        self.moveHome?()
+                    default:
+                        return
+                    }
                 }
-                else {
-                    self?.moveHome?()
+                else if let error = result.error {
+                    self.errorHandler.send(error)
                 }
             }
             .store(in: &cancellable)
-        
-        // response fail
-        let failResponse = response
-            .filter{ $0.isSuccess}
-            .sink{
-                print("fail:", $0)
-            }
-            .store(in: &cancellable)
-         
-        
     }
     
     //MARK: Kakao Login
     
-    func startKakaoLogin() {
+    public func startKakaoLogin() {
         
         if UserApi.isKakaoTalkLoginAvailable() {
             loginWithKakaoTalk()
@@ -153,24 +155,22 @@ final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
     
     //MARK: Apple Login
     
-    func makeAppleRequests() -> [ASAuthorizationAppleIDRequest] {
+    public func makeAppleRequests() -> [ASAuthorizationAppleIDRequest] {
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
         request.requestedScopes = [.email] //애플 로그인은 이름 제외, 이메일만 동의.
         return [request]
     }
     
-    func startAppleLogin(credential: ASAuthorizationAppleIDCredential) {
+    public func startAppleLogin(credential: ASAuthorizationAppleIDCredential) {
         
         guard let authorizationCodeData = credential.authorizationCode,
               let authorizationCode = String(data: authorizationCodeData, encoding: .utf8),
               let identityTokenData = credential.identityToken,
               let identityToken = String(data: identityTokenData, encoding: .ascii),
               let email = credential.email
-//              let name = credential.fullName
         else { return }
         
         let userIdentifier = credential.user
-//        let userName = "\(name.familyName!)\(name.givenName!)"
     }
 }

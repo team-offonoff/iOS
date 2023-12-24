@@ -11,6 +11,7 @@ import KakaoSDKAuth
 import KakaoSDKUser
 import AuthenticationServices
 import Combine
+import FeatureDependency
 
 public protocol KakaoLoginDelegate {
     func startKakaoLogin()
@@ -30,6 +31,4 @@ public protocol LoginViewModelOutput {
     var moveSignUp: (() -> Void)? { get set }
 }
 
-public protocol LoginViewModel: LoginViewModelInput, LoginViewModelOutput {
-
-}
+public typealias LoginViewModel = LoginViewModelInput & LoginViewModelOutput & ErrorHandleable
