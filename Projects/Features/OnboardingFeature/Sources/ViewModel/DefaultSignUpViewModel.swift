@@ -101,7 +101,8 @@ extension DefaultSignUpViewModel {
         canMove.combineLatest(input.nicknameEditingEnd, input.birthdayEditingEnd, input.gender)
             .sink{ [weak self] canMove, nickname, birth, gender in
                 if canMove {
-                    self?.signUpRequestValue = SignUpUseCaseRequestValue(memberId: 0, nickname: nickname, birth: birth, gender: gender, job: "")
+                    guard let memberId = UserManager.shared.memberId else { return }
+                    self?.signUpRequestValue = SignUpUseCaseRequestValue(memberId: memberId, nickname: nickname, birth: birth, gender: gender, job: "")
                 }
                 else {
                     self?.signUpRequestValue = nil
