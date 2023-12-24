@@ -62,7 +62,7 @@ extension TopicResponseDTO: Domainable {
             keyword: keyword.toDomain(),
             choices: choices.map{ $0.toDomain() },
             author: author.toDomain(),
-            selectedOption: Mapper.entity(choiceOption: selectedOption)
+            selectedOption: Choice.Option.toDomain(selectedOption)
         )
     }
 }

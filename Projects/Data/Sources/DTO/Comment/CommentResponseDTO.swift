@@ -35,7 +35,7 @@ extension CommentResponseDTO: Domainable {
             commentId: commentId,
             topicId: topicId,
             writer: writer.toDomain(),
-            votedOption: Mapper.entity(choiceOption: writersVotedOption),
+            votedOption: Choice.Option.toDomain(writersVotedOption),
             content: content,
             likeCount: likeCount,
             hateCount: hateCount,
