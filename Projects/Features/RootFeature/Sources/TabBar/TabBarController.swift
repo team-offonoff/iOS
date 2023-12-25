@@ -12,6 +12,7 @@ import Combine
 
 public class TabBarController: UITabBarController{
     
+    public weak var coordinator: TabCoordinator?
     private let tabBarView: CustomTabBar = CustomTabBar()
     private var cancellables: Set<AnyCancellable> = []
     
@@ -49,6 +50,14 @@ public class TabBarController: UITabBarController{
                 if self?.selectedIndex != $0 {
                     self?.selectedIndex = $0
                 }
+            }
+            .store(in: &cancellables)
+        
+        tabBarView.generateTopicButton.tapPublisher
+            .receive(on: DispatchQueue.main)
+            .sink{ [weak self] _ in
+                guard let self = self else { return }
+                self.coordinator?.startTopicGenerate()
             }
             .store(in: &cancellables)
     }

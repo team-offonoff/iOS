@@ -9,5 +9,5 @@
 import FeatureDependency
 
 public protocol TabCoordinator: Coordinator{
-    
+    func startTopicGenerate()
 }

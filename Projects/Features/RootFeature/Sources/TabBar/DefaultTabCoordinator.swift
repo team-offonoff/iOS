@@ -9,12 +9,14 @@
 import UIKit
 import FeatureDependency
 import HomeFeatureInterface
+import TopicFeatureInterface
 import HomeFeature
+import TopicFeature
 
 public class DefaultTabCoordinator: TabCoordinator {
     
     private let window: UIWindow?
-    private let tabBarController: UITabBarController
+    private let tabBarController: TabBarController
     private let homeTabNavigationController: UINavigationController
     private let abTabNavigationController: UINavigationController
     private let newTabNavigationController: UINavigationController
@@ -35,6 +37,7 @@ public class DefaultTabCoordinator: TabCoordinator {
     
     public func start() {
         window?.rootViewController = tabBarController
+        tabBarController.coordinator = self
         setTabBarViewControllers()
         startHome()
         startAB()
@@ -74,5 +77,10 @@ public class DefaultTabCoordinator: TabCoordinator {
     private func startUser(){
 //        let userCoordinator: HomeCoordinator = DefaultHomeCoordinator(navigationController: userTabNavigationController)
 //        userCoordinator.start()
+    }
+    
+    public func startTopicGenerate() {
+        let topicGenerateCoordinator: TopicGenerateCoordinator = DefaultTopicGenerateCoordinator(rootViewController: tabBarController)
+        topicGenerateCoordinator.start()
     }
 }
