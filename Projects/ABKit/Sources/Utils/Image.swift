@@ -17,6 +17,8 @@ extension UIImage{
 public struct Image{
     
     public static let arrowDown = UIImage.load(name: "arrow_down")
+    public static let arrowLeft = UIImage.load(name: "arrow_left")
+    public static let modalDismiss = UIImage.load(name: "modal_dismiss")
     
     //MARK: Login
     
