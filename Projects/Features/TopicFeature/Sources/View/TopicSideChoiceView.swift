@@ -165,25 +165,25 @@ extension TopicSideChoiceView {
 }
 
 fileprivate struct TopicSideDeselectConfiguration: TopicSideChoiceViewConfiguration {
-    var isOptionSelected: Bool = false
-    var aViewIsHidden: Bool = true
-    var bViewIsHidden: Bool = true
-    var ctaButtonBackgroundColor: UIColor? = nil
-    var optionExplain: String? = nil
+    let isOptionSelected: Bool = false
+    let aViewIsHidden: Bool = true
+    let bViewIsHidden: Bool = true
+    let ctaButtonBackgroundColor: UIColor? = nil
+    let optionExplain: String? = nil
 }
 
 fileprivate struct ChoiceTopicSideAConfiguration: TopicSideChoiceViewConfiguration {
-    var isOptionSelected: Bool = true
-    var aViewIsHidden: Bool = false
-    var bViewIsHidden: Bool = true
-    var ctaButtonBackgroundColor: UIColor? = Color.mainA
-    var optionExplain: String? = "가벼운 주제부터 무거운 고민까지\n세상의 모든 토픽을 담아요"
+    let isOptionSelected: Bool = true
+    let aViewIsHidden: Bool = false
+    let bViewIsHidden: Bool = true
+    let ctaButtonBackgroundColor: UIColor? = Color.mainA
+    let optionExplain: String? = "가벼운 주제부터 무거운 고민까지\n세상의 모든 토픽을 담아요"
 }
 
 fileprivate struct ChoiceTopicSideBConfiguration: TopicSideChoiceViewConfiguration {
-    var isOptionSelected: Bool = true
-    var aViewIsHidden: Bool = true
-    var bViewIsHidden: Bool = false
-    var ctaButtonBackgroundColor: UIColor? = Color.mainB
-    var optionExplain: String? = "카피라이팅, A/B Test 등 다양한\n직무의 고민과 토픽을 담아요"
+    let isOptionSelected: Bool = true
+    let aViewIsHidden: Bool = true
+    let bViewIsHidden: Bool = false
+    let ctaButtonBackgroundColor: UIColor? = Color.mainB
+    let optionExplain: String? = "카피라이팅, A/B Test 등 다양한\n직무의 고민과 토픽을 담아요"
 }
