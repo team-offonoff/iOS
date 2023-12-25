@@ -62,4 +62,12 @@ public struct Image{
     public static let homeArrow = UIImage.load(name: "home_arrow")
     public static let homeAlarmOn = UIImage.load(name: "home_alarm_on")
     public static let homeAlarmOff = UIImage.load(name: "home_alarm_off")
+    
+    //MARK: Topic Generate
+
+    public static let topicGenerateNormal = UIImage.load(name: "topic_generate_normal")
+    public static let topicGenerateChoiceA = UIImage.load(name: "topic_generate_a")
+    public static let topicGenerateChoiceB = UIImage.load(name: "topic_generate_b")
+    public static let topicGenerateBottom = UIImage.load(name: "topic_generate_bottom_image")
+    public static let topicGenerateArrowDown = UIImage.load(name: "topic_generate_arrow_down")
 }
