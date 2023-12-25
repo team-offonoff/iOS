@@ -36,6 +36,7 @@ public class HeaderView: BaseHeaderView, HeaderTouchable {
     private let titleLabel: UILabel = {
        let label = UILabel()
         label.textColor = Color.white
+        label.textAlignment = .center
         label.setTypo(Pretendard.semibold20)
         return label
     }()
