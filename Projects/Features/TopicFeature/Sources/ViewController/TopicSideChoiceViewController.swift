@@ -22,7 +22,7 @@ final class TopicSideChoiceViewController: BaseViewController<ModalityHeaderView
     }
 
     override func initialize() {
-        [mainView.choice.noramlView, mainView.choice.aView, mainView.choice.bView].forEach{
+        [mainView.sideChoice.noramlView, mainView.sideChoice.aView, mainView.sideChoice.bView].forEach{
             $0.isUserInteractionEnabled = true
             $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
         }

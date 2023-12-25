@@ -13,16 +13,16 @@ import Domain
 import Combine
 
 protocol TopicSideChoiceViewConfiguration {
-    var isOptionSelected: Bool { get }
-    var aViewIsHidden: Bool { get }
-    var bViewIsHidden: Bool { get }
+    var isSideSelected: Bool { get }
+    var isAViewHidden: Bool { get }
+    var isBViewHidden: Bool { get }
     var ctaButtonBackgroundColor: UIColor? { get }
-    var optionExplain: String? { get }
+    var sideExplain: String? { get }
 }
 
 final class TopicSideChoiceView: BaseView {
     
-    @Published var state: Domain.Choice.Option?
+    @Published var state: Topic.Side?
     private var cancellable: Set<AnyCancellable> = []
     
     //MARK: UI
@@ -49,8 +49,8 @@ final class TopicSideChoiceView: BaseView {
         return image
     }()
     
-    let choice: Choice = Choice()
-    private let whichOptionGenerateLabel: UILabel = {
+    let sideChoice: SideChoice = SideChoice()
+    private let whichSideGenerateLabel: UILabel = {
         let label = UILabel()
         label.setTypo(Pretendard.semibold24, setLineSpacing: true)
         label.text = "어떤 토픽을\n만들어 볼까요?"
@@ -59,7 +59,7 @@ final class TopicSideChoiceView: BaseView {
         label.numberOfLines = 2
         return label
     }()
-    private let optionExplainLabel: UILabel = {
+    private let sideExplainLabel: UILabel = {
         let label = UILabel()
         label.setTypo(Pretendard.regular15, setLineSpacing: true)
         label.text = "가벼운 주제부터 무거운 고민까지\n세상의 모든 토픽을 담아요"
@@ -82,7 +82,7 @@ final class TopicSideChoiceView: BaseView {
     
     override func hierarchy() {
         choiceGuideStackView.addArrangedSubviews([sideChoiceGuideLabel, guideIconImageView])
-        addSubviews([bottomImage, choiceGuideStackView, choice.noramlView, choice.aView, choice.bView, whichOptionGenerateLabel, optionExplainLabel, ctaButton])
+        addSubviews([bottomImage, choiceGuideStackView, sideChoice.noramlView, sideChoice.aView, sideChoice.bView, whichSideGenerateLabel, sideExplainLabel, ctaButton])
     }
     
     override func layout() {
@@ -90,27 +90,27 @@ final class TopicSideChoiceView: BaseView {
             $0.top.equalToSuperview().offset(19)
             $0.centerX.equalToSuperview()
         }
-        choice.noramlView.snp.makeConstraints{
+        sideChoice.noramlView.snp.makeConstraints{
             $0.top.equalToSuperview().offset(108)
             $0.centerX.equalToSuperview()
         }
         
-        choice.aView.snp.makeConstraints{
+        sideChoice.aView.snp.makeConstraints{
             $0.top.equalToSuperview().offset(83)
             $0.centerX.equalToSuperview()
         }
         
-        choice.bView.snp.makeConstraints{
+        sideChoice.bView.snp.makeConstraints{
             $0.top.equalToSuperview().offset(86)
             $0.centerX.equalToSuperview()
         }
         
-        whichOptionGenerateLabel.snp.makeConstraints{
-            $0.top.equalTo(choice.noramlView.snp.bottom).inset(20)
+        whichSideGenerateLabel.snp.makeConstraints{
+            $0.top.equalTo(sideChoice.noramlView.snp.bottom).inset(20)
             $0.centerX.equalToSuperview()
         }
-        optionExplainLabel.snp.makeConstraints{
-            $0.top.equalTo(choice.aView.snp.bottom)
+        sideExplainLabel.snp.makeConstraints{
+            $0.top.equalTo(sideChoice.aView.snp.bottom)
             $0.centerX.equalToSuperview()
         }
         ctaButton.snp.makeConstraints{
@@ -130,16 +130,16 @@ final class TopicSideChoiceView: BaseView {
                 
                 let configuration = configuration()
                 
-                [self.choiceGuideStackView, self.choice.noramlView, self.whichOptionGenerateLabel].forEach{
-                    $0.isHidden = configuration.isOptionSelected
+                [self.choiceGuideStackView, self.sideChoice.noramlView, self.whichSideGenerateLabel].forEach{
+                    $0.isHidden = configuration.isSideSelected
                 }
                 
-                [self.ctaButton, self.optionExplainLabel].forEach{
-                    $0.isHidden = !configuration.isOptionSelected
+                [self.ctaButton, self.sideExplainLabel].forEach{
+                    $0.isHidden = !configuration.isSideSelected
                 }
                 
-                self.choice.aView.isHidden = configuration.aViewIsHidden
-                self.choice.bView.isHidden = configuration.bViewIsHidden
+                self.sideChoice.aView.isHidden = configuration.isAViewHidden
+                self.sideChoice.bView.isHidden = configuration.isBViewHidden
                 
                 self.ctaButton.configuration?.background.backgroundColor = configuration.ctaButtonBackgroundColor
                 
@@ -157,7 +157,7 @@ final class TopicSideChoiceView: BaseView {
 }
 
 extension TopicSideChoiceView {
-    class Choice {
+    class SideChoice {
         let noramlView: UIImageView = UIImageView(image: Image.topicGenerateNormal)
         let aView: UIImageView = UIImageView(image: Image.topicGenerateChoiceA)
         let bView: UIImageView = UIImageView(image: Image.topicGenerateChoiceB)
@@ -165,25 +165,25 @@ extension TopicSideChoiceView {
 }
 
 fileprivate struct TopicSideDeselectConfiguration: TopicSideChoiceViewConfiguration {
-    let isOptionSelected: Bool = false
-    let aViewIsHidden: Bool = true
-    let bViewIsHidden: Bool = true
+    let isSideSelected: Bool = false
+    let isAViewHidden: Bool = true
+    let isBViewHidden: Bool = true
     let ctaButtonBackgroundColor: UIColor? = nil
-    let optionExplain: String? = nil
+    let sideExplain: String? = nil
 }
 
 fileprivate struct ChoiceTopicSideAConfiguration: TopicSideChoiceViewConfiguration {
-    let isOptionSelected: Bool = true
-    let aViewIsHidden: Bool = false
-    let bViewIsHidden: Bool = true
+    let isSideSelected: Bool = true
+    let isAViewHidden: Bool = false
+    let isBViewHidden: Bool = true
     let ctaButtonBackgroundColor: UIColor? = Color.mainA
-    let optionExplain: String? = "가벼운 주제부터 무거운 고민까지\n세상의 모든 토픽을 담아요"
+    let sideExplain: String? = "가벼운 주제부터 무거운 고민까지\n세상의 모든 토픽을 담아요"
 }
 
 fileprivate struct ChoiceTopicSideBConfiguration: TopicSideChoiceViewConfiguration {
-    let isOptionSelected: Bool = true
-    let aViewIsHidden: Bool = true
-    let bViewIsHidden: Bool = false
+    let isSideSelected: Bool = true
+    let isAViewHidden: Bool = true
+    let isBViewHidden: Bool = false
     let ctaButtonBackgroundColor: UIColor? = Color.mainB
-    let optionExplain: String? = "카피라이팅, A/B Test 등 다양한\n직무의 고민과 토픽을 담아요"
+    let sideExplain: String? = "카피라이팅, A/B Test 등 다양한\n직무의 고민과 토픽을 담아요"
 }
