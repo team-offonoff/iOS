@@ -31,6 +31,7 @@ open class BaseTableViewCell: UITableViewCell, CellReuseable{
     }
     
     final private func template(){
+        backgroundColor = Color.transparent
         setBaseView()
         selectedBackgroundView = UIView()
     }
