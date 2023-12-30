@@ -1,6 +1,6 @@
 //
 //  RecommendKeywordCollectionViewCell.swift
-//  TopicFeatureInterface
+//  TopicFeature
 //
 //  Created by 박소윤 on 2023/12/26.
 //  Copyright © 2023 AB. All rights reserved.
@@ -19,7 +19,10 @@ final class RecommendKeywordCollectionViewCell: BaseCollectionViewCell {
         configuration.cornerStyle = .capsule
         configuration.background.strokeWidth = 1
         configuration.background.strokeColor = Color.subNavy2
-        return UIButton(configuration: configuration)
+        
+        let button = UIButton(configuration: configuration)
+        button.isUserInteractionEnabled = false
+        return button
     }()
     
     override func hierarchy() {
