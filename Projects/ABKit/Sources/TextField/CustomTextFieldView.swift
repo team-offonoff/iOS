@@ -22,7 +22,7 @@ public protocol CustomTextFieldDelegate: AnyObject {
     func configuration(_ textFieldView: CustomTextFieldView, of state: CustomTextFieldView.State) -> CustomTextFieldConfiguration
 }
 
-public final class CustomTextFieldView: BaseView {
+open class CustomTextFieldView: BaseView {
     
     public enum State {
         /// 초기 상태로, placeholder를 보여준다
@@ -35,8 +35,9 @@ public final class CustomTextFieldView: BaseView {
         case complete
     }
     
-    public init(placeholder: String, insets: UIEdgeInsets? = nil) {
+    public init(placeholder: String, insets: UIEdgeInsets? = nil, isErrorNeed: Bool) {
         self.placeholder = placeholder
+        self.isErrorNeed = isErrorNeed
         self.textField = InsetTextField(insets: insets)
         super.init()
         bind()
@@ -53,6 +54,7 @@ public final class CustomTextFieldView: BaseView {
         }
     }
     
+    private let isErrorNeed: Bool
     private let placeholder: String
     private var cancellable: Set<AnyCancellable> = []
     ///글자 제한 수를 설정할 경우, 자동으로 카운팅이 동작하며, Lable에 개수를 업데이트한다.
@@ -78,7 +80,7 @@ public final class CustomTextFieldView: BaseView {
         return label
     }()
     
-    public override func style() {
+    open override func style() {
         textField.layer.cornerRadius = 10
     }
     
@@ -100,11 +102,18 @@ public final class CustomTextFieldView: BaseView {
         textField.snp.makeConstraints{
             $0.leading.trailing.top.equalToSuperview()
         }
-        errorLabel.snp.makeConstraints{
-            $0.top.equalTo(textField.snp.bottom).offset(9)
-            $0.leading.equalToSuperview().offset(16)
-            $0.trailing.equalToSuperview()
-            $0.bottom.equalToSuperview()
+        if isErrorNeed {
+            errorLabel.snp.makeConstraints{
+                $0.top.equalTo(textField.snp.bottom).offset(9)
+                $0.leading.equalToSuperview().offset(16)
+                $0.trailing.equalToSuperview()
+                $0.bottom.equalToSuperview()
+            }
+        }
+        else {
+            textField.snp.makeConstraints{
+                $0.bottom.equalToSuperview()
+            }
         }
         countLabel.snp.makeConstraints{
             $0.centerY.equalToSuperview()
