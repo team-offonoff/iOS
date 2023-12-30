@@ -70,4 +70,13 @@ public struct Image{
     public static let topicGenerateChoiceB = UIImage.load(name: "topic_generate_b")
     public static let topicGenerateBottom = UIImage.load(name: "topic_generate_bottom_image")
     public static let topicGenerateArrowDown = UIImage.load(name: "topic_generate_arrow_down")
+    
+    public static let topicGenerateTextNoraml = UIImage.load(name: "topic_generate_text_normal")
+    public static let topicGenerateTextSelected = UIImage.load(name: "topic_generate_text_selected")
+    public static let topicGenerateImageNormal = UIImage.load(name: "topic_generate_image_normal")
+    public static let topicGenerateImageSelected = UIImage.load(name: "topic_generate_image_selected")
+    public static let topicGenerateSwitch = UIImage.load(name: "topic_generate_switch")
+    public static let topicGenerateImageCancel = UIImage.load(name: "topic_generate_image_cancel")
+    public static let topicGenerateHeaderArrowDown = UIImage.load(name: "topic_generate_header_arrow_down")
+    public static let topicGenerateHeaderArrowUp = UIImage.load(name: "topic_generate_header_arrow_up")
 }
