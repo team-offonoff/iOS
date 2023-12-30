@@ -39,6 +39,7 @@ extension TopicGenerateViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         switch indexPath.row {
         case 0:     return inputTableViewCell()
         case 1:     return contentInputTableViewCell()
@@ -46,12 +47,36 @@ extension TopicGenerateViewController: UITableViewDelegate, UITableViewDataSourc
         }
         
         func inputTableViewCell() -> UITableViewCell {
+            
             let cell = tableView.dequeueReusableCell(for: indexPath, cellType: TopicInputTableViewCell.self)
-            cell.title.contentView.limitCount = 6
-            cell.keyword.contentView.limitCount = 6
-            cell.recommendKeyword.collectionView.delegate = self
-            cell.recommendKeyword.collectionView.dataSource = self
+            
+            setGlobalProperty()
+            setLimitCount()
+            setDelegate()
+            setInput()
+            
             return cell
+            
+            func setGlobalProperty() {
+                keywordTextField = cell.keyword.contentView
+            }
+            
+            func setLimitCount() {
+                cell.title.contentView.limitCount = viewModel.titleLimitCount
+                cell.keyword.contentView.limitCount = viewModel.keywordLimitCount
+            }
+            
+            func setDelegate() {
+                cell.recommendKeyword.collectionView.delegate = self
+                cell.recommendKeyword.collectionView.dataSource = self
+            }
+            
+            func setInput() {
+                viewModel.input(content: .init(
+                    titleDidEnd: cell.title.contentView.textField.publisher(for: .editingDidEnd),
+                    keywordDidEnd: cell.keyword.contentView.textField.publisher(for: .editingDidEnd)
+                ))
+            }
         }
         
         func contentInputTableViewCell() -> UITableViewCell {
