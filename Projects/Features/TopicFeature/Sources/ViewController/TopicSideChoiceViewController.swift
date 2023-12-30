@@ -9,22 +9,42 @@
 import Foundation
 import UIKit
 import ABKit
+import TopicFeatureInterface
 import FeatureDependency
 
 final class TopicSideChoiceViewController: BaseViewController<ModalityHeaderView,TopicSideChoiceView,DefaultTopicGenerateCoordinator> {
 
-    init() {
+    init(viewModel: any TopicGenerateViewModel) {
+        self.viewModel = viewModel
         super.init(headerView: ModalityHeaderView(title: "토픽 생성"), mainView: TopicSideChoiceView())
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    private let viewModel: any TopicGenerateViewModel
 
     override func initialize() {
-        [mainView.sideChoice.noramlView, mainView.sideChoice.aView, mainView.sideChoice.bView].forEach{
-            $0.isUserInteractionEnabled = true
-            $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
+        
+        addTarget()
+        addGestureRecognizer()
+        
+        func addTarget() {
+            mainView.ctaButton.tapPublisher
+                .sink{ [weak self] _ in
+                    guard let self = self, let state = self.mainView.state else { return }
+                    self.viewModel.topicSide.send(state)
+                    self.coordinator?.startTopicGenerate()
+                }
+                .store(in: &cancellables)
+        }
+        
+        func addGestureRecognizer() {
+            [mainView.sideChoice.noramlView, mainView.sideChoice.aView, mainView.sideChoice.bView].forEach{
+                $0.isUserInteractionEnabled = true
+                $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
+            }
         }
     }
     
