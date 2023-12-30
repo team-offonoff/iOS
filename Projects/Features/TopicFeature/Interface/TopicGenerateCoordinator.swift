@@ -10,5 +10,6 @@ import Foundation
 import FeatureDependency
 
 public protocol TopicGenerateCoordinator: Coordinator {
-
+    func startTopicGenerate()
 }
+

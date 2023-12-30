@@ -36,4 +36,8 @@ public class DefaultTopicGenerateCoordinator: TopicGenerateCoordinator {
         navigationController.modalPresentationStyle = .overFullScreen
         rootViewController?.present(navigationController, animated: true)
     }
+    
+    public func startTopicGenerate() {
+        navigationController.pushViewController(TopicGenerateViewController(), animated: true)
+    }
 }
