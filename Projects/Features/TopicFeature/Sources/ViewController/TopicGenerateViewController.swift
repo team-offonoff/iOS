@@ -9,15 +9,17 @@
 import Foundation
 import UIKit
 import ABKit
+import TopicFeatureInterface
 import FeatureDependency
 
 final class TopicGenerateViewController: BaseViewController<BaseHeaderView, TopicGenerateView, DefaultTopicGenerateCoordinator> {
 
-    init() {
+    init(viewModel: any TopicGenerateViewModel) {
+        self.viewModel = viewModel
         super.init(headerView: TopicGenerateHeaderView(), mainView: TopicGenerateView())
     }
     
-    private let keywords = ["스포츠", "연예방송", "일상다반사", "게임", "일상다반사"]
+    private let viewModel: any TopicGenerateViewModel
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -62,17 +64,17 @@ extension TopicGenerateViewController: UITableViewDelegate, UITableViewDataSourc
 extension TopicGenerateViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        keywords.count
+        viewModel.recommendKeywords.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(for: indexPath, cellType: RecommendKeywordCollectionViewCell.self)
-        cell.fill(keywords[indexPath.row])
+        cell.fill(viewModel.recommendKeywords[indexPath.row])
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        RecommendKeywordCollectionViewCell.size(keywords[indexPath.row])
+        RecommendKeywordCollectionViewCell.size(viewModel.recommendKeywords[indexPath.row])
     }
     
 }
