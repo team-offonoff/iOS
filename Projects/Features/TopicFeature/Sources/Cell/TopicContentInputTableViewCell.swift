@@ -20,8 +20,17 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
             bind()
         }
     }
+    
+    private var selectedContentTypeChip: ContentTypeChip? {
+        willSet {
+            newValue?.isSelected = true
+        }
+        didSet {
+            oldValue?.isSelected = false
+        }
+    }
 
-    let contentTypeChoice: ContentType = ContentType()
+    let contentTypeChips: ContentTypeGroup = ContentTypeGroup()
     private let contentSubView: SubtitleView = SubtitleView(subtitle: "토픽 내용", content: UIView())
     private let textContentView: TextContentView = TextContentView()
     private let imageContentView: ImageContentView = ImageContentView()
@@ -37,8 +46,8 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
     }
     
     override func hierarchy() {
-        contentTypeChoice.stackView.addArrangedSubviews([contentTypeChoice.text, contentTypeChoice.image])
-        baseView.addSubviews([contentTypeChoice.stackView, contentSubView, deadlineSubView, ctaButton])
+        contentTypeChips.stackView.addArrangedSubviews([contentTypeChips.text, contentTypeChips.image])
+        baseView.addSubviews([contentTypeChips.stackView, contentSubView, deadlineSubView, ctaButton])
         contentSubView.contentView.addSubviews([textContentView, imageContentView])
     }
     
@@ -46,12 +55,12 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
         baseView.snp.makeConstraints{
             $0.height.equalTo(Device.height - (Device.safeAreaInsets?.top ?? 0) - 48 - 30)
         }
-        contentTypeChoice.stackView.snp.makeConstraints{
+        contentTypeChips.stackView.snp.makeConstraints{
             $0.top.equalToSuperview().offset(30)
             $0.leading.equalToSuperview().offset(20)
         }
         contentSubView.snp.makeConstraints{
-            $0.top.equalTo(contentTypeChoice.stackView.snp.bottom).offset(30)
+            $0.top.equalTo(contentTypeChips.stackView.snp.bottom).offset(30)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
         textContentView.snp.makeConstraints{
@@ -72,10 +81,15 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
     
     override func initialize() {
         
+        initChip()
         addGestureRecognizer()
         
+        func initChip() {
+            selectedContentTypeChip = contentTypeChips.text
+        }
+        
         func addGestureRecognizer() {
-            [contentTypeChoice.text, contentTypeChoice.image].forEach{
+            [contentTypeChips.text, contentTypeChips.image].forEach{
                 $0.isUserInteractionEnabled = true
                 $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(changeContentType)))
             }
@@ -84,9 +98,10 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
     
     @objc func changeContentType(_ recognizer: UITapGestureRecognizer) {
         
-        guard let view = recognizer.view as? ContentTypeChoiceView else { return }
+        guard let view = recognizer.view as? ContentTypeChip else { return }
         
         if contentType?.value != view.contentType {
+            selectedContentTypeChip = view
             contentType?.send(view.contentType)
         }
     }
@@ -101,55 +116,56 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
     
     private func updateContentType() {
         
+        guard let selectedView = selectedContentView(), let selectedSuperView = selectedView.superview else { return }
+        
         deactiveExistingConstraints()
-        
-        switch contentType?.value {
-        case .text:
-            contentTypeChoice.text.isSelected = true
-            contentTypeChoice.image.isSelected = false
-            textContentView.isHidden = false
-            imageContentView.isHidden = true
-            
-            contentViewBottomConstraints = [textContentView.bottomAnchor.constraint(equalTo: textContentView.superview!.bottomAnchor)]
-            
-        case .image:
-            contentTypeChoice.image.isSelected = true
-            contentTypeChoice.text.isSelected = false
-            textContentView.isHidden = true
-            imageContentView.isHidden = false
-            
-            contentViewBottomConstraints = [imageContentView.bottomAnchor.constraint(equalTo: imageContentView.superview!.bottomAnchor)]
-            
-        case .none:
-            return
-        }
-        
-        activateNewConstraints()
+        changeVisibility()
+        newConstraints()
         
         func deactiveExistingConstraints() {
             NSLayoutConstraint.deactivate(contentViewBottomConstraints)
         }
         
-        func activateNewConstraints() {
+        func newConstraints() {
+            contentViewBottomConstraints = [selectedView.bottomAnchor.constraint(equalTo: selectedSuperView.bottomAnchor)]
             NSLayoutConstraint.activate(contentViewBottomConstraints)
             contentSubView.contentView.layoutIfNeeded()
+        }
+        
+        func changeVisibility() {
+            selectedView.isHidden = false
+            unselectedContentView().forEach{
+                $0.isHidden = true
+            }
+        }
+        
+        func selectedContentView() -> UIView? {
+            switch contentType?.value {
+            case .text:     return textContentView
+            case .image:    return imageContentView
+            case .none:     return nil
+            }
+        }
+        
+        func unselectedContentView() -> [UIView] {
+            [textContentView, imageContentView].filter{ $0 != selectedContentView() }
         }
     }
 }
 
 extension TopicContentInputTableViewCell {
     
-    class ContentType {
+    class ContentTypeGroup {
         let stackView: UIStackView = {
             let stackView = UIStackView(axis: .horizontal, spacing: 8)
             stackView.alignment = .center
             return stackView
         }()
-        let text: ContentTypeChoiceView = ContentTypeChoiceView(type: .text, title: "텍스트", normalIcon: Image.topicGenerateTextNoraml, selectedIcon: Image.topicGenerateTextSelected)
-        let image: ContentTypeChoiceView = ContentTypeChoiceView(type: .image, title: "이미지", normalIcon: Image.topicGenerateImageNormal, selectedIcon: Image.topicGenerateTextSelected)
+        let text: ContentTypeChip = ContentTypeChip(type: .text, title: "텍스트", normalIcon: Image.topicGenerateTextNoraml, selectedIcon: Image.topicGenerateTextSelected)
+        let image: ContentTypeChip = ContentTypeChip(type: .image, title: "이미지", normalIcon: Image.topicGenerateImageNormal, selectedIcon: Image.topicGenerateTextSelected)
     }
     
-    final class ContentTypeChoiceView: BaseView {
+    final class ContentTypeChip: BaseView {
         
         init(type: Topic.ContentType, title: String, normalIcon: UIImage, selectedIcon: UIImage) {
             self.contentType = type
@@ -289,6 +305,7 @@ extension TopicContentInputTableViewCell {
             }()
             private let countLabel: UILabel = {
                 let label = UILabel()
+                label.text = "0/25"
                 label.textColor = Color.subPurple
                 label.setTypo(Pretendard.semibold14)
                 return label
