@@ -20,7 +20,7 @@ extension Topic {
         case B
     }
     
-    enum ContentType {
+    public enum ContentType {
         
         public static let identifier = "ContentType."
         
