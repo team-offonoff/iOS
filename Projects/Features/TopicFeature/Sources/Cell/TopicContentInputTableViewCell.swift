@@ -14,21 +14,37 @@ import Combine
 
 final class TopicContentInputTableViewCell: BaseTableViewCell {
     
-    var type: Topic.ContentType = .text
-    
+    var contentType: CurrentValueSubject<Topic.ContentType, Never>? {
+        didSet {
+            updateContentType()
+            bind()
+        }
+    }
+
     let contentTypeChoice: ContentType = ContentType()
-    private let contentSubView: SubtitleView = SubtitleView(subtitle: "토픽 내용", content: TextContentView())
+    private let contentSubView: SubtitleView = SubtitleView(subtitle: "토픽 내용", content: UIView())
+    private let textContentView: TextContentView = TextContentView()
+    private let imageContentView: ImageContentView = ImageContentView()
     private let deadlineSubView: SubtitleView = SubtitleView(subtitle: "마감 시간", content: DropDownView(placeholder: "1시간 뒤"))
-    private let ctaButton: CTAButton = CTAButton(title: "토픽 올리기")
+    let ctaButton: CTAButton = CTAButton(title: "토픽 올리기")
+    
+    private var cancellable: Set<AnyCancellable> = []
+    //content view의 하단 레이아웃 조정을 위한 배열
+    private var contentViewBottomConstraints: [NSLayoutConstraint] = []
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        endEditing(true)
+    }
     
     override func hierarchy() {
         contentTypeChoice.stackView.addArrangedSubviews([contentTypeChoice.text, contentTypeChoice.image])
         baseView.addSubviews([contentTypeChoice.stackView, contentSubView, deadlineSubView, ctaButton])
+        contentSubView.contentView.addSubviews([textContentView, imageContentView])
     }
     
     override func layout() {
         baseView.snp.makeConstraints{
-            $0.height.equalTo(Device.height - (Device.safeAreaInsets?.top ?? 0) - 48)
+            $0.height.equalTo(Device.height - (Device.safeAreaInsets?.top ?? 0) - 48 - 30)
         }
         contentTypeChoice.stackView.snp.makeConstraints{
             $0.top.equalToSuperview().offset(30)
@@ -37,6 +53,12 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
         contentSubView.snp.makeConstraints{
             $0.top.equalTo(contentTypeChoice.stackView.snp.bottom).offset(30)
             $0.leading.trailing.equalToSuperview().inset(20)
+        }
+        textContentView.snp.makeConstraints{
+            $0.top.leading.trailing.equalToSuperview()
+        }
+        imageContentView.snp.makeConstraints{
+            $0.top.leading.trailing.equalToSuperview()
         }
         deadlineSubView.snp.makeConstraints{
             $0.top.equalTo(contentSubView.snp.bottom).offset(48)
@@ -48,10 +70,162 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
         }
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        endEditing(true)
+    override func initialize() {
+        
+        addGestureRecognizer()
+        
+        func addGestureRecognizer() {
+            [contentTypeChoice.text, contentTypeChoice.image].forEach{
+                $0.isUserInteractionEnabled = true
+                $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(changeContentType)))
+            }
+        }
+    }
+    
+    @objc func changeContentType(_ recognizer: UITapGestureRecognizer) {
+        
+        guard let view = recognizer.view as? ContentTypeChoiceView else { return }
+        
+        if contentType?.value != view.contentType {
+            contentType?.send(view.contentType)
+        }
+    }
+    
+    private func bind() {
+        contentType?
+            .sink{ [weak self] _ in
+                self?.updateContentType()
+            }
+            .store(in: &cancellable)
+    }
+    
+    private func updateContentType() {
+        
+        deactiveExistingConstraints()
+        
+        switch contentType?.value {
+        case .text:
+            contentTypeChoice.text.isSelected = true
+            contentTypeChoice.image.isSelected = false
+            textContentView.isHidden = false
+            imageContentView.isHidden = true
+            
+            contentViewBottomConstraints = [textContentView.bottomAnchor.constraint(equalTo: textContentView.superview!.bottomAnchor)]
+            
+        case .image:
+            contentTypeChoice.image.isSelected = true
+            contentTypeChoice.text.isSelected = false
+            textContentView.isHidden = true
+            imageContentView.isHidden = false
+            
+            contentViewBottomConstraints = [imageContentView.bottomAnchor.constraint(equalTo: imageContentView.superview!.bottomAnchor)]
+            
+        case .none:
+            return
+        }
+        
+        activateNewConstraints()
+        
+        func deactiveExistingConstraints() {
+            NSLayoutConstraint.deactivate(contentViewBottomConstraints)
+        }
+        
+        func activateNewConstraints() {
+            NSLayoutConstraint.activate(contentViewBottomConstraints)
+            contentSubView.contentView.layoutIfNeeded()
+        }
     }
 }
+
+extension TopicContentInputTableViewCell {
+    
+    class ContentType {
+        let stackView: UIStackView = {
+            let stackView = UIStackView(axis: .horizontal, spacing: 8)
+            stackView.alignment = .center
+            return stackView
+        }()
+        let text: ContentTypeChoiceView = ContentTypeChoiceView(type: .text, title: "텍스트", normalIcon: Image.topicGenerateTextNoraml, selectedIcon: Image.topicGenerateTextSelected)
+        let image: ContentTypeChoiceView = ContentTypeChoiceView(type: .image, title: "이미지", normalIcon: Image.topicGenerateImageNormal, selectedIcon: Image.topicGenerateTextSelected)
+    }
+    
+    final class ContentTypeChoiceView: BaseView {
+        
+        init(type: Topic.ContentType, title: String, normalIcon: UIImage, selectedIcon: UIImage) {
+            self.contentType = type
+            self.normalIcon = normalIcon
+            self.selectedIcon = selectedIcon
+            super.init()
+            titleLabel.text = title
+            updateConfiguration()
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        var isSelected: Bool = false {
+            didSet {
+                updateConfiguration()
+            }
+        }
+        
+        let contentType: Topic.ContentType
+        private let normalIcon: UIImage
+        private let selectedIcon: UIImage
+        
+        private let stackView: UIStackView = UIStackView(axis: .horizontal, spacing: 8)
+        private let iconImageView: UIImageView = {
+            let imageView = UIImageView()
+            imageView.snp.makeConstraints{
+                $0.width.height.equalTo(24)
+            }
+            return imageView
+        }()
+        private let titleLabel: UILabel = UILabel()
+        
+        override func style() {
+            layer.cornerRadius = 40/2
+        }
+        
+        override func hierarchy() {
+            addSubview(stackView)
+            stackView.addArrangedSubviews([iconImageView, titleLabel])
+        }
+        
+        override func layout(){
+            self.snp.makeConstraints{
+                $0.height.equalTo(40)
+            }
+            stackView.snp.makeConstraints{
+                $0.top.equalToSuperview().offset(8)
+                $0.leading.equalToSuperview().offset(23)
+                $0.centerX.equalToSuperview()
+                $0.centerY.equalToSuperview()
+            }
+        }
+        
+        private func updateConfiguration() {
+            if isSelected {
+                titleLabel.textColor = Color.white
+                titleLabel.font = Pretendard.bold16.font
+                iconImageView.image = selectedIcon
+                backgroundColor = Color.subNavy2
+                layer.borderColor = nil
+                layer.borderWidth = 0
+            }
+            else {
+                titleLabel.textColor = Color.subPurple
+                titleLabel.font = Pretendard.regular16.font
+                iconImageView.image = normalIcon
+                backgroundColor = Color.transparent
+                layer.borderColor = Color.subNavy2.cgColor
+                layer.borderWidth = 1
+            }
+        }
+    }
+}
+
 
 extension TopicContentInputTableViewCell {
     
@@ -115,7 +289,6 @@ extension TopicContentInputTableViewCell {
             }()
             private let countLabel: UILabel = {
                 let label = UILabel()
-                label.text = "0/25"
                 label.textColor = Color.subPurple
                 label.setTypo(Pretendard.semibold14)
                 return label
@@ -329,92 +502,6 @@ extension TopicContentInputTableViewCell {
                 textField.backgroundColor = Color.subNavy2.withAlphaComponent(0.4)
                 textField.textColor = Color.white
                 customPlaceholder(color: Color.subPurple.withAlphaComponent(0.6), font: Pretendard.medium16.font)
-            }
-        }
-    }
-}
-
-extension TopicContentInputTableViewCell {
-    
-    class ContentType {
-        let stackView: UIStackView = {
-            let stackView = UIStackView(axis: .horizontal, spacing: 8)
-            stackView.alignment = .center
-            return stackView
-        }()
-        let text: ContentTypeChoiceView = ContentTypeChoiceView(title: "텍스트", normalIcon: Image.topicGenerateTextNoraml, selectedIcon: Image.topicGenerateTextSelected)
-        let image: ContentTypeChoiceView = ContentTypeChoiceView(title: "이미지", normalIcon: Image.topicGenerateImageNormal, selectedIcon: Image.topicGenerateTextSelected)
-    }
-    
-    final class ContentTypeChoiceView: BaseView {
-        
-        init(title: String, normalIcon: UIImage, selectedIcon: UIImage) {
-            self.normalIcon = normalIcon
-            self.selectedIcon = selectedIcon
-            super.init()
-            titleLabel.text = title
-            updateConfiguration()
-        }
-        
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-        
-        var isSelected: Bool = false {
-            didSet {
-                updateConfiguration()
-            }
-        }
-        
-        private let normalIcon: UIImage
-        private let selectedIcon: UIImage
-        
-        private let stackView: UIStackView = UIStackView(axis: .horizontal, spacing: 8)
-        private let iconImageView: UIImageView = {
-            let imageView = UIImageView()
-            imageView.snp.makeConstraints{
-                $0.width.height.equalTo(24)
-            }
-            return imageView
-        }()
-        private let titleLabel: UILabel = UILabel()
-        
-        override func style() {
-            layer.cornerRadius = 40/2
-        }
-        
-        override func hierarchy() {
-            addSubview(stackView)
-            stackView.addArrangedSubviews([iconImageView, titleLabel])
-        }
-        
-        override func layout(){
-            self.snp.makeConstraints{
-                $0.height.equalTo(40)
-            }
-            stackView.snp.makeConstraints{
-                $0.top.equalToSuperview().offset(8)
-                $0.leading.equalToSuperview().offset(23)
-                $0.centerX.equalToSuperview()
-                $0.centerY.equalToSuperview()
-            }
-        }
-        
-        private func updateConfiguration() {
-            if isSelected {
-                titleLabel.textColor = Color.white
-                titleLabel.font = Pretendard.bold16.font
-                iconImageView.image = selectedIcon
-                backgroundColor = Color.subNavy2
-                layer.borderColor = nil
-            }
-            else {
-                titleLabel.textColor = Color.subPurple
-                titleLabel.font = Pretendard.regular16.font
-                iconImageView.image = normalIcon
-                backgroundColor = Color.transparent
-                layer.borderColor = Color.subNavy2.cgColor
-                layer.borderWidth = 1
             }
         }
     }

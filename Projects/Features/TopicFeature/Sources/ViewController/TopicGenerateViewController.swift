@@ -55,6 +55,7 @@ extension TopicGenerateViewController: UITableViewDelegate, UITableViewDataSourc
         
         func contentInputTableViewCell() -> UITableViewCell {
             let cell = tableView.dequeueReusableCell(for: indexPath, cellType: TopicContentInputTableViewCell.self)
+            cell.contentType = viewModel.contentType
             return cell
         }
     }

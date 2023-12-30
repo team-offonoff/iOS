@@ -15,6 +15,7 @@ public typealias TopicGenerateViewModel = TopicGenerateViewModelInput & TopicGen
 
 public protocol TopicGenerateViewModelInput {
     var topicSide: PassthroughSubject<Topic.Side, Never> { get }
+    var contentType: CurrentValueSubject<Topic.ContentType, Never> { get }
     func input(content: TopicGenerateContentViewModelInputValue)
 //    func input(choiceContent: TopicGenerateChoiceContentViewModelInputValue)
 }

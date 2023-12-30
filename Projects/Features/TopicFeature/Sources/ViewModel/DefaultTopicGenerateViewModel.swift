@@ -24,6 +24,7 @@ final class DefaultTopicGenerateViewModel: BaseViewModel, TopicGenerateViewModel
     //MARK: Input & Output
     
     let topicSide: PassthroughSubject<Topic.Side, Never> = PassthroughSubject()
+    let contentType: CurrentValueSubject<Topic.ContentType, Never> = CurrentValueSubject(.text)
     
     //MARK: Output
     
