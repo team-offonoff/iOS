@@ -20,6 +20,7 @@ final class TopicGenerateViewController: BaseViewController<BaseHeaderView, Topi
     }
     
     private let viewModel: any TopicGenerateViewModel
+    private var keywordTextField: CustomTextFieldView?
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -76,6 +77,10 @@ extension TopicGenerateViewController: UICollectionViewDataSource, UICollectionV
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         RecommendKeywordCollectionViewCell.size(viewModel.recommendKeywords[indexPath.row])
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        keywordTextField?.setText(viewModel.recommendKeywords[indexPath.row])
     }
     
 }
