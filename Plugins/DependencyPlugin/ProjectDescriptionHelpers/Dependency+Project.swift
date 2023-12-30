@@ -12,6 +12,7 @@ public extension Dep {
     struct Features {
         public struct Onboarding {}
         public struct Home {}
+        public struct Topic {}
     }
     
     struct Modules {}
@@ -46,10 +47,14 @@ public extension Dep.Features {
     static let RootFeature = TargetDependency.project(target: "RootFeature", path: .relativeToFeature("RootFeature"))
 }
 
+public extension Dep.Features.Onboarding {
+    static let Feature = Dep.Features.project(name: Dep.Features.name, group: "Onboarding")
+}
+
 public extension Dep.Features.Home {
     static let Feature = Dep.Features.project(name: Dep.Features.name, group: "Home")
 }
 
-public extension Dep.Features.Onboarding {
-    static let Feature = Dep.Features.project(name: Dep.Features.name, group: "Onboarding")
+public extension Dep.Features.Topic {
+    static let Feature = Dep.Features.project(name: Dep.Features.name, group: "Topic")
 }

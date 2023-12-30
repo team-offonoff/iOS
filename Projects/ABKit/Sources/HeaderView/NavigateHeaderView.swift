@@ -12,7 +12,7 @@ public class NavigateHeaderView: HeaderView, Navigatable {
     
     public lazy var popButton: UIButton = {
        let button = UIButton()
-//        button.setImage(Image.popArrow, for: .normal)
+        button.setImage(Image.arrowLeft, for: .normal)
         return button
     }()
     
@@ -23,8 +23,11 @@ public class NavigateHeaderView: HeaderView, Navigatable {
     
     public override func layout() {
         super.layout()
-//        popButton.snp.makeConstraints{
-//
-//        }
+        popButton.snp.makeConstraints{
+            $0.top.equalToSuperview().offset(12)
+            $0.leading.equalToSuperview().offset(20)
+            $0.width.height.equalTo(24)
+            $0.centerY.equalToSuperview()
+        }
     }
 }

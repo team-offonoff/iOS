@@ -24,7 +24,7 @@ public final class DropDownView: InsetTextField {
     }
     
     public init(placeholder: String) {
-        super.init(frame: .zero)
+        super.init()
         self.placeholder = placeholder
         style()
         initialize()

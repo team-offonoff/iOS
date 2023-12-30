@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class BaseHeaderView: BaseView {
+open class BaseHeaderView: BaseView {
     
     public override init() {
         super.init()

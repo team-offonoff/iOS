@@ -62,8 +62,12 @@ open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: U
     }
     
     private func addHeaderViewTarget(){
-        guard let headerView = headerView as? Navigatable else { return }
-        headerView.popButton.addTarget(self, action: #selector(popViewController), for: .touchUpInside)
+        if let headerView = headerView as? Navigatable {
+            headerView.popButton.addTarget(self, action: #selector(popViewController), for: .touchUpInside)
+        }
+        else if let headerView = headerView as? ModalDismissable {
+            headerView.dismissButton.addTarget(self, action: #selector(dismissViewController), for: .touchUpInside)
+        }
     }
     
     private func setMainView(){
@@ -83,6 +87,10 @@ open class BaseViewController<H: BaseHeaderView, M: BaseView, C: Coordinator>: U
     
     @objc open func popViewController(){
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc open func dismissViewController(){
+        dismiss(animated: true)
     }
     
     open func style(){

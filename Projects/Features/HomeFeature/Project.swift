@@ -5,5 +5,5 @@ import DependencyPlugin
 let project = Project.makeModule(
     name: "HomeFeature",
     targets: [.unitTest, .staticFramework, .demo, .interface],
-    interfaceDependencies: [.Features.FeatureDependency]
+    interfaceDependencies: [.Features.Topic.Feature]
 )

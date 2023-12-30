@@ -21,7 +21,7 @@ public final class SubtitleView<V: UIView>: BaseStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public let contentView: V
+    public var contentView: V
     public let defaultSideOffset: CGFloat = 20
     private let subtitleLabel: UILabel = {
        let label = UILabel()

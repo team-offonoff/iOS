@@ -12,6 +12,10 @@ public protocol Navigatable{
     var popButton: UIButton { get }
 }
 
+public protocol ModalDismissable{
+    var dismissButton: UIButton { get }
+}
+
 public protocol HeaderTouchable{
     var rightItem: UIButton { get }
 }
