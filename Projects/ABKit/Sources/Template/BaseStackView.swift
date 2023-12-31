@@ -15,6 +15,7 @@ open class BaseStackView: UIStackView {
         style()
         hierarchy()
         layout()
+        initialize()
     }
     
     public required init(coder: NSCoder) {
@@ -26,4 +27,6 @@ open class BaseStackView: UIStackView {
     open func hierarchy() { }
     
     open func layout() { }
+    
+    open func initialize() { }
 }
