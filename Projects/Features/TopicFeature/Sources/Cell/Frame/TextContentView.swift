@@ -71,8 +71,13 @@ extension TopicContentInputTableViewCell {
         }
         
         func reset() {
-            aTextView.text = ""
-            bTextView.text = ""
+            aTextView.setText("")
+            bTextView.setText("")
+        }
+        
+        func setLimitCount(_ count: Int?) {
+            aTextView.limitCount = count
+            bTextView.limitCount = count
         }
         
         class TextContentTextView: UITextView {
@@ -89,6 +94,12 @@ extension TopicContentInputTableViewCell {
             
             required init?(coder: NSCoder) {
                 fatalError("init(coder:) has not been implemented")
+            }
+            
+            var limitCount: Int? {
+                didSet {
+                    bindTextCount()
+                }
             }
             
             private let option: Choice.Option
@@ -162,13 +173,39 @@ extension TopicContentInputTableViewCell {
                 
                 publisher(for: .editingDidEnd)
                     .sink{ [weak self] text in
-                        guard let self = self else { return }
-                        if text.isEmpty {
-                            self.backgroundColor = Color.subNavy2.withAlphaComponent(0.6)
-                            self.placeholderLabel.isHidden = false
-                        }
+                        self?.editingDidEnd()
                     }
                     .store(in: &cancellable)
+            }
+            
+            private func bindTextCount() {
+                resetTextCount()
+                publisher(for: .editingChanged)
+                    .sink{ [weak self] in
+                        
+                        guard let self = self, let limitCount = self.limitCount else { return }
+                        
+                        self.countLabel.text = "\($0.count)/\(limitCount)"
+                    }
+                    .store(in: &cancellable)
+            }
+            
+            private func editingDidEnd() {
+                if text.isEmpty {
+                    backgroundColor = Color.subNavy2.withAlphaComponent(0.6)
+                    placeholderLabel.isHidden = false
+                }
+            }
+            
+            private func resetTextCount() {
+                guard let limitCount = limitCount else { return }
+                countLabel.text = "\(0)/\(limitCount)"
+            }
+            
+            func setText(_ text: String) {
+                self.text = text
+                editingDidEnd()
+                resetTextCount()
             }
         }
     }

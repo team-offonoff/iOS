@@ -91,6 +91,11 @@ extension TopicContentInputTableViewCell {
             NotificationCenter.default.post(name: Notification.Name(Topic.Action.showImagePicker.identifier), object: self, userInfo: [Choice.Option.identifier: view.option])
         }
         
+        func setLimitCount(_ count: Int?) {
+            aTextField.limitCount = count
+            bTextField.limitCount = count
+        }
+        
         func setImage(_ image: UIImage, option: Choice.Option) {
             switch option {
             case .A:
@@ -265,6 +270,7 @@ extension TopicContentInputTableViewCell {
                 textField.backgroundColor = Color.subNavy2.withAlphaComponent(0.4)
                 textField.textColor = Color.white
                 customPlaceholder(color: Color.subPurple.withAlphaComponent(0.6), font: Pretendard.medium16.font)
+                countLabel.textColor = Color.subPurple.withAlphaComponent(0.6)
             }
         }
     }

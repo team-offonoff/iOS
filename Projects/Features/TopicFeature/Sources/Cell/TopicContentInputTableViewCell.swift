@@ -33,6 +33,7 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
             updateViewModelInput()
             updateContentTypeView()
             bind()
+            setLimitCount()
         }
     }
     
@@ -103,7 +104,6 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
     }
     
     override func initialize() {
-        
         initChip()
         addGestureRecognizer()
         addButtonTarget()
@@ -162,6 +162,11 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
                 
             }
             .store(in: &cancellable)
+    }
+    
+    private func setLimitCount() {
+        imageContentView.setLimitCount(viewModel?.limitCount.imageComment)
+        textContentView.setLimitCount(viewModel?.limitCount.textOption)
     }
     
     private func updateViewModelInput() {
