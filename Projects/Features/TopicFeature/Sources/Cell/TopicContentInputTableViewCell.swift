@@ -25,6 +25,8 @@ protocol ImageTextIncludeContentView: UIView {
 
 final class TopicContentInputTableViewCell: BaseTableViewCell {
     
+    //MARK: Input
+    
     weak var delegate: TapDelegate?
     var viewModel: (any TopicGenerateViewModel)?{
         didSet{
@@ -32,6 +34,10 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
             updateContentTypeView()
             bind()
         }
+    }
+    
+    func setImage(_ image: UIImage, option: Choice.Option) {
+        imageContentView.setImage(image, option: option)
     }
     
     private var selectedContentTypeChip: ContentTypeChip? {

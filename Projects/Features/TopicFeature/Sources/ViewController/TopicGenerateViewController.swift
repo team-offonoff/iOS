@@ -11,8 +11,10 @@ import UIKit
 import ABKit
 import TopicFeatureInterface
 import FeatureDependency
+import Domain
 import Combine
 import Core
+import PhotosUI
 
 final class TopicGenerateViewController: BaseViewController<BaseHeaderView, TopicGenerateView, DefaultTopicGenerateCoordinator> {
 
@@ -24,6 +26,7 @@ final class TopicGenerateViewController: BaseViewController<BaseHeaderView, Topi
     private let viewModel: any TopicGenerateViewModel
     private var inputCell: TopicInputTableViewCell?
     private var contentInputCell: TopicContentInputTableViewCell?
+    private var imagePickerOption: Choice.Option?
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -35,6 +38,27 @@ final class TopicGenerateViewController: BaseViewController<BaseHeaderView, Topi
     }
     
     override func bind() {
+        
+        NotificationCenter.default
+            .publisher(for: Notification.Name( Topic.Action.showImagePicker.identifier), object: contentInputCell)
+            .receive(on: DispatchQueue.main)
+            .sink{ [weak self] object in
+                
+                guard let self = self else { return }
+                
+                self.imagePickerOption = object.userInfo?[Choice.Option.identifier] as? Choice.Option
+                self.present(imagePicker(), animated: true)
+                
+                func imagePicker() -> PHPickerViewController {
+                    var configuration = PHPickerConfiguration()
+                    configuration.selectionLimit = 1
+                    configuration.filter = .images
+                    let picker = PHPickerViewController(configuration: configuration)
+                    picker.delegate = self
+                    return picker
+                }
+            }
+            .store(in: &cancellables)
         
         viewModel.contentValidation
             .receive(on: DispatchQueue.main)
@@ -49,13 +73,29 @@ final class TopicGenerateViewController: BaseViewController<BaseHeaderView, Topi
         viewModel.canRegister
             .receive(on: DispatchQueue.main)
             .sink{ [weak self] isEnabled in
-                self?.choiceContentCell()?.ctaButton.isEnabled = isEnabled
+                self?.contentInputCell?.ctaButton.isEnabled = isEnabled
             }
             .store(in: &cancellables)
     }
+}
+
+extension TopicGenerateViewController: PHPickerViewControllerDelegate {
     
-    private func choiceContentCell() -> TopicContentInputTableViewCell? {
-        mainView.tableView.cellForRow(at: IndexPath(row: 1), cellType: TopicContentInputTableViewCell.self)
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+
+        picker.dismiss(animated: true) {
+            
+            guard let itemProvider = results.first?.itemProvider else { return }
+            
+            if itemProvider.canLoadObject(ofClass: UIImage.self) {
+                itemProvider.loadObject(ofClass: UIImage.self) { [weak self] image, error in
+                    guard let self = self, let image = image as? UIImage, let option = self.imagePickerOption else { return }
+                    DispatchQueue.main.async {
+                        self.contentInputCell?.setImage(image, option: option)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -168,5 +208,4 @@ extension TopicGenerateViewController: UICollectionViewDataSource, UICollectionV
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         inputCell?.keyword.contentView.setText(viewModel.recommendKeywords[indexPath.row])
     }
-    
 }

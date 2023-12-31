@@ -23,14 +23,11 @@ extension TopicContentInputTableViewCell {
             bTextField.textField.publisher(for: .editingDidEnd)
         }
         var aImagePublisher: AnyPublisher<UIImage?, Never>? {
-            aImageSubject.eraseToAnyPublisher()
+            aImageView.imageSubject.eraseToAnyPublisher()
         }
         var bImagePublisher: AnyPublisher<UIImage?, Never>? {
-            bImageSubject.eraseToAnyPublisher()
+            bImageView.imageSubject.eraseToAnyPublisher()
         }
-        
-        let aImageSubject: CurrentValueSubject<UIImage?, Never> = CurrentValueSubject<UIImage?, Never>(nil)
-        let bImageSubject: CurrentValueSubject<UIImage?, Never> = CurrentValueSubject<UIImage?, Never>(nil)
         
         private let commentLabel: UILabel = {
            let label = UILabel()
@@ -47,12 +44,13 @@ extension TopicContentInputTableViewCell {
             button.setImage(Image.topicGenerateSwitch, for: .normal)
             return button
         }()
-        private let aImageView: UIImageView = CustomImageView(option: .A)
-        private let bImageView: UIImageView = CustomImageView(option: .B)
+        private let aImageView: CustomImageView = CustomImageView(option: .A)
+        private let bImageView: CustomImageView = CustomImageView(option: .B)
         
         private let textFieldStackView: UIStackView = UIStackView(axis: .vertical, spacing: 10)
         private let aTextField = ImageContentTextField(option: .A)
         private let bTextField = ImageContentTextField(option: .B)
+        private var cancellable: Set<AnyCancellable> = []
         
         override func hierarchy() {
             addSubviews([commentLabel, imageStackView, textFieldStackView])
@@ -78,6 +76,31 @@ extension TopicContentInputTableViewCell {
             }
         }
         
+        override func initialize() {
+            
+            [aImageView, bImageView].forEach{
+                $0.isUserInteractionEnabled = true
+                $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTap)))
+            }
+            
+        }
+        
+        //토픽 생성 ViewController에서 image picker를 띄우도록 알림을 보낸다
+        @objc private func imageTap(_ recognizer: UITapGestureRecognizer) {
+            guard let view = recognizer.view as? CustomImageView else { return }
+            NotificationCenter.default.post(name: Notification.Name(Topic.Action.showImagePicker.identifier), object: self, userInfo: [Choice.Option.identifier: view.option])
+        }
+        
+        func setImage(_ image: UIImage, option: Choice.Option) {
+            switch option {
+            case .A:
+                aImageView.imageSubject.send(image)
+            case .B:
+                bImageView.imageSubject.send(image)
+            }
+        }
+        
+        //MARK: Output
         
         func text(option: Choice.Option) -> String {
             switch option {
@@ -88,8 +111,8 @@ extension TopicContentInputTableViewCell {
         
         func image(option: Choice.Option) -> UIImage? {
             switch option {
-            case .A:    return aImageSubject.value
-            case .B:    return bImageSubject.value
+            case .A:    return aImageView.imageSubject.value
+            case .B:    return bImageView.imageSubject.value
             }
         }
         
@@ -108,7 +131,8 @@ extension TopicContentInputTableViewCell {
                 fatalError("init(coder:) has not been implemented")
             }
             
-            private let option: Choice.Option
+            let option: Choice.Option
+            let imageSubject: CurrentValueSubject<UIImage?, Never> = CurrentValueSubject(nil)
             private let uploadLabel: UILabel = {
                 let label = UILabel()
                 label.text = "업로드"
@@ -129,7 +153,8 @@ extension TopicContentInputTableViewCell {
                 }
                 return button
             }()
-            
+            private var cancellable: Set<AnyCancellable> = []
+
             private func style() {
                 layer.cornerRadius = 10
                 layer.masksToBounds = true
@@ -159,8 +184,40 @@ extension TopicContentInputTableViewCell {
             }
             
             private func initialize() {
+                
                 optionLabel.text = option.content.title
                 optionLabel.textColor = option.content.color.withAlphaComponent(0.4)
+                addTarget()
+                addSubscriber()
+                
+                func addTarget() {
+                    cancelButton.tapPublisher
+                        .sink{ [weak self] _ in
+                            self?.imageSubject.send(nil)
+                        }
+                        .store(in: &cancellable)
+                }
+                
+                func addSubscriber() {
+                    imageSubject
+                        .receive(on: DispatchQueue.main)
+                        .sink{ [weak self] image in
+                            self?.image = image
+                            self?.setComponentVisibility()
+                        }
+                        .store(in: &cancellable)
+                }
+            }
+            
+            func setComponentVisibility() {
+                if image == nil {
+                    uploadLabel.isHidden = false
+                    cancelButton.isHidden = true
+                }
+                else {
+                    uploadLabel.isHidden = true
+                    cancelButton.isHidden = false
+                }
             }
         }
         
