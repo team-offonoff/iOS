@@ -122,7 +122,7 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
         }
     }
     
-    @objc func changeContentType(_ recognizer: UITapGestureRecognizer) {
+    @objc private func changeContentType(_ recognizer: UITapGestureRecognizer) {
         
         guard let view = recognizer.view as? ContentTypeChip else { return }
         
@@ -195,7 +195,11 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
             [textContentView, imageContentView].filter{ $0 != selectedContentView() }
         }
     }
-    
+}
+
+//MARK: Output
+
+extension TopicContentInputTableViewCell {
     func registerText(option: Choice.Option) -> String {
         selectedContentView().text(option: option)
     }
