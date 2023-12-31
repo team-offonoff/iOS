@@ -17,7 +17,7 @@ public final class DefaultTopicRepository: TopicRepository {
     
     public init() { }
     
-    public func generateTopic(request: Topic) -> NetworkResultPublisher<Topic?> {
+    public func generateTopic(request: GenerateTopicUseCaseRequestValue) -> NetworkResultPublisher<Topic?> {
         
         var urlComponents = networkService.baseUrlComponents
         urlComponents?.path = basePath
@@ -32,7 +32,7 @@ public final class DefaultTopicRepository: TopicRepository {
         func makeDTO() -> TopicGenerateRequestDTO {
             .init(
                 side: request.side.toDTO(),
-                keywordName: request.keyword.name,
+                keywordName: request.keyword,
                 title: request.title,
                 choices: makeChoicesDTO(),
                 deadline: request.deadline
@@ -46,8 +46,8 @@ public final class DefaultTopicRepository: TopicRepository {
                             choiceOption: choice.option.toDTO(),
                             choiceContentRequest: .init(
                                 type: "IMAGE_TEXT",
-                                imageUrl: String(describing: choice.content.imageURL),
-                                text: choice.content.text
+                                imageUrl: String(describing: choice.image), //TODO: 이미지 전송 코드 적용
+                                text: choice.text
                         )
                     )
             }

@@ -23,8 +23,11 @@ public class DefaultTopicGenerateCoordinator: TopicGenerateCoordinator {
     
     private var window: UIWindow?
     private var rootViewController: UIViewController?
+    private lazy var topicGenerateViewModel: any TopicGenerateViewModel = DefaultTopicGenerateViewModel(
+        topicGenerateUseCase: DefaultGenerateTopicUseCase(repository: DefaultTopicRepository())
+    )
     private lazy var navigationController: UINavigationController = {
-        let viewController = TopicSideChoiceViewController()
+        let viewController = TopicSideChoiceViewController(viewModel: topicGenerateViewModel)
         viewController.coordinator = self
         return UINavigationController(rootViewController: viewController)
     }()
@@ -38,6 +41,6 @@ public class DefaultTopicGenerateCoordinator: TopicGenerateCoordinator {
     }
     
     public func startTopicGenerate() {
-        navigationController.pushViewController(TopicGenerateViewController(), animated: true)
+        navigationController.pushViewController(TopicGenerateViewController(viewModel: topicGenerateViewModel), animated: true)
     }
 }

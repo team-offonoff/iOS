@@ -183,4 +183,10 @@ extension CustomTextFieldView {
             errorLabel.text = message
         }
     }
+    ///매개변수로 넘긴 값으로 text field의 값을 업데이트한다. 이때 글자 수도 함께 업데이트된다.
+    public func setText(_ text: String) {
+        textField.text = text
+        textField.sendActions(for: .editingChanged)
+        textField.sendActions(for: .editingDidEnd)
+    }
 }
