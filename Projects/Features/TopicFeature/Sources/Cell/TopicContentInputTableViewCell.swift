@@ -106,7 +106,7 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
         
         initChip()
         addGestureRecognizer()
-        addTarget()
+        addButtonTarget()
         
         func initChip() {
             selectedContentTypeChip = contentTypeChips.text
@@ -119,7 +119,7 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
             }
         }
         
-        func addTarget() {
+        func addButtonTarget() {
             ctaButton.tapPublisher
                 .sink{ [weak self] _ in
                     self?.delegate?.tap(DelegateSender(identifier: String(describing: self)))
@@ -140,9 +140,26 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
     
     private func bind() {
         viewModel?.contentType
-            .sink{ [weak self] _ in
+            .sink{ [weak self] type in
+                
                 self?.updateContentTypeView()
                 self?.updateViewModelInput()
+                resetInput()
+                resetButton()
+                
+                func resetInput() {
+                    switch type {
+                    case .text:
+                        self?.imageContentView.reset()
+                    case .image:
+                        self?.textContentView.reset()
+                    }
+                }
+                
+                func resetButton() {
+                    self?.ctaButton.isEnabled = false
+                }
+                
             }
             .store(in: &cancellable)
     }

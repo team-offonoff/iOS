@@ -100,6 +100,22 @@ extension TopicContentInputTableViewCell {
             }
         }
         
+        func reset() {
+            
+            resetImageView()
+            resetTextField()
+            
+            func resetImageView() {
+                aImageView.imageSubject.send(nil)
+                bImageView.imageSubject.send(nil)
+            }
+            
+            func resetTextField() {
+                aTextField.setText("")
+                bTextField.setText("")
+            }
+        }
+        
         //MARK: Output
         
         func text(option: Choice.Option) -> String {

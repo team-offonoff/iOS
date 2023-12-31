@@ -70,6 +70,11 @@ extension TopicContentInputTableViewCell {
             nil
         }
         
+        func reset() {
+            aTextView.text = ""
+            bTextView.text = ""
+        }
+        
         class TextContentTextView: UITextView {
             
             init(option: Choice.Option) {
