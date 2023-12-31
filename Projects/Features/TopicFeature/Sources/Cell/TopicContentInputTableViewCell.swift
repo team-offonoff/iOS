@@ -25,22 +25,6 @@ protocol ImageTextIncludeContentView: UIView {
 
 final class TopicContentInputTableViewCell: BaseTableViewCell {
     
-    //MARK: Input
-    
-    weak var delegate: TapDelegate?
-    var viewModel: (any TopicGenerateViewModel)?{
-        didSet{
-            updateViewModelInput()
-            updateContentTypeView()
-            bind()
-            setLimitCount()
-        }
-    }
-    
-    func setImage(_ image: UIImage, option: Choice.Option) {
-        imageContentView.setImage(image, option: option)
-    }
-    
     private var selectedContentTypeChip: ContentTypeChip? {
         willSet {
             newValue?.isSelected = true
@@ -62,8 +46,10 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
     }()
     
     private var cancellable: Set<AnyCancellable> = []
-    //content view의 하단 레이아웃 조정을 위한 배열
-    private var contentViewBottomConstraints: [NSLayoutConstraint] = []
+    private var contentViewBottomConstraints: [NSLayoutConstraint] = [] //content view의 하단 레이아웃 조정을 위한 배열
+    
+    
+    //MARK: - Override
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         endEditing(true)
@@ -149,10 +135,8 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
                 
                 func resetInput() {
                     switch type {
-                    case .text:
-                        self?.imageContentView.reset()
-                    case .image:
-                        self?.textContentView.reset()
+                    case .text:     self?.imageContentView.reset()
+                    case .image:    self?.textContentView.reset()
                     }
                 }
                 
@@ -164,6 +148,23 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
             .store(in: &cancellable)
     }
     
+    //MARK: - Input
+    
+    weak var delegate: TapDelegate?
+    
+    var viewModel: (any TopicGenerateViewModel)?{
+        didSet{
+            updateViewModelInput()
+            updateContentTypeView()
+            bind()
+            setLimitCount()
+        }
+    }
+    
+    func setImage(_ image: UIImage, option: Choice.Option) {
+        imageContentView.setImage(image, option: option)
+    }
+    
     private func setLimitCount() {
         imageContentView.setLimitCount(viewModel?.limitCount.imageComment)
         textContentView.setLimitCount(viewModel?.limitCount.textOption)
@@ -171,14 +172,14 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
     
     private func updateViewModelInput() {
         viewModel?.input(choiceContent: .init(
-            choiceAText: selectedContentView().aTextPublisher,
-            choiceBText: selectedContentView().bTextPublisher,
-            choiceAImage: selectedContentView().aImagePublisher,
-            choiceBImage: selectedContentView().bImagePublisher
+            choiceAText: currentContentView().aTextPublisher,
+            choiceBText: currentContentView().bTextPublisher,
+            choiceAImage: currentContentView().aImagePublisher,
+            choiceBImage: currentContentView().bImagePublisher
         ))
     }
     
-    private func selectedContentView() -> ImageTextIncludeContentView {
+    private func currentContentView() -> ImageTextIncludeContentView {
         switch viewModel?.contentType.value {
         case .text:     return textContentView
         case .image:    return imageContentView
@@ -188,7 +189,7 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
     
     private func updateContentTypeView() {
         
-        guard let selectedView = selectedContentView(), let selectedSuperView = selectedView.superview else { return }
+        guard let superview = currentContentView().superview else { return }
         
         deactiveExistingConstraints()
         changeVisibility()
@@ -199,28 +200,20 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
         }
         
         func newConstraints() {
-            contentViewBottomConstraints = [selectedView.bottomAnchor.constraint(equalTo: selectedSuperView.bottomAnchor)]
+            contentViewBottomConstraints = [currentContentView().bottomAnchor.constraint(equalTo: superview.bottomAnchor)]
             NSLayoutConstraint.activate(contentViewBottomConstraints)
             contentSubView.contentView.layoutIfNeeded()
         }
         
         func changeVisibility() {
-            selectedView.isHidden = false
+            currentContentView().isHidden = false
             unselectedContentView().forEach{
                 $0.isHidden = true
             }
         }
-    
-        func selectedContentView() -> UIView? {
-            switch viewModel?.contentType.value {
-            case .text:     return textContentView
-            case .image:    return imageContentView
-            case .none:     return nil
-            }
-        }
         
         func unselectedContentView() -> [UIView] {
-            [textContentView, imageContentView].filter{ $0 != selectedContentView() }
+            [textContentView, imageContentView].filter{ $0 != currentContentView() }
         }
     }
 }
@@ -229,10 +222,10 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
 
 extension TopicContentInputTableViewCell {
     func registerText(option: Choice.Option) -> String {
-        selectedContentView().text(option: option)
+        currentContentView().text(option: option)
     }
     
     func registerImage(option: Choice.Option) -> UIImage? {
-        selectedContentView().image(option: option)
+        currentContentView().image(option: option)
     }
 }
