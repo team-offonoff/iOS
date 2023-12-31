@@ -146,15 +146,11 @@ extension TopicContentInputTableViewCell {
 
 extension TopicContentInputTableViewCell {
     
-    class CustomImageView: UIImageView {
+    class CustomImageView: BaseView {
         
         init(option: Choice.Option) {
             self.option = option
-            super.init(frame: .zero)
-            style()
-            hierarchy()
-            layout()
-            initialize()
+            super.init()
         }
         
         required init?(coder: NSCoder) {
@@ -166,6 +162,10 @@ extension TopicContentInputTableViewCell {
         let option: Choice.Option
         let imageSubject: CurrentValueSubject<UIImage?, Never> = CurrentValueSubject(nil)
         
+        private let imageView: UIImageView = {
+            let imageView = UIImageView()
+            return imageView
+        }()
         private let uploadLabel: UILabel = {
             let label = UILabel()
             label.text = "업로드"
@@ -186,21 +186,32 @@ extension TopicContentInputTableViewCell {
             }
             return button
         }()
+        private let dimView: UIView = {
+            let view = UIView()
+            view.backgroundColor = Color.black.withAlphaComponent(0.6)
+            return view
+        }()
         private var cancellable: Set<AnyCancellable> = []
         
-        private func style() {
+        override func style() {
             layer.cornerRadius = 10
             layer.masksToBounds = true
             backgroundColor = Color.subNavy2.withAlphaComponent(0.8)
         }
         
-        private func hierarchy() {
-            addSubviews([uploadLabel, optionLabel, cancelButton])
+        override func hierarchy() {
+            addSubviews([imageView, dimView, uploadLabel, optionLabel, cancelButton])
         }
         
-        private func layout() {
+        override func layout() {
             self.snp.makeConstraints{
                 $0.width.height.equalTo(90)
+            }
+            imageView.snp.makeConstraints{
+                $0.top.leading.trailing.bottom.equalToSuperview()
+            }
+            dimView.snp.makeConstraints{
+                $0.top.leading.trailing.bottom.equalToSuperview()
             }
             uploadLabel.snp.makeConstraints{
                 $0.top.equalToSuperview().offset(8)
@@ -216,7 +227,7 @@ extension TopicContentInputTableViewCell {
             }
         }
         
-        private func initialize() {
+        override func initialize() {
             
             setOptionLabelStyle()
             addTarget()
@@ -239,7 +250,7 @@ extension TopicContentInputTableViewCell {
                 imageSubject
                     .receive(on: DispatchQueue.main)
                     .sink{ [weak self] image in
-                        self?.image = image
+                        self?.imageView.image = image
                         self?.setComponentVisibility()
                     }
                     .store(in: &cancellable)
@@ -249,13 +260,15 @@ extension TopicContentInputTableViewCell {
         //MARK: Input
         
         func setComponentVisibility() {
-            if image == nil {
+            if imageView.image == nil {
                 uploadLabel.isHidden = false
                 cancelButton.isHidden = true
+                dimView.isHidden = true
             }
             else {
                 uploadLabel.isHidden = true
                 cancelButton.isHidden = false
+                dimView.isHidden = false
             }
         }
     }
