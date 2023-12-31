@@ -11,6 +11,8 @@ import UIKit
 import ABKit
 import TopicFeatureInterface
 import FeatureDependency
+import Combine
+import Core
 
 final class TopicGenerateViewController: BaseViewController<BaseHeaderView, TopicGenerateView, DefaultTopicGenerateCoordinator> {
 
@@ -20,7 +22,8 @@ final class TopicGenerateViewController: BaseViewController<BaseHeaderView, Topi
     }
     
     private let viewModel: any TopicGenerateViewModel
-    private var keywordTextField: CustomTextFieldView?
+    private var inputCell: TopicInputTableViewCell?
+    private var contentInputCell: TopicContentInputTableViewCell?
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -29,6 +32,30 @@ final class TopicGenerateViewController: BaseViewController<BaseHeaderView, Topi
     override func initialize() {
         mainView.tableView.delegate = self
         mainView.tableView.dataSource = self
+    }
+    
+    override func bind() {
+        
+        viewModel.contentValidation
+            .receive(on: DispatchQueue.main)
+            .sink{ [weak self] isValid in
+                self?.mainView.tableView.isScrollEnabled = isValid
+                if isValid {
+                    self?.mainView.tableView.scrollToRow(at: IndexPath(row: 1), at: .top, animated: true)
+                }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.canRegister
+            .receive(on: DispatchQueue.main)
+            .sink{ [weak self] isEnabled in
+                self?.choiceContentCell()?.ctaButton.isEnabled = isEnabled
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func choiceContentCell() -> TopicContentInputTableViewCell? {
+        mainView.tableView.cellForRow(at: IndexPath(row: 1), cellType: TopicContentInputTableViewCell.self)
     }
 }
 
@@ -58,12 +85,12 @@ extension TopicGenerateViewController: UITableViewDelegate, UITableViewDataSourc
             return cell
             
             func setGlobalProperty() {
-                keywordTextField = cell.keyword.contentView
+                inputCell = cell
             }
             
             func setLimitCount() {
-                cell.title.contentView.limitCount = viewModel.titleLimitCount
-                cell.keyword.contentView.limitCount = viewModel.keywordLimitCount
+                cell.title.contentView.limitCount = viewModel.limitCount.title
+                cell.keyword.contentView.limitCount = viewModel.limitCount.keyword
             }
             
             func setDelegate() {
@@ -80,12 +107,46 @@ extension TopicGenerateViewController: UITableViewDelegate, UITableViewDataSourc
         }
         
         func contentInputTableViewCell() -> UITableViewCell {
+            
             let cell = tableView.dequeueReusableCell(for: indexPath, cellType: TopicContentInputTableViewCell.self)
-            cell.contentType = viewModel.contentType
+            
+            setGlobalProperty()
+            setDelegate()
+            setViewModel()
+            
+            func setGlobalProperty() {
+                contentInputCell = cell
+            }
+            
+            func setDelegate() {
+                cell.delegate = self
+            }
+            
+            func setViewModel() {
+                cell.viewModel = viewModel
+            }
+            
             return cell
         }
     }
+}
 
+extension TopicGenerateViewController: TapDelegate {
+    func tap(_ recognizer: DelegateSender) {
+        
+        guard let contentInputCell = contentInputCell else { return }
+        
+        viewModel.register(.init(
+            side: viewModel.topicSide.value,
+            keyword: inputCell?.keyword.contentView.textField.text ?? "",
+            title: inputCell?.title.contentView.textField.text ?? "",
+            choices: [
+                .init(text: contentInputCell.registerText(option: .A), image: contentInputCell.registerImage(option: .A), option: .A),
+                .init(text: contentInputCell.registerText(option: .B), image: contentInputCell.registerImage(option: .B), option: .B)
+            ],
+            deadline: UTCTime.current
+        ))
+    }
 }
 
 extension TopicGenerateViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -105,7 +166,7 @@ extension TopicGenerateViewController: UICollectionViewDataSource, UICollectionV
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        keywordTextField?.setText(viewModel.recommendKeywords[indexPath.row])
+        inputCell?.keyword.contentView.setText(viewModel.recommendKeywords[indexPath.row])
     }
     
 }

@@ -9,14 +9,27 @@
 import Foundation
 import UIKit
 import ABKit
+import TopicFeatureInterface
+import FeatureDependency
 import Domain
 import Combine
 
+protocol ImageTextIncludeContentView: UIView {
+    var aTextPublisher: AnyPublisher<String, Never> { get }
+    var bTextPublisher: AnyPublisher<String, Never> { get }
+    var aImagePublisher: AnyPublisher<UIImage?, Never>? { get }
+    var bImagePublisher: AnyPublisher<UIImage?, Never>? { get }
+    func text(option: Choice.Option) -> String
+    func image(option: Choice.Option) -> UIImage?
+}
+
 final class TopicContentInputTableViewCell: BaseTableViewCell {
     
-    var contentType: CurrentValueSubject<Topic.ContentType, Never>? {
-        didSet {
-            updateContentType()
+    weak var delegate: TapDelegate?
+    var viewModel: (any TopicGenerateViewModel)?{
+        didSet{
+            updateViewModelInput()
+            updateContentTypeView()
             bind()
         }
     }
@@ -30,12 +43,16 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
         }
     }
 
-    let contentTypeChips: ContentTypeGroup = ContentTypeGroup()
+    private let contentTypeChips: ContentTypeGroup = ContentTypeGroup()
     private let contentSubView: SubtitleView = SubtitleView(subtitle: "토픽 내용", content: UIView())
     private let textContentView: TextContentView = TextContentView()
     private let imageContentView: ImageContentView = ImageContentView()
     private let deadlineSubView: SubtitleView = SubtitleView(subtitle: "마감 시간", content: DropDownView(placeholder: "1시간 뒤"))
-    let ctaButton: CTAButton = CTAButton(title: "토픽 올리기")
+    let ctaButton: CTAButton = {
+        let button = CTAButton(title: "토픽 올리기")
+        button.isEnabled = false
+        return button
+    }()
     
     private var cancellable: Set<AnyCancellable> = []
     //content view의 하단 레이아웃 조정을 위한 배열
@@ -83,6 +100,7 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
         
         initChip()
         addGestureRecognizer()
+        addTarget()
         
         func initChip() {
             selectedContentTypeChip = contentTypeChips.text
@@ -94,27 +112,53 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
                 $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(changeContentType)))
             }
         }
+        
+        func addTarget() {
+            ctaButton.tapPublisher
+                .sink{ [weak self] _ in
+                    self?.delegate?.tap(DelegateSender(identifier: String(describing: self)))
+                }
+                .store(in: &cancellable)
+        }
     }
     
     @objc func changeContentType(_ recognizer: UITapGestureRecognizer) {
         
         guard let view = recognizer.view as? ContentTypeChip else { return }
         
-        if contentType?.value != view.contentType {
+        if viewModel?.contentType.value != view.contentType {
             selectedContentTypeChip = view
-            contentType?.send(view.contentType)
+            viewModel?.contentType.send(view.contentType)
         }
     }
     
     private func bind() {
-        contentType?
+        viewModel?.contentType
             .sink{ [weak self] _ in
-                self?.updateContentType()
+                self?.updateContentTypeView()
+                self?.updateViewModelInput()
             }
             .store(in: &cancellable)
     }
     
-    private func updateContentType() {
+    private func updateViewModelInput() {
+        viewModel?.input(choiceContent: .init(
+            choiceAText: selectedContentView().aTextPublisher,
+            choiceBText: selectedContentView().bTextPublisher,
+            choiceAImage: selectedContentView().aImagePublisher,
+            choiceBImage: selectedContentView().bImagePublisher
+        ))
+    }
+    
+    private func selectedContentView() -> ImageTextIncludeContentView {
+        switch viewModel?.contentType.value {
+        case .text:     return textContentView
+        case .image:    return imageContentView
+        default:        fatalError()
+        }
+    }
+    
+    private func updateContentTypeView() {
         
         guard let selectedView = selectedContentView(), let selectedSuperView = selectedView.superview else { return }
         
@@ -138,9 +182,9 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
                 $0.isHidden = true
             }
         }
-        
+    
         func selectedContentView() -> UIView? {
-            switch contentType?.value {
+            switch viewModel?.contentType.value {
             case .text:     return textContentView
             case .image:    return imageContentView
             case .none:     return nil
@@ -150,6 +194,14 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
         func unselectedContentView() -> [UIView] {
             [textContentView, imageContentView].filter{ $0 != selectedContentView() }
         }
+    }
+    
+    func registerText(option: Choice.Option) -> String {
+        selectedContentView().text(option: option)
+    }
+    
+    func registerImage(option: Choice.Option) -> UIImage? {
+        selectedContentView().image(option: option)
     }
 }
 
@@ -245,7 +297,23 @@ extension TopicContentInputTableViewCell {
 
 extension TopicContentInputTableViewCell {
     
-    class TextContentView: BaseStackView {
+    class TextContentView: BaseStackView, ImageTextIncludeContentView {
+        
+        var aTextPublisher: AnyPublisher<String, Never> {
+            aTextView.publisher(for: .editingDidEnd)
+        }
+        
+        var bTextPublisher: AnyPublisher<String, Never> {
+            bTextView.publisher(for: .editingDidEnd)
+        }
+        
+        var aImagePublisher: AnyPublisher<UIImage?, Never>? {
+            nil
+        }
+        
+        var bImagePublisher: AnyPublisher<UIImage?, Never>? {
+            nil
+        }
         
         private let switchButton: UIButton = {
            let button = UIButton()
@@ -272,6 +340,17 @@ extension TopicContentInputTableViewCell {
             switchButton.snp.makeConstraints{
                 $0.center.equalToSuperview()
             }
+        }
+        
+        func text(option: Choice.Option) -> String {
+            switch option {
+            case .A:    return aTextView.text
+            case .B:    return bTextView.text
+            }
+        }
+        
+        func image(option: Choice.Option) -> UIImage? {
+            nil
         }
         
         class TextContentTextView: UITextView {
@@ -372,7 +451,23 @@ extension TopicContentInputTableViewCell {
         }
     }
     
-    class ImageContentView: BaseView {
+    class ImageContentView: BaseView, ImageTextIncludeContentView {
+        
+        var aTextPublisher: AnyPublisher<String, Never> {
+            aTextField.textField.publisher(for: .editingDidEnd)
+        }
+        var bTextPublisher: AnyPublisher<String, Never> {
+            bTextField.textField.publisher(for: .editingDidEnd)
+        }
+        var aImagePublisher: AnyPublisher<UIImage?, Never>? {
+            aImageSubject.eraseToAnyPublisher()
+        }
+        var bImagePublisher: AnyPublisher<UIImage?, Never>? {
+            bImageSubject.eraseToAnyPublisher()
+        }
+        
+        let aImageSubject: CurrentValueSubject<UIImage?, Never> = CurrentValueSubject<UIImage?, Never>(nil)
+        let bImageSubject: CurrentValueSubject<UIImage?, Never> = CurrentValueSubject<UIImage?, Never>(nil)
         
         private let commentLabel: UILabel = {
            let label = UILabel()
@@ -393,8 +488,8 @@ extension TopicContentInputTableViewCell {
         private let bImageView: UIImageView = CustomImageView(option: .B)
         
         private let textFieldStackView: UIStackView = UIStackView(axis: .vertical, spacing: 10)
-        let aTextField = ImageContentTextField(option: .A)
-        let bTextField = ImageContentTextField(option: .B)
+        private let aTextField = ImageContentTextField(option: .A)
+        private let bTextField = ImageContentTextField(option: .B)
         
         override func hierarchy() {
             addSubviews([commentLabel, imageStackView, textFieldStackView])
@@ -417,6 +512,21 @@ extension TopicContentInputTableViewCell {
             textFieldStackView.snp.makeConstraints{
                 $0.top.equalTo(imageStackView.snp.bottom).offset(30)
                 $0.leading.trailing.bottom.equalToSuperview()
+            }
+        }
+        
+        
+        func text(option: Choice.Option) -> String {
+            switch option {
+            case .A:    return aTextField.textField.text ?? ""
+            case .B:    return bTextField.textField.text ?? ""
+            }
+        }
+        
+        func image(option: Choice.Option) -> UIImage? {
+            switch option {
+            case .A:    return aImageSubject.value
+            case .B:    return bImageSubject.value
             }
         }
         
