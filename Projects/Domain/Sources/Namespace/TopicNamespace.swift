@@ -47,6 +47,7 @@ extension Topic {
         case report
         case hide
         case showBottomSheet
+        case showImagePicker
         
         public var identifier: String {
             Topic.identifier + Action.identifier + String(describing: self)
