@@ -196,13 +196,10 @@ extension TopicContentInputTableViewCell {
         
         var limitCount: Int? {
             didSet {
-                
+                setTextCount()
                 bindTextCount()
                 
                 func bindTextCount() {
-                    defer{
-                        setTextCount()
-                    }
                     publisher(for: .editingChanged)
                         .sink{ _ in
                             setTextCount()
