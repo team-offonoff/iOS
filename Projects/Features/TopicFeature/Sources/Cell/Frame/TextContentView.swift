@@ -26,6 +26,7 @@ extension TopicContentInputTableViewCell {
         }()
         private let aTextView: TextContentTextView = TextContentTextView(option: .A)
         private let bTextView: TextContentTextView = TextContentTextView(option: .B)
+        private var cancellable: Set<AnyCancellable> = []
         
         override func style() {
             axis = .vertical
@@ -41,6 +42,17 @@ extension TopicContentInputTableViewCell {
             switchButton.snp.makeConstraints{
                 $0.center.equalToSuperview()
             }
+        }
+        
+        override func initialize() {
+            switchButton.tapPublisher
+                .sink{ [weak self] _ in
+                    guard let self = self else { return }
+                    let temp = self.aTextView.text ?? ""
+                    self.aTextView.setText(self.bTextView.text)
+                    self.bTextView.setText(temp)
+                }
+                .store(in: &cancellable)
         }
         
         //MARK: Input
@@ -116,7 +128,7 @@ extension TopicContentInputTableViewCell {
         }()
         private let countLabel: UILabel = {
             let label = UILabel()
-            label.text = "0/25"
+            label.text = "0/0"
             label.textColor = Color.subPurple
             label.setTypo(Pretendard.semibold14)
             return label
@@ -172,48 +184,42 @@ extension TopicContentInputTableViewCell {
             
             publisher(for: .editingDidEnd)
                 .sink{ [weak self] text in
-                    self?.editingDidEnd()
+                    if text.isEmpty {
+                        self?.backgroundColor = Color.subNavy2.withAlphaComponent(0.6)
+                        self?.placeholderLabel.isHidden = false
+                    }
                 }
                 .store(in: &cancellable)
-        }
-        
-        private func editingDidEnd() {
-            if text.isEmpty {
-                backgroundColor = Color.subNavy2.withAlphaComponent(0.6)
-                placeholderLabel.isHidden = false
-            }
         }
         
         //MARK: Input
         
         var limitCount: Int? {
             didSet {
-                
+                setTextCount()
                 bindTextCount()
                 
                 func bindTextCount() {
-                    defer{
-                        resetTextCount()
-                    }
                     publisher(for: .editingChanged)
-                        .sink{ [weak self] in
-                            guard let self = self, let limitCount = self.limitCount else { return }
-                            self.countLabel.text = "\($0.count)/\(limitCount)"
+                        .sink{ _ in
+                            setTextCount()
                         }
                         .store(in: &cancellable)
+                }
+                
+                func setTextCount() {
+                    guard let limitCount = limitCount else { return }
+                    countLabel.text = "\(text.count)/\(limitCount)"
                 }
             }
         }
         
+        ///매개변수로 넘긴 값으로 text 업데이트 및 글자 수 등 커스텀 Text View의 속성이 자동으로 업데이트 된다.
         func setText(_ text: String) {
             self.text = text
-            editingDidEnd()
-            resetTextCount()
-        }
-        
-        private func resetTextCount() {
-            guard let limitCount = limitCount else { return }
-            countLabel.text = "\(0)/\(limitCount)"
+            NotificationCenter.default.post(name: UITextView.textDidBeginEditingNotification, object: self)
+            NotificationCenter.default.post(name: UITextView.textDidChangeNotification, object: self)
+            NotificationCenter.default.post(name: UITextView.textDidEndEditingNotification, object: self)
         }
         
         //MARK: Output

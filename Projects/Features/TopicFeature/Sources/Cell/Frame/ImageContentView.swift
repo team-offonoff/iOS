@@ -64,9 +64,37 @@ extension TopicContentInputTableViewCell {
         }
         
         override func initialize() {
-            [aImageView, bImageView].forEach{
-                $0.isUserInteractionEnabled = true
-                $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTap)))
+            
+            addTarget()
+            addGestureRecognizer()
+            
+            func addTarget() {
+                switchButton.tapPublisher
+                    .sink{ [weak self] _ in
+                        
+                        guard let self = self else { return }
+                        
+                        switchInput()
+                        
+                        func switchInput() {
+                            
+                            let temp: (UIImage?, String) = (self.image(option: .A), self.text(option: .A))
+                            
+                            self.aImageView.imageSubject.send(self.image(option: .B))
+                            self.aTextField.setText(self.text(option: .B))
+                            
+                            self.bImageView.imageSubject.send(temp.0)
+                            self.bTextField.setText(temp.1)
+                        }
+                    }
+                    .store(in: &cancellable)
+            }
+            
+            func addGestureRecognizer() {
+                [aImageView, bImageView].forEach{
+                    $0.isUserInteractionEnabled = true
+                    $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTap)))
+                }
             }
         }
         
