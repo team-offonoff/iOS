@@ -16,7 +16,7 @@ import Combine
 import Core
 import PhotosUI
 
-final class TopicGenerateViewController: BaseViewController<BaseHeaderView, TopicGenerateView, DefaultTopicGenerateCoordinator> {
+final class TopicGenerateViewController: BaseViewController<TopicGenerateHeaderView, TopicGenerateView, DefaultTopicGenerateCoordinator> {
 
     init(viewModel: any TopicGenerateViewModel) {
         self.viewModel = viewModel
@@ -27,14 +27,70 @@ final class TopicGenerateViewController: BaseViewController<BaseHeaderView, Topi
     private var inputCell: TopicInputTableViewCell?
     private var contentInputCell: TopicContentInputTableViewCell?
     private var imagePickerOption: Choice.Option?
+    private var sideChangeButton: TopicSideChangeButton?
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     override func initialize() {
-        mainView.tableView.delegate = self
-        mainView.tableView.dataSource = self
+    
+        setTableViewDelegate()
+        setHeaderViewTopicSide()
+        addSideChangeTarget()
+        
+        func setTableViewDelegate() {
+            mainView.tableView.delegate = self
+            mainView.tableView.dataSource = self
+        }
+        
+        func setHeaderViewTopicSide() {
+            headerView?.topicSide = viewModel.topicSide
+        }
+        
+        func addSideChangeTarget() {
+            
+            headerView?.sideChangeButton.tapPublisher
+                .sink{ [weak self] _ in
+                    
+                    guard let self = self, let headerView = self.headerView else { return }
+                    
+                    if headerView.sideChangeViewState == .open {
+                        closeSideChangeButton()
+                    }
+                    else if headerView.sideChangeViewState == .close {
+                        
+                        openSideChangeButton()
+                        
+                        func openSideChangeButton() {
+                            
+                            headerView.sideChangeViewState = .open
+                            
+                            let button = TopicSideChangeButton(side: self.viewModel.otherTopicSide())
+                            self.view.addSubview(button)
+                            button.snp.makeConstraints{
+                                $0.top.equalTo(headerView.sideChangeButton.snp.bottom).offset(11.5)
+                                $0.leading.equalTo(headerView.sideChangeButton)
+                            }
+                            button.tapPublisher
+                                .sink{ _ in
+                                    self.viewModel.topicSide.send(button.side)
+                                    closeSideChangeButton()
+                                }
+                                .store(in: &self.cancellables)
+                            
+                            self.sideChangeButton = button
+                        }
+                    }
+                }
+                .store(in: &cancellables)
+            
+            func closeSideChangeButton() {
+                headerView?.sideChangeViewState = .close
+                sideChangeButton?.removeFromSuperview()
+                sideChangeButton = nil
+            }
+        }
     }
     
     override func bind() {

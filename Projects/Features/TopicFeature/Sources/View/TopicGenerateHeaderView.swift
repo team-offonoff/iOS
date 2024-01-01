@@ -19,7 +19,13 @@ final class TopicGenerateHeaderView: BaseHeaderView, Navigatable {
         case close
     }
     
-    @Published var side: Choice.Option = .A
+    var topicSide: CurrentValueSubject<Topic.Side, Never>? {
+        didSet {
+            bindTopicSide()
+            updateSideButtonConfiguration()
+        }
+    }
+
     @Published var sideChangeViewState: SideChangeViewState = .close
     private var cancellable: Set<AnyCancellable> = []
     
@@ -37,8 +43,7 @@ final class TopicGenerateHeaderView: BaseHeaderView, Navigatable {
         return label
     }()
     
-    private let sideChangeButton: UIButton = {
-
+    let sideChangeButton: UIButton = {
         var configuration = UIButton.Configuration.filled()
         configuration.cornerStyle = .capsule
         configuration.imagePadding = 3
@@ -73,32 +78,41 @@ final class TopicGenerateHeaderView: BaseHeaderView, Navigatable {
     }
     
     private func updateConfiguration()  {
+        
         $sideChangeViewState
-            .sink{
+            .sink{ [weak self] in
                 switch $0 {
                 case .open:
-                    self.sideChangeButton.configuration?.image = Image.topicGenerateHeaderArrowUp
+                    self?.sideChangeButton.configuration?.image = Image.topicGenerateHeaderArrowUp.withTintColor(self?.topicSide?.value.content.color ?? .white)
                 case .close:
-                    self.sideChangeButton.configuration?.image = Image.topicGenerateHeaderArrowDown
+                    self?.sideChangeButton.configuration?.image = Image.topicGenerateHeaderArrowDown.withTintColor(self?.topicSide?.value.content.color ?? .white)
                 }
             }
             .store(in: &cancellable)
+    }
+    
+    private func bindTopicSide() {
+        topicSide?
+            .sink{ [weak self] side in
+                self?.updateSideButtonConfiguration()
+            }
+            .store(in: &cancellable)
+    }
+    
+    private func updateSideButtonConfiguration() {
         
-        $side
-            .sink{ side in
-                
-                self.sideChangeButton.configuration?.background.backgroundColor = side.content.color.withAlphaComponent(0.2)
-                self.sideChangeButton.configuration?.attributedTitle = attributedTitle()
-                self.sideChangeButton.configuration?.attributedTitle?.foregroundColor = side.content.color
-                
-                func attributedTitle() -> AttributedString {
-                    var attributedTitle = NSMutableAttributedString(string: "\(side.content.title) 사이드")
-                    attributedTitle.addAttributes([.font: Pretendard.medium15.font, .foregroundColor: side.content.color], range: NSRange(location: 0, length: attributedTitle.length))
-                    return AttributedString(attributedTitle)
-                    
-                }
-            }
-            .store(in: &cancellable)
+        guard let topicSide = topicSide?.value else { return }
+        
+        self.sideChangeButton.configuration?.background.backgroundColor = topicSide.content.color.withAlphaComponent(0.2)
+        self.sideChangeButton.configuration?.attributedTitle = attributedTitle()
+        self.sideChangeButton.configuration?.attributedTitle?.foregroundColor = topicSide.content.color
+        self.sideChangeButton.configuration?.image = self.sideChangeButton.configuration?.image?.withTintColor(topicSide.content.color)
+        
+        func attributedTitle() -> AttributedString {
+            let attributedTitle = NSMutableAttributedString(string: "\(topicSide.content.title) 사이드")
+            attributedTitle.addAttributes([.font: Pretendard.medium15.font, .foregroundColor: topicSide.content.color], range: NSRange(location: 0, length: attributedTitle.length))
+            return AttributedString(attributedTitle)
+        }
     }
     
 }
