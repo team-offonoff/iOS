@@ -40,6 +40,7 @@ final class CommentBottomSheetViewController: UIViewController {
     
     private let normalStateY: CGFloat
     private let expandStateY: CGFloat = (Device.safeAreaInsets?.top ?? 0) + 10
+    private let commentInputView: CommentInputView = CommentInputView()
     private lazy var normalHeight: CGFloat = Device.height - normalStateY
     private lazy var expandHeight: CGFloat = Device.height - expandStateY
     
@@ -77,7 +78,7 @@ final class CommentBottomSheetViewController: UIViewController {
     }
 
     private func hierarchy() {
-        view.addSubview(contentView)
+        view.addSubviews([contentView, commentInputView])
         contentView.addSubviews([headerView, tableView, grabberView])
     }
     
@@ -98,6 +99,9 @@ final class CommentBottomSheetViewController: UIViewController {
             $0.top.equalTo(headerView.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
         }
+        commentInputView.snp.makeConstraints{
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
     }
     
     private func initialize() {
@@ -115,10 +119,37 @@ final class CommentBottomSheetViewController: UIViewController {
             recognizer.delegate = self
             headerView.addGestureRecognizer(recognizer)
             
+            tableView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(cancelInput)))
         }
     }
     
+    @objc private func cancelInput() {
+        view.endEditing(true)
+    }
+
     private func bind() {
+        
+        NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
+            .receive(on: DispatchQueue.main)
+            .sink{ [weak self] noti in
+                if let keyboardFrame: NSValue = noti.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+                    let keyboardRectangle = keyboardFrame.cgRectValue
+                    UIView.animate(
+                        withDuration: 0.25
+                        , animations: { [weak self] in
+                            self?.commentInputView.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height)
+                        }
+                    )
+                }
+            }
+            .store(in: &cancellable)
+        
+        NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
+            .receive(on: DispatchQueue.main)
+            .sink{ [weak self] _ in
+                self?.commentInputView.transform = .identity
+            }
+            .store(in: &cancellable)
         
         //MARK: view model output
         
