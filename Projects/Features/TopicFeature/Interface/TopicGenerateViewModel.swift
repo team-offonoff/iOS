@@ -28,6 +28,7 @@ public protocol TopicGenerateViewModelOutput {
     var limitCount: TopicGenerateTextLimitCount { get }
     var contentValidation: CurrentValueSubject<Bool, Never> { get }
     var canRegister: PassthroughSubject<Bool, Never> { get }
+    func otherTopicSide() -> Topic.Side
 }
 
 public struct TopicGenerateTextLimitCount {
