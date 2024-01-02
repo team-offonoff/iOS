@@ -10,8 +10,22 @@ import Foundation
 import UIKit
 import ABKit
 import Combine
+import FeatureDependency
+import Domain
+
+protocol CommentSendDelegate: AnyObject {
+    func send(sender: DelegateSender, comment: String)
+}
 
 final class CommentInputView: BaseView {
+    
+    enum InputState {
+        case register
+        case modify
+    }
+    
+    var inputState: InputState = .register
+    weak var delegate: CommentSendDelegate?
     
     private let borderLine: UIView = {
        let view = UIView()
@@ -29,7 +43,7 @@ final class CommentInputView: BaseView {
         return label
     }()
     private let defaultTextViewHeight: CGFloat = 36
-    let textView: UITextView = {
+    private let textView: UITextView = {
        let textView = UITextView()
         textView.backgroundColor = Color.black.withAlphaComponent(0.1)
         textView.textColor = Color.black.withAlphaComponent(0.4)
@@ -39,6 +53,13 @@ final class CommentInputView: BaseView {
         textView.textContainerInset = UIEdgeInsets(top: 8, left: 15, bottom: 8, right: 15)
         return textView
     }()
+    private let sendButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("send", for: .normal)
+        button.setTitleColor(Color.black, for: .normal)
+        button.setTitleColor(Color.black40, for: .disabled)
+        return button
+    }()
     private var cancellable: Set<AnyCancellable> = []
     
     override func style() {
@@ -46,7 +67,7 @@ final class CommentInputView: BaseView {
     }
     
     override func hierarchy() {
-        addSubviews([borderLine, textView])
+        addSubviews([borderLine, textView, sendButton])
         textView.addSubview(placeholderLabel)
     }
     
@@ -64,12 +85,16 @@ final class CommentInputView: BaseView {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(15)
         }
+        sendButton.snp.makeConstraints{
+            $0.trailing.equalToSuperview().inset(10)
+            $0.centerY.equalTo(textView)
+        }
     }
     
     override func initialize() {
         
         textView.publisher(for: .editingChanged)
-            .sink{ [weak self] _ in
+            .sink{ [weak self] text in
                 
                 guard let self = self else { return }
                 
@@ -95,6 +120,8 @@ final class CommentInputView: BaseView {
                         constraint.constant = newHeight
                     }
                 }
+                
+                self.sendButton.isEnabled = !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             }
             .store(in: &cancellable)
         
@@ -108,15 +135,44 @@ final class CommentInputView: BaseView {
         textView.publisher(for: .editingDidEnd)
             .receive(on: DispatchQueue.main)
             .sink{ [weak self] text in
+                
+                guard let self = self else { return }
+                
                 if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    self?.textView.text = ""
-                    NotificationCenter.default.post(name: UITextView.textDidChangeNotification, object: self?.textView)
-                    self?.placeholderLabel.isHidden = false
-                }
-                else {
-                    //TODO: API 요청 코드 작성
+                    self.clear()
                 }
             }
             .store(in: &cancellable)
+        
+        
+        sendButton.tapPublisher
+            .sink{ [weak self] _ in
+                
+                guard let self = self else { return }
+                
+                self.delegate?.send(sender: .init(identifier: identifier()), comment: self.textView.text)
+                
+                func identifier() -> String {
+                    switch self.inputState {
+                    case .register:     return Comment.Action.register.identifier
+                    case .modify:       return Comment.Action.modify.identifier
+                    }
+                }
+            }
+            .store(in: &cancellable)
+    }
+    
+    func fill(text: String) {
+        textView.text = text
+        NotificationCenter.default.post(name: UITextView.textDidBeginEditingNotification, object: self.textView)
+    }
+    
+    func clear() {
+        defer {
+            inputState = .register
+        }
+        textView.resignFirstResponder()
+        textView.text = ""
+        NotificationCenter.default.post(name: UITextView.textDidChangeNotification, object: self.textView)
     }
 }
