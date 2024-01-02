@@ -16,16 +16,20 @@ struct CommentResponseDTO: Decodable {
     let writer: WriterResponseDTO
     let writersVotedOption: String?
     let content: String
-    let likeCount: Int
-    let hateCount: Int
-    let liked: Bool
-    let hated: Bool
-    let createdAt: String
+    let commentReaction: ReactionResponseDTO
+    let createdAt: Int
     
     struct WriterResponseDTO: Decodable {
         let id: Int
         let nickname: String
-        let profileImageURl: String?
+        let profileImageUrl: String?
+    }
+    
+    struct ReactionResponseDTO: Decodable {
+        let likeCount: Int
+        let hateCount: Int
+        let liked: Bool
+        let hated: Bool
     }
 }
 
@@ -37,10 +41,10 @@ extension CommentResponseDTO: Domainable {
             writer: writer.toDomain(),
             votedOption: Choice.Option.toDomain(writersVotedOption),
             content: content,
-            likeCount: likeCount,
-            hateCount: hateCount,
-            isLike: liked,
-            isHate: hated,
+            likeCount: commentReaction.likeCount,
+            hateCount: commentReaction.hateCount,
+            isLike: commentReaction.liked,
+            isHate: commentReaction.hated,
             createdAt: createdAt
         )
     }
@@ -51,7 +55,7 @@ extension CommentResponseDTO.WriterResponseDTO: Domainable {
         .init(
             id: id,
             nickname: nickname,
-            profileImageURl: URL(string: profileImageURl ?? "")
+            profileImageURl: URL(string: profileImageUrl ?? "")
         )
     }
 }

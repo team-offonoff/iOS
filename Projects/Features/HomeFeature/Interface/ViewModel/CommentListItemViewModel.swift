@@ -29,7 +29,7 @@ public struct CommentListItemViewModel {
         self.id = comment.commentId
         self.profileImageUrl = comment.writer.profileImageURl
         self.nickname = comment.writer.nickname
-        self.createdAt = comment.createdAt //TODO: 데이터 가공
+        self.createdAt = String(describing: comment.createdAt) //TODO: 데이터 가공
         self.choice = "" //comment.choice //TODO: 데이터 가공
         self.content = comment.content
         self.isLike = comment.isLike

@@ -19,7 +19,7 @@ public struct Comment {
     public let hateCount: Int
     public let isLike: Bool
     public let isHate: Bool
-    public let createdAt: String //TODO: 타입 변경 필요
+    public let createdAt: Int
     
     public init(
         commentId: Int,
@@ -31,7 +31,7 @@ public struct Comment {
         hateCount: Int,
         isLike: Bool,
         isHate: Bool,
-        createdAt: String
+        createdAt: Int
     ) {
         self.commentId = commentId
         self.topicId = topicId
