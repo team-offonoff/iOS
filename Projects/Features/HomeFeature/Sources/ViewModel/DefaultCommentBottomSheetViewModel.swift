@@ -17,20 +17,26 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
 
     private var pageInfo: Paging?
     private let topicId: Int
+    private let generateCommentUseCase: any GenerateCommentUseCase
     private let fetchCommentsUseCase: any FetchCommentsUseCase
+    private let patchCommentUseCase: any PatchCommentUseCase
     private let patchCommentLikeUseCase: any PatchCommentLikeStateUseCase
     private let patchCommentDislikeUseCase: any PatchCommentDislikeStateUseCase
     private let deleteCommentUseCase: any DeleteCommentUseCase
     
     public init(
         topicId: Int,
+        generateCommentUseCase: any GenerateCommentUseCase,
         fetchCommentsUseCase: any FetchCommentsUseCase,
+        patchCommentUseCase: any PatchCommentUseCase,
         patchCommentLikeUseCase: any PatchCommentLikeStateUseCase,
         patchCommentDislikeUseCase: any PatchCommentDislikeStateUseCase,
         deleteCommentUseCase: any DeleteCommentUseCase
     ) {
         self.topicId = topicId
+        self.generateCommentUseCase = generateCommentUseCase
         self.fetchCommentsUseCase = fetchCommentsUseCase
+        self.patchCommentUseCase = patchCommentUseCase
         self.patchCommentLikeUseCase = patchCommentLikeUseCase
         self.patchCommentDislikeUseCase = patchCommentDislikeUseCase
         self.deleteCommentUseCase = deleteCommentUseCase
@@ -44,6 +50,7 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
     public let toggleLikeState: PassthroughSubject<Index, Never> = PassthroughSubject()
     public let toggleDislikeState: PassthroughSubject<Index, Never> = PassthroughSubject()
     public let reportItem: PassthroughSubject<Index, Never> = PassthroughSubject()
+    public var generateItem: PassthroughSubject<Void, Never> = PassthroughSubject()
     public let modifyItem: PassthroughSubject<Index, Never> = PassthroughSubject()
     public let deleteItem: PassthroughSubject<Index, Never> = PassthroughSubject()
     public let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
@@ -112,9 +119,44 @@ extension DefaultCommentBottomSheetViewModel {
             .store(in: &cancellable)
     }
     
-    public func modify(at index: Int, content: String) {
-        
+    public func generateComment(content: String) {
+        generateCommentUseCase
+            .execute(request: .init(topicId: topicId, content: content))
+            .sink{ [weak self] result in
+                
+                guard let self = self else { return }
+                
+                if result.isSuccess, let data = result.data {
+                    self.comments.insert(.init(data), at: 0)
+                    self.generateItem.send(())
+                }
+                else if let error = result.error {
+                    self.errorHandler.send(error)
+    
+                }
+            }
+            .store(in: &cancellable)
     }
+    
+    public func modifyComment(at index: Int, content: String) {
+        patchCommentUseCase
+            .execute(commentId: comments[index].id, request: .init(content: content))
+            .sink{ [weak self] result in
+                
+                guard let self = self else { return }
+                
+                if result.isSuccess, let data = result.data {
+                    self.comments[index] = .init(data)
+                    self.modifyItem.send(index)
+                }
+                else if let error = result.error {
+                    self.errorHandler.send(error)
+    
+                }
+            }
+            .store(in: &cancellable)
+    }
+    
     
     public func delete(at index: Int) {
         deleteCommentUseCase

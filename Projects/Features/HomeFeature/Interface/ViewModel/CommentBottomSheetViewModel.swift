@@ -18,6 +18,7 @@ public typealias OthersCommentBottomSheetViewModel = OthersCommentBottomSheetVie
 
 public protocol CommentBottomSheetViewModelInput {
     func fetchComments()
+    func generateComment(content: String)
     func toggleLikeState(at index: Int)
     func toggleDislikeState(at index: Int)
 }
@@ -26,13 +27,14 @@ public protocol CommentBottomSheetViewModelOutput {
     var comments: [CommentListItemViewModel] { get }
     var commentsCountTitle: String { get }
     var reloadData: (() -> Void)? { get set }
+    var generateItem: PassthroughSubject<Void, Never> { get }
     var toggleLikeState: PassthroughSubject<Index, Never> { get }
     var toggleDislikeState: PassthroughSubject<Index, Never> { get }
     func isWriterItem(at index: Int) -> Bool
 }
 
 public protocol WritersCommentBottomSheetViewModelInput {
-    func modify(at index: Int, content: String)
+    func modifyComment(at index: Int, content: String)
     func delete(at index: Int)
 }
 

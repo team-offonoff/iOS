@@ -49,6 +49,24 @@ public final class DefaultCommentRepository: CommentRepository {
         
         return dataTask(request: urlRequest, responseType: PagingContentResponseDTO<CommentResponseDTO>.self)
     }
+
+    public func patchComment(commentId: Int, request: PatchCommentUseCaseRequestValue) -> NetworkResultPublisher<Comment?> {
+        
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = basePath + path(commentId)
+        
+        guard let requestBody = try? JSONEncoder().encode(makeDTO()),
+              let urlRequest = urlComponents?.toURLRequest(method: .patch, httpBody: requestBody) else {
+            fatalError("json encoding or url parsing error")
+        }
+        
+        return dataTask(request: urlRequest, responseType: CommentResponseDTO.self)
+        
+        func makeDTO() -> PatchCommentRequestDTO{
+            .init(content: request.content)
+        }
+
+    }
     
     public func patchLikeState(commentId: Int, isLike: Bool) -> NetworkResultPublisher<Any?> {
         

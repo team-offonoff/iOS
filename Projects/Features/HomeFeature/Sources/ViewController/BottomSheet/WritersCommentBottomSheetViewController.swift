@@ -44,7 +44,8 @@ public final class WritersCommentBottomSheetViewController: BaseBottomSheetViewC
     public override func tap(action: BottomSheetAction) {
         switch action {
         case Comment.Action.modify:
-            break
+            NotificationCenter.default.post(name: Notification.Name(Comment.Action.modify.identifier), object: self, userInfo: ["Index": index])
+            dismiss(animated: true)
             
         case Comment.Action.delete:
             viewModel.delete(at: index)
