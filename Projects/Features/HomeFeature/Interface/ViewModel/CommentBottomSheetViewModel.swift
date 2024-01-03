@@ -21,6 +21,7 @@ public protocol CommentBottomSheetViewModelInput {
     func generateComment(content: String)
     func toggleLikeState(at index: Int)
     func toggleDislikeState(at index: Int)
+    func fetchNextPage()
 }
 
 public protocol CommentBottomSheetViewModelOutput {
@@ -31,6 +32,7 @@ public protocol CommentBottomSheetViewModelOutput {
     var toggleLikeState: PassthroughSubject<Index, Never> { get }
     var toggleDislikeState: PassthroughSubject<Index, Never> { get }
     func isWriterItem(at index: Int) -> Bool
+    func hasNextPage() -> Bool
 }
 
 public protocol WritersCommentBottomSheetViewModelInput {

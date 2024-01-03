@@ -58,6 +58,11 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
     public func isWriterItem(at index: Int) -> Bool {
         index % 2 == 0 ? true : false //comments[index].userId == userId
     }
+    
+    public func hasNextPage() -> Bool {
+        guard let pageInfo = pageInfo else { return false }
+        return !pageInfo.last
+    }
 }
 
 //MARK: - INPUT
@@ -69,7 +74,6 @@ extension DefaultCommentBottomSheetViewModel {
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess, let (pageInfo, data) = result.data {
-                    //TODO: 페이징 코드 추가
                     self.pageInfo = pageInfo
                     self.comments.append(contentsOf: data.map{ .init($0) })
                     self.reloadData?()
@@ -79,6 +83,15 @@ extension DefaultCommentBottomSheetViewModel {
                 }
             }
             .store(in: &cancellable)
+    }
+    
+    public func fetchNextPage() {
+        updatePage()
+        fetchComments()
+        
+        func updatePage() {
+            pageInfo?.page += 1
+        }
     }
     
     public func toggleLikeState(at index: Int) {
