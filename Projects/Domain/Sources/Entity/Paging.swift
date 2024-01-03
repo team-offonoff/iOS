@@ -22,7 +22,7 @@ public struct Paging{
         self.last = last
     }
     
-    public let page: Int
+    public var page: Int
     public let size: Int
     public let isEmpty: Bool
     public let last: Bool
