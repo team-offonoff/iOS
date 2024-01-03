@@ -17,6 +17,7 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
 
     private var pageInfo: Paging?
     private let topicId: Int
+    private let choices: [Choice]
     private let generateCommentUseCase: any GenerateCommentUseCase
     private let fetchCommentsUseCase: any FetchCommentsUseCase
     private let patchCommentUseCase: any PatchCommentUseCase
@@ -26,6 +27,7 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
     
     public init(
         topicId: Int,
+        choices: [Choice],
         generateCommentUseCase: any GenerateCommentUseCase,
         fetchCommentsUseCase: any FetchCommentsUseCase,
         patchCommentUseCase: any PatchCommentUseCase,
@@ -34,6 +36,7 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
         deleteCommentUseCase: any DeleteCommentUseCase
     ) {
         self.topicId = topicId
+        self.choices = choices
         self.generateCommentUseCase = generateCommentUseCase
         self.fetchCommentsUseCase = fetchCommentsUseCase
         self.patchCommentUseCase = patchCommentUseCase
@@ -75,7 +78,7 @@ extension DefaultCommentBottomSheetViewModel {
                 guard let self = self else { return }
                 if result.isSuccess, let (pageInfo, data) = result.data {
                     self.pageInfo = pageInfo
-                    self.comments.append(contentsOf: data.map{ .init($0) })
+                    self.comments.append(contentsOf: data.map{ .init($0, self.choices) })
                     self.reloadData?()
                 }
                 else if let error = result.error {
@@ -140,7 +143,7 @@ extension DefaultCommentBottomSheetViewModel {
                 guard let self = self else { return }
                 
                 if result.isSuccess, let data = result.data {
-                    self.comments.insert(.init(data), at: 0)
+                    self.comments.insert(.init(data, self.choices), at: 0)
                     self.generateItem.send(())
                 }
                 else if let error = result.error {
@@ -159,7 +162,7 @@ extension DefaultCommentBottomSheetViewModel {
                 guard let self = self else { return }
                 
                 if result.isSuccess, let data = result.data {
-                    self.comments[index] = .init(data)
+                    self.comments[index] = .init(data, self.choices)
                     self.modifyItem.send(index)
                 }
                 else if let error = result.error {

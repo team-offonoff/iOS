@@ -83,6 +83,13 @@ final class CommentBottomSheetTableViewCell: BaseTableViewCell {
     private let dislikeContent: LikeContentView = LikeContentView(state: .dislike)
     private var cancellable: Set<AnyCancellable> = []
     
+    override func prepareForReuse() {
+        choiceLabel.textColor = Color.white
+        choiceLabel.text = ""
+        state(isLike: false, count: "0")
+        state(isDislike: false)
+    }
+    
     override func hierarchy() {
         topStackView.addArrangedSubviews([nicknameLabel, dotView, dateLabel])
         likeStackView.addArrangedSubviews([likeContent, dislikeContent])
@@ -144,7 +151,8 @@ final class CommentBottomSheetTableViewCell: BaseTableViewCell {
     func fill(_ comment: CommentListItemViewModel) {
         nicknameLabel.text = comment.nickname
         dateLabel.text = comment.createdAt
-        choiceLabel.text = comment.choice
+        choiceLabel.textColor = (comment.selectedOption.option?.content.color ?? Color.subNavy).withAlphaComponent(0.6)
+        choiceLabel.text = comment.selectedOption.content
         contentLabel.text = comment.content
         state(isLike: comment.isLike, count: comment.likeCountString)
         state(isDislike: comment.isHate)
