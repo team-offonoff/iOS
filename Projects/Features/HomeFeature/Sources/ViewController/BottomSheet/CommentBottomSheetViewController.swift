@@ -41,6 +41,7 @@ final class CommentBottomSheetViewController: UIViewController {
     
     private let normalStateY: CGFloat
     private let expandStateY: CGFloat = (Device.safeAreaInsets?.top ?? 0) + 10
+    private let tableViewBottomInset: CGFloat = 58
     private let commentInputView: CommentInputView = CommentInputView()
     private lazy var normalHeight: CGFloat = Device.height - normalStateY
     private lazy var expandHeight: CGFloat = Device.height - expandStateY
@@ -63,10 +64,11 @@ final class CommentBottomSheetViewController: UIViewController {
         return view
     }()
     private let headerView: CommentHeaderView = CommentHeaderView()
-    private let tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let tableView: UITableView = UITableView()
         tableView.separatorStyle = .none
         tableView.registers(cellTypes: [CommentBottomSheetTableViewCell.self])
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tableViewBottomInset, right: 0)
         return tableView
     }()
     
@@ -144,6 +146,7 @@ final class CommentBottomSheetViewController: UIViewController {
                         withDuration: 0.25
                         , animations: { [weak self] in
                             self?.commentInputView.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height)
+                            self?.tableView.contentInset.bottom += keyboardRectangle.height
                         }
                     )
                 }
@@ -153,7 +156,9 @@ final class CommentBottomSheetViewController: UIViewController {
         NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
             .receive(on: DispatchQueue.main)
             .sink{ [weak self] _ in
-                self?.commentInputView.transform = .identity
+                guard let self = self else { return }
+                self.commentInputView.transform = .identity
+                self.tableView.contentInset.bottom = self.tableViewBottomInset
             }
             .store(in: &cancellable)
         
