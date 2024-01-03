@@ -43,7 +43,7 @@ public struct CommentListItemViewModel {
     public var isLike: Bool
     public var isHate: Bool
     public var likeCount: Int
-    public var likeCountString: String {
+    public var countOfLike: String {
         String(likeCount)
     }
     public var elapsedTime: String {

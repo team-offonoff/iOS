@@ -190,7 +190,7 @@ final class CommentBottomSheetViewController: UIViewController {
             .sink{ [weak self] index in
                 guard let self = self else { return }
                 let cell = self.tableView.cellForRow(at: .init(row: index), cellType: CommentBottomSheetTableViewCell.self)
-                cell?.state(isLike: self.viewModel.comments[index].isLike, count: self.viewModel.comments[index].likeCountString)
+                cell?.state(isLike: self.viewModel.comments[index].isLike, count: self.viewModel.comments[index].countOfLike)
             }
             .store(in: &cancellable)
         

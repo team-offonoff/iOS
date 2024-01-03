@@ -154,7 +154,7 @@ final class CommentBottomSheetTableViewCell: BaseTableViewCell {
         choiceLabel.textColor = (comment.selectedOption.option?.content.color ?? Color.subNavy).withAlphaComponent(0.6)
         choiceLabel.text = comment.selectedOption.content
         contentLabel.text = comment.content
-        state(isLike: comment.isLike, count: comment.likeCountString)
+        state(isLike: comment.isLike, count: comment.countOfLike)
         state(isDislike: comment.isHate)
     }
     
