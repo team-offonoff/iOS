@@ -195,7 +195,8 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
             coordinator?
                 .startCommentBottomSheet(
                     standard: standardOfCommentBottomSheet(),
-                    topicId: viewModel.currentTopic.id
+                    topicId: viewModel.currentTopic.id,
+                    choices: viewModel.currentTopic.choices
                 )
         default:
             return

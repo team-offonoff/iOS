@@ -41,6 +41,7 @@ final class CommentBottomSheetViewController: UIViewController {
     
     private let normalStateY: CGFloat
     private let expandStateY: CGFloat = (Device.safeAreaInsets?.top ?? 0) + 10
+    private let tableViewBottomInset: CGFloat = 58
     private let commentInputView: CommentInputView = CommentInputView()
     private lazy var normalHeight: CGFloat = Device.height - normalStateY
     private lazy var expandHeight: CGFloat = Device.height - expandStateY
@@ -63,10 +64,11 @@ final class CommentBottomSheetViewController: UIViewController {
         return view
     }()
     private let headerView: CommentHeaderView = CommentHeaderView()
-    private let tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let tableView: UITableView = UITableView()
         tableView.separatorStyle = .none
-        tableView.registers(cellTypes: [CommentBottomSheetTableViewCell.self])
+        tableView.registers(cellTypes: [CommentBottomSheetTableViewCell.self, LoadingTableViewCell.self])
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tableViewBottomInset, right: 0)
         return tableView
     }()
     
@@ -144,6 +146,7 @@ final class CommentBottomSheetViewController: UIViewController {
                         withDuration: 0.25
                         , animations: { [weak self] in
                             self?.commentInputView.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height)
+                            self?.tableView.contentInset.bottom += keyboardRectangle.height
                         }
                     )
                 }
@@ -153,7 +156,9 @@ final class CommentBottomSheetViewController: UIViewController {
         NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
             .receive(on: DispatchQueue.main)
             .sink{ [weak self] _ in
-                self?.commentInputView.transform = .identity
+                guard let self = self else { return }
+                self.commentInputView.transform = .identity
+                self.tableView.contentInset.bottom = self.tableViewBottomInset
             }
             .store(in: &cancellable)
         
@@ -172,6 +177,9 @@ final class CommentBottomSheetViewController: UIViewController {
         
         viewModel.reloadData = {
             DispatchQueue.main.async {
+                defer {
+                    self.stopLoading()
+                }
                 self.headerView.fill(self.viewModel.commentsCountTitle)
                 self.tableView.reloadData()
             }
@@ -182,7 +190,7 @@ final class CommentBottomSheetViewController: UIViewController {
             .sink{ [weak self] index in
                 guard let self = self else { return }
                 let cell = self.tableView.cellForRow(at: .init(row: index), cellType: CommentBottomSheetTableViewCell.self)
-                cell?.state(isLike: self.viewModel.comments[index].isLike, count: self.viewModel.comments[index].likeCountString)
+                cell?.state(isLike: self.viewModel.comments[index].isLike, count: self.viewModel.comments[index].countOfLike)
             }
             .store(in: &cancellable)
         
@@ -288,6 +296,43 @@ final class CommentBottomSheetViewController: UIViewController {
             return
         }
     }
+    
+    //MARK: 페이징
+    
+    private var isLoading: Bool = false
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.height
+        
+        if offsetY > (contentHeight - height) {
+            if !isLoading && viewModel.hasNextPage() {
+                beginPaging()
+            }
+        }
+        
+        func startLoading() {
+            isLoading = true
+        }
+        
+        func beginPaging(){
+            
+            startLoading()
+            
+            DispatchQueue.main.async { [self] in
+                self.tableView.reloadSections(IndexSet(integer: 1), with: .none)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.viewModel.fetchNextPage()
+            }
+        }
+    }
+    
+    private func stopLoading() {
+        isLoading = false
+    }
 }
 
 extension CommentBottomSheetViewController: CommentSendDelegate {
@@ -345,15 +390,40 @@ extension CommentBottomSheetViewController: TapDelegate {
 
 extension CommentBottomSheetViewController: UITableViewDelegate, UITableViewDataSource {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        2
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.comments.count
+        if section == 0 {
+            return viewModel.comments.count
+        } else if section == 1 && isLoading && viewModel.hasNextPage() {
+            return 1
+        } else {
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(for: indexPath, cellType: CommentBottomSheetTableViewCell.self)
-        cell.fill(viewModel.comments[indexPath.row])
-        cell.delegate = self
-        return cell
+        
+        switch indexPath.section {
+        case 0:     return commentCell()
+        case 1:     return loadingCell()
+        default:    fatalError()
+        }
+        
+        func commentCell() -> UITableViewCell {
+            let cell = tableView.dequeueReusableCell(for: indexPath, cellType: CommentBottomSheetTableViewCell.self)
+            cell.fill(viewModel.comments[indexPath.row])
+            cell.delegate = self
+            return cell
+        }
+        
+        func loadingCell() -> UITableViewCell {
+            let cell = tableView.dequeueReusableCell(for: indexPath, cellType: LoadingTableViewCell.self)
+            cell.startLoading()
+            return cell
+        }
     }
 }
 

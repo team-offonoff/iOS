@@ -45,6 +45,10 @@ extension HomeTopicItemViewModel {
     public var isVoted: Bool {
         selectedOption != nil
     }
+    
+    public var choices: [Choice] {
+        [aOption, bOption]
+    }
 }
 
 private extension Topic.Side {

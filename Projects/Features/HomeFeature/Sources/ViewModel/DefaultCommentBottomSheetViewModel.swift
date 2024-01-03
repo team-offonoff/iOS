@@ -17,6 +17,7 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
 
     private var pageInfo: Paging?
     private let topicId: Int
+    private let choices: [Choice]
     private let generateCommentUseCase: any GenerateCommentUseCase
     private let fetchCommentsUseCase: any FetchCommentsUseCase
     private let patchCommentUseCase: any PatchCommentUseCase
@@ -26,6 +27,7 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
     
     public init(
         topicId: Int,
+        choices: [Choice],
         generateCommentUseCase: any GenerateCommentUseCase,
         fetchCommentsUseCase: any FetchCommentsUseCase,
         patchCommentUseCase: any PatchCommentUseCase,
@@ -34,6 +36,7 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
         deleteCommentUseCase: any DeleteCommentUseCase
     ) {
         self.topicId = topicId
+        self.choices = choices
         self.generateCommentUseCase = generateCommentUseCase
         self.fetchCommentsUseCase = fetchCommentsUseCase
         self.patchCommentUseCase = patchCommentUseCase
@@ -58,6 +61,11 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
     public func isWriterItem(at index: Int) -> Bool {
         index % 2 == 0 ? true : false //comments[index].userId == userId
     }
+    
+    public func hasNextPage() -> Bool {
+        guard let pageInfo = pageInfo else { return false }
+        return !pageInfo.last
+    }
 }
 
 //MARK: - INPUT
@@ -69,9 +77,8 @@ extension DefaultCommentBottomSheetViewModel {
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess, let (pageInfo, data) = result.data {
-                    //TODO: 페이징 코드 추가
                     self.pageInfo = pageInfo
-                    self.comments.append(contentsOf: data.map{ .init($0) })
+                    self.comments.append(contentsOf: data.map{ .init($0, self.choices) })
                     self.reloadData?()
                 }
                 else if let error = result.error {
@@ -79,6 +86,15 @@ extension DefaultCommentBottomSheetViewModel {
                 }
             }
             .store(in: &cancellable)
+    }
+    
+    public func fetchNextPage() {
+        updatePage()
+        fetchComments()
+        
+        func updatePage() {
+            pageInfo?.page += 1
+        }
     }
     
     public func toggleLikeState(at index: Int) {
@@ -127,7 +143,7 @@ extension DefaultCommentBottomSheetViewModel {
                 guard let self = self else { return }
                 
                 if result.isSuccess, let data = result.data {
-                    self.comments.insert(.init(data), at: 0)
+                    self.comments.insert(.init(data, self.choices), at: 0)
                     self.generateItem.send(())
                 }
                 else if let error = result.error {
@@ -146,7 +162,7 @@ extension DefaultCommentBottomSheetViewModel {
                 guard let self = self else { return }
                 
                 if result.isSuccess, let data = result.data {
-                    self.comments[index] = .init(data)
+                    self.comments[index] = .init(data, self.choices)
                     self.modifyItem.send(index)
                 }
                 else if let error = result.error {

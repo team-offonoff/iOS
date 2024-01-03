@@ -67,7 +67,7 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         navigationController.present(TopicBottomSheetViewController(viewModel: homeViewModel), animated: true)
     }
     
-    public func startCommentBottomSheet(standard: CGFloat, topicId: Int) {
+    public func startCommentBottomSheet(standard: CGFloat, topicId: Int, choices: [Choice]) {
         
         commentBottomSheet = CommentBottomSheetViewController(standard: standard, viewModel: viewModel())
         commentBottomSheet?.coordinator = self
@@ -79,6 +79,7 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         func viewModel() -> CommentBottomSheetViewModel {
             commentBottomSheetViewModel = DefaultCommentBottomSheetViewModel(
                 topicId: topicId,
+                choices: choices,
                 generateCommentUseCase: DefaultGenerateCommentUseCase(repository: commentRepository),
                 fetchCommentsUseCase: DefaultFetchCommentsUseCase(repository: commentRepository),
                 patchCommentUseCase: DefaultPatchCommentUseCase(repository: commentRepository),
