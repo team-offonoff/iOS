@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum NetworkSerivceError: String {
+public enum NetworkServiceError: String, Error {
     
     case emptyAuthorization = "EMPTY_AUTHORIZATION"
     case invalidField = "INVALID_FIELD"
