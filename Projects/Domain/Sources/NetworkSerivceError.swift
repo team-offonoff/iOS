@@ -1,5 +1,5 @@
 //
-//  ServiceError.swift
+//  NetworkSerivceError.swift
 //  Domain
 //
 //  Created by 박소윤 on 2023/12/11.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum SerivceError: String {
+public enum NetworkSerivceError: String {
     case emptyAuthorization = "EMPTY_AUTHORIZATION"
     case votedByAuthor = "VOTED_BY_AUTHOR"
     case futureTimeRequest = "FUTURE_TIME_REQUEST"
