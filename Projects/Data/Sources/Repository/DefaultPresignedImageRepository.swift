@@ -11,7 +11,7 @@ import UIKit
 import Domain
 
 protocol PresignedImageRepository: Repository {
-    func upload(bucket: ImageBucket, request: UIImage) async throws -> String?
+    func upload(bucket: ImageBucket, request: UIImage) async throws -> String
 }
 
 enum ImageBucket {
@@ -39,12 +39,12 @@ final class DefaultPresignedImageRepository: PresignedImageRepository {
     
     public init() { }
     
-    func upload(bucket: ImageBucket, request image: UIImage) async throws -> String? {
+    func upload(bucket: ImageBucket, request image: UIImage) async throws -> String {
 
         let response = await requestPresignedUrl()
         
         guard let url = response.data?.presignedUrl else {
-            return nil
+            throw ABError.imageUpload
         }
         
         let urlComponents = URLComponents(string: String(url.split(separator: "?").first!))

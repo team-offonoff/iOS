@@ -50,12 +50,45 @@ public final class DefaultTopicRepository: TopicRepository {
             )
         }
         
+        /* 성능 비교 테스트를 위해 기존 코드를 남겨놓는다
         func makeChoicesDTO() async throws -> [TopicGenerateRequestDTO.ChoiceRequestDTO] {
             let images = request.choices.compactMap{ $0.image }
             var url = [String?](repeating: nil, count: request.choices.count)
             if !images.isEmpty {
                 for (i,image) in images.enumerated() {
                     url[i] = try await presignedImageRepository.upload(bucket: .topic, request: image)
+                }
+            }
+
+            return request.choices.enumerated()
+                .map{ i, choice in
+                        .init(
+                            choiceOption: choice.option.toDTO(),
+                            choiceContentRequest: .init(
+                                type: "IMAGE_TEXT",
+                                imageUrl: url[i],
+                                text: choice.text
+                            )
+                        )
+                }
+        }
+         */
+        
+        func makeChoicesDTO() async throws -> [TopicGenerateRequestDTO.ChoiceRequestDTO] {
+            let images = request.choices.compactMap{ $0.image }
+            var url = [String?](repeating: nil, count: request.choices.count)
+            if !images.isEmpty {
+                try await withThrowingTaskGroup(of: (Int, String).self) { group in
+                    for (i, image) in images.enumerated() {
+                        group.addTask{
+                            return (i, try await self.presignedImageRepository.upload(bucket: .topic, request: image))
+                        }
+                    }
+                    
+                    for try await (index, imageUrl) in group {
+                        url[index] = imageUrl
+                    }
+                    
                 }
             }
             
