@@ -202,7 +202,7 @@ extension TabBarController {
             }
         }
         
-        private func initialize() {
+        override func initialize() {
             tag = item.rawValue
             iconImageView.image = item.defaultIcon
             titleLabel.text = item.title

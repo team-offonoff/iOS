@@ -9,4 +9,5 @@
 import Foundation
 import Combine
 
+public typealias NetworkServiceResult<DTO> = (isSuccess: Bool, data: DTO, error: NetworkErrorResponeDTO?)
 public typealias NetworkServiceResultPublisher<DTO> = AnyPublisher<(isSuccess: Bool, data: DTO, error: NetworkErrorResponeDTO?), Never>

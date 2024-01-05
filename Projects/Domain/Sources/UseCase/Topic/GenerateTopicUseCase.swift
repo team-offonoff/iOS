@@ -11,7 +11,7 @@ import Core
 import UIKit
 
 public protocol GenerateTopicUseCase: UseCase {
-    func execute(request: GenerateTopicUseCaseRequestValue) -> NetworkResultPublisher<Topic?>
+    func execute(request: GenerateTopicUseCaseRequestValue) async -> NetworkResultPublisher<Topic?>
 }
 
 public final class DefaultGenerateTopicUseCase: GenerateTopicUseCase {
@@ -22,8 +22,8 @@ public final class DefaultGenerateTopicUseCase: GenerateTopicUseCase {
         self.repository = repository
     }
     
-    public func execute(request: GenerateTopicUseCaseRequestValue) -> NetworkResultPublisher<Topic?> {
-        repository.generateTopic(request: request)
+    public func execute(request: GenerateTopicUseCaseRequestValue) async -> NetworkResultPublisher<Topic?> {
+        await repository.generateTopic(request: request)
     }
 }
 

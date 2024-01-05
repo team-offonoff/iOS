@@ -11,13 +11,13 @@ import Foundation
 public struct ErrorContent {
     
     public init(
-        code: SerivceError,
+        code: NetworkServiceError,
         message: String
     ) {
         self.code = code
         self.message = message
     }
     
-    public let code: SerivceError
+    public let code: NetworkServiceError
     public let message: String
 }

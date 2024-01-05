@@ -130,18 +130,20 @@ final class DefaultTopicGenerateViewModel: BaseViewModel, TopicGenerateViewModel
     }
     
     func register(_ request: GenerateTopicUseCaseRequestValue) {
-        topicGenerateUseCase.execute(request: request)
-            .sink{ [weak self] result in
-                if result.isSuccess {
-                    print("success")
-                }
-                else {
-                    if let error = result.error {
-                        self?.errorHandler.send(error)
+        Task {
+            await topicGenerateUseCase.execute(request: request)
+                .sink{ [weak self] result in
+                    if result.isSuccess {
+                        print("success")
+                    }
+                    else {
+                        if let error = result.error {
+                            self?.errorHandler.send(error)
+                        }
                     }
                 }
-            }
-            .store(in: &cancellable)
+                .store(in: &cancellable)
+        }
     }
     
     
