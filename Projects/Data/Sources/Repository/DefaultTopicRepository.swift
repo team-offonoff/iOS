@@ -32,7 +32,7 @@ public final class DefaultTopicRepository: TopicRepository {
             }
             return dataTask(request: urlRequest, responseType: TopicResponseDTO.self)
         }
-        catch ABError.imageUpload {
+        catch NetworkServiceError.IMAGE_UPLOAD_FAIL {
             print("image upload 실패")
             return Just((false, nil, nil)).eraseToAnyPublisher()
         }

@@ -32,4 +32,7 @@ public enum NetworkServiceError: String, Error {
     
     //MARK: Image Presigned
     case ILLEGAL_FILE_EXTENSION
+    
+    //MARK: Custom
+    case IMAGE_UPLOAD_FAIL
 }

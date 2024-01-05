@@ -9,5 +9,5 @@
 import Foundation
 
 public enum ABError: Error {
-    case imageUpload
+    
 }

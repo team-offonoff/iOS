@@ -44,7 +44,7 @@ final class DefaultPresignedImageRepository: PresignedImageRepository {
         let response = await requestPresignedUrl()
         
         guard let url = response.data?.presignedUrl else {
-            throw ABError.imageUpload
+            throw NetworkServiceError.IMAGE_UPLOAD_FAIL
         }
         
         let urlComponents = URLComponents(string: String(url.split(separator: "?").first!))
@@ -56,7 +56,7 @@ final class DefaultPresignedImageRepository: PresignedImageRepository {
         if await networkService.dataTask(request: urlRequest, type: EmptyData.self).isSuccess {
             return url
         } else {
-            throw ABError.imageUpload
+            throw NetworkServiceError.IMAGE_UPLOAD_FAIL
         }
         
         func requestPresignedUrl() async -> NetworkServiceResult<PresignedImageResponseDTO?> {
