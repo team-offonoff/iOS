@@ -24,7 +24,7 @@ struct TopicGenerateRequestDTO: Encodable {
         
         struct ContentRequestDTO: Encodable {
             let type: String
-            let imageUrl: String
+            let imageUrl: String?
             let text: String
         }
     }
