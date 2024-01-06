@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Combine
 
-open class ABTextFieldView: BaseView {
+open class ABTextFieldView: BaseStackView {
     
     public enum State {
         /// 초기 상태로, placeholder를 보여준다
@@ -57,38 +57,35 @@ open class ABTextFieldView: BaseView {
     private let errorLabel: UILabel = UILabel()
     
     open override func style() {
-        textField.layer.cornerRadius = 10
-    }
-    
-    public func customPlaceholder(color: UIColor = Color.subPurple.withAlphaComponent(0.6), font: UIFont) {
-        let attributedPlaceholder = NSMutableAttributedString(string: placeholder)
-        attributedPlaceholder.addAttributes([
-            .font: font,
-            .foregroundColor: color
-        ], range: NSRange(location: 0, length: placeholder.count))
-        textField.attributedPlaceholder = NSAttributedString(attributedString: attributedPlaceholder)
+        
+        cornerRadius()
+        stackViewProperties()
+        
+        func cornerRadius() {
+            textField.layer.cornerRadius = 10
+        }
+        
+        func stackViewProperties() {
+            spacing = 9
+            axis = .vertical
+        }
     }
     
     public override func hierarchy() {
-        addSubviews([textField, errorLabel])
+        addArrangedSubview(textField)
+        if isErrorNeed {
+            addArrangedSubview(errorLabel)
+        }
         textField.addSubview(countLabel)
     }
     
     public override func layout() {
         textField.snp.makeConstraints{
-            $0.leading.trailing.top.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
         }
         if isErrorNeed {
             errorLabel.snp.makeConstraints{
-                $0.top.equalTo(textField.snp.bottom).offset(9)
                 $0.leading.equalToSuperview().offset(16)
-                $0.trailing.equalToSuperview()
-                $0.bottom.equalToSuperview()
-            }
-        }
-        else {
-            textField.snp.makeConstraints{
-                $0.bottom.equalToSuperview()
             }
         }
         countLabel.snp.makeConstraints{
@@ -134,7 +131,7 @@ open class ABTextFieldView: BaseView {
                         self.textField.layer.borderWidth = configuration.strokeWidth ?? 0
                         self.textField.layer.borderColor = configuration.strokeColor?.cgColor
                         self.countLabel.isHidden = configuration.isCountLabelHidden
-                        self.errorLabel.isHidden = configuration.isErrorLabelHidden
+                        self.errorLabel.layer.opacity = configuration.isErrorLabelHidden ? 0 : 1
                     }
                 }
                 .store(in: &cancellable)
