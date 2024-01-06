@@ -91,7 +91,7 @@ extension SignUpView {
         
         var titleLabel: UILabel = {
             let label = UILabel()
-            label.textColor = Color.subPurple
+            label.textColor = Color.white
             label.setTypo(Pretendard.bold16)
             return label
         }()
@@ -114,15 +114,11 @@ extension SignUpView {
         }
         
         func select() {
-            layer.borderWidth = 0
-            layer.borderColor = nil
-            backgroundColor = Color.subNavy2
+            backgroundColor = Color.subPurple
         }
         
         func deselect() {
-            layer.borderWidth = 1
-            layer.borderColor = Color.subPurple.withAlphaComponent(0.4).cgColor
-            backgroundColor = Color.transparent
+            backgroundColor = Color.subNavy2
         }
     }
 }
