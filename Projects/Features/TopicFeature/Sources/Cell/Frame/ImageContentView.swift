@@ -303,7 +303,7 @@ extension TopicContentInputTableViewCell {
 }
 extension TopicContentInputTableViewCell {
     
-    class ImageContentTextField: CustomTextFieldView{
+    class ImageContentTextField: ABTextFieldView{
         
         init(option: Choice.Option) {
             super.init(placeholder: "이미지를 간단히 설명해주세요", insets: UIEdgeInsets(top: 16, left: 35, bottom: 16, right: 40), isErrorNeed: false)

@@ -1,5 +1,5 @@
 //
-//  CustomTextFieldView.swift
+//  ABTextFieldView.swift
 //  ABKit
 //
 //  Created by 박소윤 on 2023/12/26.
@@ -22,7 +22,7 @@ public protocol CustomTextFieldDelegate: AnyObject {
     func configuration(_ textFieldView: CustomTextFieldView, of state: CustomTextFieldView.State) -> CustomTextFieldConfiguration
 }
 
-open class CustomTextFieldView: BaseView {
+open class ABTextFieldView: BaseView {
     
     public enum State {
         /// 초기 상태로, placeholder를 보여준다
@@ -172,7 +172,7 @@ open class CustomTextFieldView: BaseView {
 
 //MARK: Input
 
-extension CustomTextFieldView {
+extension ABTextFieldView {
     
     public func error(message: String) {
         if (textField.text ?? "").count == 0 {
