@@ -22,9 +22,9 @@ open class ABTextFieldView: BaseStackView {
     }
     
     public init(placeholder: String, insets: UIEdgeInsets, isErrorNeed: Bool) {
-        self.placeholder = placeholder
         self.isErrorNeed = isErrorNeed
         self.textField = InsetTextField(insets: insets)
+        self.textField.placeholder = placeholder
         super.init()
         bind()
     }
@@ -41,7 +41,6 @@ open class ABTextFieldView: BaseStackView {
     }
     
     private let isErrorNeed: Bool
-    private let placeholder: String
     private var cancellable: Set<AnyCancellable> = []
     ///글자 제한 수를 설정할 경우, 자동으로 카운팅이 동작하며, Lable에 개수를 업데이트한다.
     public var limitCount: Int? {
@@ -96,9 +95,12 @@ open class ABTextFieldView: BaseStackView {
     
     public override func initialize() {
         
-        delegate = self
-        textField.placeholder = placeholder
+        setDefaultDelegate()
         setConfiguration()
+        
+        func setDefaultDelegate() {
+            delegate = self
+        }
         
         func setConfiguration() {
             let configuration = configuration(self)
