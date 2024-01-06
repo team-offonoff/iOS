@@ -12,13 +12,10 @@ import ABKit
 
 final class TopicInputTableViewCell: BaseTableViewCell {
     
-    lazy var title: SubtitleView<CustomTextFieldView> = {
-        let subview = SubtitleView(subtitle: "토픽 제목", content: CustomTextFieldView(placeholder: "어떤 주제로 올리시나요?", insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 40), isErrorNeed: false))
-        subview.contentView.customPlaceholder(color: Color.subPurple.withAlphaComponent(0.6), font: Pretendard.medium16.font)
-        subview.contentView.textField.textColor = Color.white
+    lazy var title: SubtitleView<ABTextFieldView> = {
+        let subview = SubtitleView(subtitle: "토픽 제목", content: ABTextFieldView(placeholder: "어떤 주제로 올리시나요?", insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 40), isErrorNeed: false))
+        subview.contentView.customPlaceholder(font: Pretendard.medium16.font)
         subview.contentView.textField.font = Pretendard.medium16.font
-        subview.contentView.countLabel.textColor = Color.subPurple.withAlphaComponent(0.6)
-        subview.contentView.delegate = self
         return subview
     }()
     private let hashtagLabel: UILabel = {
@@ -28,13 +25,10 @@ final class TopicInputTableViewCell: BaseTableViewCell {
         label.setTypo(Pretendard.semibold14)
         return label
     }()
-    lazy var keyword: SubtitleView<CustomTextFieldView> = {
-        let subview = SubtitleView(subtitle: "토픽 키워드", content: CustomTextFieldView(placeholder: "한글, 영문, 숫자만 가능", insets: UIEdgeInsets(top: 16, left: 35, bottom: 16, right: 40), isErrorNeed: false))
-        subview.contentView.customPlaceholder(color: Color.subPurple.withAlphaComponent(0.6), font: Pretendard.medium16.font)
+    lazy var keyword: SubtitleView<ABTextFieldView> = {
+        let subview = SubtitleView(subtitle: "토픽 키워드", content: ABTextFieldView(placeholder: "한글, 영문, 숫자만 가능", insets: UIEdgeInsets(top: 16, left: 35, bottom: 16, right: 40), isErrorNeed: false))
+        subview.contentView.customPlaceholder(font: Pretendard.medium16.font)
         subview.contentView.textField.font = Pretendard.medium16.font
-        subview.contentView.textField.textColor = Color.subPurple
-        subview.contentView.countLabel.textColor = Color.subPurple.withAlphaComponent(0.6)
-        subview.contentView.delegate = self
         return subview
     }()
     let recommendKeyword: RecommendKeyword = RecommendKeyword()
@@ -85,28 +79,8 @@ final class TopicInputTableViewCell: BaseTableViewCell {
         }
     }
     
-    override func initialize() {
-        title.contentView.delegate = self
-        keyword.contentView.delegate = self
-    }
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         endEditing(true)
-    }
-}
-
-extension TopicInputTableViewCell: CustomTextFieldDelegate {
-    
-    fileprivate struct TextFieldConfiguration: CustomTextFieldConfiguration {
-        var backgroundColor: UIColor = Color.subNavy2.withAlphaComponent(0.4)
-        var strokeWidth: CGFloat? = nil
-        var strokeColor: UIColor? = nil
-        var isCountLabelHidden: Bool = false
-        var isErrorLabelHidden: Bool = true
-    }
-    
-    func configuration(_ textFieldView: CustomTextFieldView, of state: CustomTextFieldView.State) -> CustomTextFieldConfiguration {
-        TextFieldConfiguration()
     }
 }
 

@@ -81,10 +81,10 @@ extension TopicContentInputTableViewCell {
                             let temp: (UIImage?, String) = (self.image(option: .A), self.text(option: .A))
                             
                             self.aImageView.imageSubject.send(self.image(option: .B))
-                            self.aTextField.setText(self.text(option: .B))
+                            self.aTextField.update(text: self.text(option: .B))
                             
                             self.bImageView.imageSubject.send(temp.0)
-                            self.bTextField.setText(temp.1)
+                            self.bTextField.update(text: temp.1)
                         }
                     }
                     .store(in: &cancellable)
@@ -136,8 +136,8 @@ extension TopicContentInputTableViewCell {
             }
             
             func resetTextField() {
-                aTextField.setText("")
-                bTextField.setText("")
+                aTextField.update(text: "")
+                bTextField.update(text: "")
             }
         }
         
@@ -303,7 +303,7 @@ extension TopicContentInputTableViewCell {
 }
 extension TopicContentInputTableViewCell {
     
-    class ImageContentTextField: CustomTextFieldView{
+    class ImageContentTextField: ABTextFieldView{
         
         init(option: Choice.Option) {
             super.init(placeholder: "이미지를 간단히 설명해주세요", insets: UIEdgeInsets(top: 16, left: 35, bottom: 16, right: 40), isErrorNeed: false)

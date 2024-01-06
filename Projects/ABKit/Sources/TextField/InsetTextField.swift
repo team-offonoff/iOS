@@ -11,13 +11,8 @@ import UIKit
 
 public class InsetTextField: UITextField {
     
-    public init(insets: UIEdgeInsets? = nil){
-        if let insets = insets {
-            self.insets = insets
-        }
-        else {
-            self.insets = UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 15)
-        }
+    public init(insets: UIEdgeInsets){
+        self.insets = insets
         super.init(frame: .zero)
     }
     

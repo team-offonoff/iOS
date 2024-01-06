@@ -24,7 +24,7 @@ public final class DropDownView: InsetTextField {
     }
     
     public init(placeholder: String) {
-        super.init()
+        super.init(insets: UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 15))
         self.placeholder = placeholder
         style()
         initialize()

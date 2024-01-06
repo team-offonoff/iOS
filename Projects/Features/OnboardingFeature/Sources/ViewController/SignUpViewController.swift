@@ -68,10 +68,7 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
             viewModel.nicknameValidation
                 .sink{ [weak self] (isValid, message) in
                     guard let self = self else { return }
-                    if isValid {
-                        self.mainView.nicknameView.contentView.setComplete()
-                    }
-                    else if let message = message {
+                    if let message = message {
                         self.mainView.nicknameView.contentView.error(message: message)
                     }
                 }
@@ -83,10 +80,7 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
         viewModel.birthdayValidation
             .sink{ [weak self] (isValid, message) in
                 guard let self = self else { return }
-                if isValid {
-                    self.mainView.birthdayView.contentView.setComplete()
-                }
-                else if let message = message {
+                if let message = message {
                     self.mainView.birthdayView.contentView.error(message: message)
                 }
             }

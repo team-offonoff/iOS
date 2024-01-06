@@ -262,6 +262,6 @@ extension TopicGenerateViewController: UICollectionViewDataSource, UICollectionV
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        inputCell?.keyword.contentView.setText(viewModel.recommendKeywords[indexPath.row])
+        inputCell?.keyword.contentView.update(text: viewModel.recommendKeywords[indexPath.row])
     }
 }
