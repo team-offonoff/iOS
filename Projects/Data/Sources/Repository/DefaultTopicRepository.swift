@@ -75,23 +75,25 @@ public final class DefaultTopicRepository: TopicRepository {
          */
         
         func makeChoicesDTO() async throws -> [TopicGenerateRequestDTO.ChoiceRequestDTO] {
-            let images = request.choices.compactMap{ $0.image }
+            
+            let images = request.choices.map{ $0.image }
             var url = [String?](repeating: nil, count: request.choices.count)
-            if !images.isEmpty {
-                try await withThrowingTaskGroup(of: (Int, String).self) { group in
-                    for (i, image) in images.enumerated() {
+            
+            try await withThrowingTaskGroup(of: (Int, String).self) { group in
+                
+                for (i, image) in images.enumerated() {
+                    if let image = image {
                         group.addTask{
-                            return (i, try await self.presignedImageRepository.upload(bucket: .topic, request: image))
+                            (i, try await self.presignedImageRepository.upload(bucket: .topic, request: image))
                         }
                     }
-                    
-                    for try await (index, imageUrl) in group {
-                        url[index] = imageUrl
-                    }
-                    
+                }
+                
+                for try await (index, imageUrl) in group {
+                    url[index] = imageUrl
                 }
             }
-            
+
             return request.choices.enumerated()
                 .map{ i, choice in
                         .init(
