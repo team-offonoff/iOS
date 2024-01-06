@@ -24,7 +24,6 @@ extension ABTextFieldViewDelegate {
         case .empty:        return ABTextFieldViewEmptyStateConfiguration()
         case .editing:      return ABTextFieldViewEditingStateConfiguration()
         case .error:        return ABTextFieldViewErrorStateConfiguration()
-//        case .complete:     return ABTextFieldViewCompleteStateConfiguration()
         }
     }
 }

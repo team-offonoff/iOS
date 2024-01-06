@@ -79,30 +79,10 @@ final class TopicInputTableViewCell: BaseTableViewCell {
         }
     }
     
-    override func initialize() {
-//        title.contentView.delegate = self
-//        keyword.contentView.delegate = self
-    }
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         endEditing(true)
     }
 }
-
-//extension TopicInputTableViewCell: ABTextFieldViewDelegate {
-//
-//    fileprivate struct TextFieldConfiguration: ABTextFieldViewConfiguration {
-//        var backgroundColor: UIColor = Color.subNavy2.withAlphaComponent(0.4)
-//        var strokeWidth: CGFloat? = nil
-//        var strokeColor: UIColor? = nil
-//        var isCountLabelHidden: Bool = false
-//        var isErrorLabelHidden: Bool = true
-//    }
-//
-//    func configuration(_ textFieldView: ABTextFieldView, of state: ABTextFieldView.State) -> ABTextFieldViewConfiguration {
-//        TextFieldConfiguration()
-//    }
-//}
 
 extension TopicInputTableViewCell {
     
