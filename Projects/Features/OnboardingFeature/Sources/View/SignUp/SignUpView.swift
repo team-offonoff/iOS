@@ -19,17 +19,22 @@ extension Gender: RadioButtonData {
 
 public final class SignUpView: BaseView {
     
-    let nicknameView: SubtitleView = SubtitleView(
-        subtitle: "AB에서 사용할 닉네임을 정해주세요.",
-        content: OnboardingTextFieldView(placeholder: "한글, 영문, 숫자 최대 8자")
-    )
-    let birthdayView: SubtitleView<OnboardingTextFieldView> = {
-        let view = SubtitleView(
-            subtitle: "생년월일을 입력해주세요.",
-            content: OnboardingTextFieldView(placeholder: "YYYY/MM/DD")
+    let nicknameView: SubtitleView<ABTextFieldView> = {
+        let subview = SubtitleView(
+            subtitle: "AB에서 사용할 닉네임을 정해주세요.",
+            content: ABTextFieldView(placeholder: "한글, 영문, 숫자 최대 8자", insets: UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 15), isErrorNeed: true)
         )
-        view.contentView.textField.keyboardType = .numberPad
-        return view
+        subview.contentView.customPlaceholder(font: Pretendard.semibold14.font)
+        return subview
+    }()
+    let birthdayView: SubtitleView<ABTextFieldView> = {
+        let subview = SubtitleView(
+            subtitle: "생년월일을 입력해주세요.",
+            content: ABTextFieldView(placeholder: "YYYY/MM/DD", insets: UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 15), isErrorNeed: true)
+        )
+        subview.contentView.customPlaceholder(font: Pretendard.semibold14.font)
+        subview.contentView.textField.keyboardType = .numberPad
+        return subview
     }()
     let genderView: SubtitleView<RadioButtonView> = {
         let view = SubtitleView(
@@ -61,11 +66,11 @@ public final class SignUpView: BaseView {
             $0.leading.trailing.equalToSuperview().inset(nicknameView.defaultSideOffset)
         }
         birthdayView.snp.makeConstraints{
-            $0.top.equalTo(nicknameView.snp.bottom).offset(21)
+            $0.top.equalTo(nicknameView.snp.bottom).offset(24)
             $0.leading.trailing.equalToSuperview().inset(birthdayView.defaultSideOffset)
         }
         genderView.snp.makeConstraints{
-            $0.top.equalTo(birthdayView.snp.bottom).offset(21)
+            $0.top.equalTo(birthdayView.snp.bottom).offset(24)
             $0.leading.trailing.equalToSuperview().inset(genderView.defaultSideOffset)
         }
         jobView.snp.makeConstraints{
@@ -77,7 +82,6 @@ public final class SignUpView: BaseView {
             $0.bottom.equalToSuperview().inset(ctaButton.defaultOffset.bottom)
             $0.leading.trailing.equalToSuperview().inset(ctaButton.defaultOffset.side)
         }
-
     }
 }
 

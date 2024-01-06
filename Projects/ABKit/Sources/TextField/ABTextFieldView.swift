@@ -10,18 +10,6 @@ import Foundation
 import UIKit
 import Combine
 
-public protocol CustomTextFieldConfiguration {
-    var backgroundColor: UIColor { get }
-    var strokeWidth: CGFloat? { get }
-    var strokeColor: UIColor? { get }
-    var isCountLabelHidden: Bool { get }
-    var isErrorLabelHidden: Bool { get }
-}
-
-public protocol CustomTextFieldDelegate: AnyObject {
-    func configuration(_ textFieldView: CustomTextFieldView, of state: CustomTextFieldView.State) -> CustomTextFieldConfiguration
-}
-
 open class ABTextFieldView: BaseView {
     
     public enum State {
@@ -31,11 +19,9 @@ open class ABTextFieldView: BaseView {
         case editing
         /// 조건을 충족하지 못한 상태
         case error
-        /// 조건을 충족하고, 입력을 마친 상태
-        case complete
     }
     
-    public init(placeholder: String, insets: UIEdgeInsets? = nil, isErrorNeed: Bool) {
+    public init(placeholder: String, insets: UIEdgeInsets, isErrorNeed: Bool) {
         self.placeholder = placeholder
         self.isErrorNeed = isErrorNeed
         self.textField = InsetTextField(insets: insets)
@@ -48,7 +34,7 @@ open class ABTextFieldView: BaseView {
     }
     
     @Published public var state: State = .empty
-    public weak var delegate: CustomTextFieldDelegate? {
+    public weak var delegate: ABTextFieldViewDelegate? {
         didSet {
             state = .empty
         }
@@ -67,24 +53,14 @@ open class ABTextFieldView: BaseView {
     }
     
     public let textField: InsetTextField
-    public let countLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = Color.subPurple
-        label.setTypo(Pretendard.semibold14)
-        return label
-    }()
-    private let errorLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = Color.subPurple2
-        label.setTypo(Pretendard.semibold13)
-        return label
-    }()
+    public let countLabel: UILabel = UILabel()
+    private let errorLabel: UILabel = UILabel()
     
     open override func style() {
         textField.layer.cornerRadius = 10
     }
     
-    public func customPlaceholder(color: UIColor, font: UIFont) {
+    public func customPlaceholder(color: UIColor = Color.subPurple.withAlphaComponent(0.6), font: UIFont) {
         let attributedPlaceholder = NSMutableAttributedString(string: placeholder)
         attributedPlaceholder.addAttributes([
             .font: font,
@@ -121,6 +97,25 @@ open class ABTextFieldView: BaseView {
         }
     }
     
+    public override func initialize() {
+        
+        delegate = self
+        textField.placeholder = placeholder
+        setConfiguration()
+        
+        func setConfiguration() {
+            let configuration = configuration(self)
+            textField.backgroundColor = configuration.backgroundColor
+            textField.textColor = configuration.textColor
+            countLabel.textColor = configuration.countColor
+            countLabel.font = configuration.countFont
+            errorLabel.textColor = configuration.errorColor
+            errorLabel.font = configuration.errorFont
+            //error label 크기를 잡기 위한 임시 데이터 삽입
+            errorLabel.text = "error"
+        }
+    }
+    
     private func bind() {
         
         bindState()
@@ -136,7 +131,6 @@ open class ABTextFieldView: BaseView {
                     
                     func updateConfiguration() {
                         let configuration = delegate.configuration(self, of: state)
-                        self.textField.backgroundColor = configuration.backgroundColor
                         self.textField.layer.borderWidth = configuration.strokeWidth ?? 0
                         self.textField.layer.borderColor = configuration.strokeColor?.cgColor
                         self.countLabel.isHidden = configuration.isCountLabelHidden
@@ -189,4 +183,9 @@ extension ABTextFieldView {
         textField.sendActions(for: .editingChanged)
         textField.sendActions(for: .editingDidEnd)
     }
+}
+
+///delegate를 새로 선언하지 않을 경우, 초기 구현된 configuration을 사용합니다.
+extension ABTextFieldView: ABTextFieldViewDelegate {
+    
 }
