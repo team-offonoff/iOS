@@ -28,18 +28,15 @@ extension HomeTopicCollectionViewCell {
             }
             return label
         }()
-        
         private let contentView: UIView = UIView()
-        
         private let contentLabel: UILabel = {
             let label = UILabel()
             label.setTypo(Pretendard.semibold20, setLineSpacing: true)
-            label.numberOfLines = 2
+            label.numberOfLines = 0
             label.textColor = Color.white
             label.textAlignment = .center
             return label
         }()
-        
         private let choiceLabel: UILabel = {
             let label = UILabel()
             label.setTypo(Pretendard.black200)
@@ -57,24 +54,20 @@ extension HomeTopicCollectionViewCell {
         }
         
         override func layout() {
-            
             completeTagLabel.snp.makeConstraints{
                 $0.top.equalToSuperview()
                 $0.centerX.equalToSuperview()
             }
-            
             contentView.snp.makeConstraints{
                 $0.top.equalTo(completeTagLabel.snp.centerY)
                 $0.leading.trailing.bottom.equalToSuperview()
                 $0.height.equalTo(148)
             }
-            
             contentLabel.snp.makeConstraints{
                 $0.top.equalToSuperview().offset(46)
-                $0.leading.equalToSuperview().offset(114)
+                $0.leading.equalToSuperview().offset(38)
                 $0.centerX.centerY.equalToSuperview()
             }
-            
             choiceLabel.snp.makeConstraints{
                 $0.centerY.equalToSuperview().offset(25)
                 $0.centerX.equalToSuperview()
