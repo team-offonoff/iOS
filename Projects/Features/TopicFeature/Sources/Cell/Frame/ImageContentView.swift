@@ -330,7 +330,7 @@ extension TopicContentInputTableViewCell {
             super.style()
             textField.backgroundColor = Color.subNavy2.withAlphaComponent(0.4)
             textField.textColor = Color.white
-            customPlaceholder(color: Color.subPurple.withAlphaComponent(0.6), font: Pretendard.medium16.font)
+            textField.customPlaceholder(color: Color.subPurple.withAlphaComponent(0.6), font: Pretendard.medium16.font)
             countLabel.textColor = Color.subPurple.withAlphaComponent(0.6)
         }
     }

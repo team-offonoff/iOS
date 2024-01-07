@@ -24,7 +24,7 @@ public final class SignUpView: BaseView {
             subtitle: "AB에서 사용할 닉네임을 정해주세요.",
             content: ABTextFieldView(placeholder: "한글, 영문, 숫자 최대 8자", insets: UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 15), isErrorNeed: true)
         )
-        subview.contentView.customPlaceholder(font: Pretendard.semibold14.font)
+        subview.contentView.textField.customPlaceholder(font: Pretendard.semibold14.font)
         return subview
     }()
     let birthdayView: SubtitleView<ABTextFieldView> = {
@@ -32,7 +32,7 @@ public final class SignUpView: BaseView {
             subtitle: "생년월일을 입력해주세요.",
             content: ABTextFieldView(placeholder: "YYYY/MM/DD", insets: UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 15), isErrorNeed: true)
         )
-        subview.contentView.customPlaceholder(font: Pretendard.semibold14.font)
+        subview.contentView.textField.customPlaceholder(font: Pretendard.semibold14.font)
         subview.contentView.textField.keyboardType = .numberPad
         return subview
     }()
