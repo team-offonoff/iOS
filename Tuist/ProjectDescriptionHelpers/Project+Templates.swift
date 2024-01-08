@@ -113,7 +113,7 @@ public extension Project {
                 bundleId: "\(Environment.bundlePrefix).\(name)Demo",
                 deploymentTarget: deploymentTarget,
                 infoPlist: .extendingDefault(with: Project.demoInfoPlist),
-                sources: ["Demo/Sources/**"],
+                sources: ["Demo/**"],
                 resources: nil,//[.glob(pattern: "Demo/Resources/**", excluding: ["Demo/Resources/dummy.txt"])],
                 dependencies: [
                     deps,
