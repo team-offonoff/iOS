@@ -7,10 +7,10 @@
 //
 
 import Foundation
-
 import UIKit
 import ABKit
 import Domain
+import TopicFeature
 import FeatureDependency
 
 extension HomeTabView {
