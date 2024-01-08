@@ -8,6 +8,8 @@
 
 import UIKit
 import HomeFeatureInterface
+import CommentFeatureInterface
+import CommentFeature
 import Domain
 import Data
 
@@ -16,19 +18,19 @@ public class DefaultHomeCoordinator: HomeCoordinator {
     required public init(window: UIWindow?){
         self.window = window
         self.navigationController = UINavigationController()
+        self.commentCoordinator = DefaultCommentCoordinator(navigationController: navigationController)
         self.window?.rootViewController = navigationController
     }
     
     public init(navigationController: UINavigationController){
         self.navigationController = navigationController
+        self.commentCoordinator = DefaultCommentCoordinator(navigationController: navigationController)
     }
     
     private var window: UIWindow?
-    private var commentBottomSheet: CommentBottomSheetViewController?
-    private var commentBottomSheetViewModel: CommentBottomSheetViewModel?
     private let navigationController: UINavigationController
+    private let commentCoordinator: CommentCoordinator
     private let topicRepository: TopicRepository = DefaultTopicRepository()
-    private let commentRepository: CommentRepository = DefaultCommentRepository()
     private lazy var homeViewModel: HomeTabViewModel = generateHomeViewModel()
     
     private func generateHomeViewModel() -> HomeTabViewModel {
@@ -68,42 +70,12 @@ public class DefaultHomeCoordinator: HomeCoordinator {
     }
     
     public func startCommentBottomSheet(standard: CGFloat, topicId: Int, choices: [Choice]) {
-        
-        commentBottomSheet = CommentBottomSheetViewController(standard: standard, viewModel: viewModel())
-        commentBottomSheet?.coordinator = self
-        commentBottomSheet?.modalPresentationStyle = .custom
-        if let commentBottomSheet = commentBottomSheet {
-            navigationController.present(commentBottomSheet, animated: true)
-        }
-        
-        func viewModel() -> CommentBottomSheetViewModel {
-            commentBottomSheetViewModel = DefaultCommentBottomSheetViewModel(
-                topicId: topicId,
-                choices: choices,
-                generateCommentUseCase: DefaultGenerateCommentUseCase(repository: commentRepository),
-                fetchCommentsUseCase: DefaultFetchCommentsUseCase(repository: commentRepository),
-                patchCommentUseCase: DefaultPatchCommentUseCase(repository: commentRepository),
-                patchCommentLikeUseCase: DefaultPatchCommentLikeStateUseCase(repository: commentRepository),
-                patchCommentDislikeUseCase: DefaultPatchCommentDislikeStateUseCase(repository: commentRepository),
-                deleteCommentUseCase: DefaultDeleteCommentUseCase(repository: commentRepository)
-            )
-            return commentBottomSheetViewModel!
-        }
+        commentCoordinator.startCommentBottomSheet(standard: standard, topicId: topicId, choices: choices)
     }
     
     public func startImagePopUp(choice: Choice) {
         let popUpViewController = ImagePopUpViewController(choice: choice)
         popUpViewController.modalPresentationStyle = .overFullScreen
         navigationController.present(popUpViewController, animated: false)
-    }
-    
-    public func startWritersBottomSheet(index: Int) {
-        guard let viewModel = commentBottomSheetViewModel else { return }
-        commentBottomSheet?.present(WritersCommentBottomSheetViewController(index: index, viewModel: viewModel), animated: true)
-    }
-    
-    public func startOthersBottomSheet(index: Int) {
-        guard let viewModel = commentBottomSheetViewModel else { return }
-        commentBottomSheet?.present(OthersCommnetBottomSheetViewController(index: index, viewModel: viewModel), animated: true)
     }
 }
