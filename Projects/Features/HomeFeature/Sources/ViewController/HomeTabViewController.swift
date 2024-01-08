@@ -10,6 +10,7 @@ import Foundation
 import ABKit
 import UIKit
 import FeatureDependency
+import TopicFeature
 import HomeFeatureInterface
 import Core
 import Domain
@@ -30,7 +31,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var currentTopicCell: HomeTopicCollectionViewCell? //timer ui 업데이트 편의를 위한 셀 저장 프로퍼티
+    private var currentTopicCell: TopicDetailCollectionViewCell? //timer ui 업데이트 편의를 위한 셀 저장 프로퍼티
     
     private let viewModel: any HomeTabViewModel
     
@@ -161,7 +162,7 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(for: indexPath, cellType: HomeTopicCollectionViewCell.self)
+        let cell = collectionView.dequeueReusableCell(for: indexPath, cellType: TopicDetailCollectionViewCell.self)
         cell.delegate = self
         cell.binding(data: viewModel.topics[indexPath.row])
         return cell
@@ -172,7 +173,7 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        currentTopicCell = cell as? HomeTopicCollectionViewCell
+        currentTopicCell = cell as? TopicDetailCollectionViewCell
     }
     
     // clipsToBounds를 활용하여 토픽 전환(scroll)시 선택지 뷰가 셀 자체 크기를 넘기지 못하도록 한다.

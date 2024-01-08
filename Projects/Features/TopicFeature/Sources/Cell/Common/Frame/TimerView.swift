@@ -1,6 +1,6 @@
 //
 //  TimerView.swift
-//  HomeFeature
+//  TopicFeature
 //
 //  Created by 박소윤 on 2023/11/28.
 //  Copyright © 2023 AB. All rights reserved.
@@ -11,7 +11,7 @@ import UIKit
 import ABKit
 import FeatureDependency
 
-extension HomeTopicCollectionViewCell {
+extension TopicDetailCollectionViewCell {
     
     class TimerView: BaseView {
         

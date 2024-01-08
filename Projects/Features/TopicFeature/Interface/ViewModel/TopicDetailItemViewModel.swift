@@ -1,16 +1,16 @@
 //
-//  HomeTopicItemViewModel.swift
-//  HomeFeature
+//  TopicDetailItemViewModel.swift
+//  TopicFeature
 //
-//  Created by 박소윤 on 2023/12/02.
-//  Copyright © 2023 AB. All rights reserved.
+//  Created by 박소윤 on 2024/01/08.
+//  Copyright © 2024 AB. All rights reserved.
 //
 
 import Foundation
 import Domain
 import Core
 
-public struct HomeTopicItemViewModel {
+public struct TopicDetailItemViewModel {
     public let id: Int
     public let title: String
     public let nickname: String
@@ -25,7 +25,7 @@ public struct HomeTopicItemViewModel {
     public var selectedOption: Choice?
 }
 
-extension HomeTopicItemViewModel {
+extension TopicDetailItemViewModel {
     
     public init(topic: Topic) {
         self.id = topic.id!

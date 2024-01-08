@@ -1,6 +1,6 @@
 //
 //  SelectionCompleteView.swift
-//  HomeFeature
+//  TopicFeature
 //
 //  Created by 박소윤 on 2023/12/01.
 //  Copyright © 2023 AB. All rights reserved.
@@ -11,7 +11,7 @@ import UIKit
 import ABKit
 import Domain
 
-extension HomeTopicCollectionViewCell {
+extension TopicDetailCollectionViewCell {
     
     final class ChoiceCompleteView: BaseView {
         

@@ -8,6 +8,7 @@
 
 import Foundation
 import HomeFeatureInterface
+import TopicFeatureInterface
 import Combine
 import Domain
 import Core
@@ -33,9 +34,9 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         super.init()
     }
 
-    var topics: [HomeTopicItemViewModel] = [.init(topic: TestData.topicData1), .init(topic: TestData.topicData2), .init(topic: TestData.topicData3), .init(topic: TestData.topicData4)]
+    var topics: [TopicDetailItemViewModel] = [.init(topic: TestData.topicData1), .init(topic: TestData.topicData2), .init(topic: TestData.topicData3), .init(topic: TestData.topicData4)]
     
-    var currentTopic: HomeTopicItemViewModel {
+    var currentTopic: TopicDetailItemViewModel {
         topics[currentIndexPath.row]
     }
     
@@ -76,7 +77,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
                     defer {
                         self.reloadTopics.send(())
                     }
-                    self.topics = topics.map{ HomeTopicItemViewModel.init(topic: $0) }
+                    self.topics = topics.map{ TopicDetailItemViewModel.init(topic: $0) }
                 }
                 else if let error = result.error {
                     self.errorHandler.send(error)

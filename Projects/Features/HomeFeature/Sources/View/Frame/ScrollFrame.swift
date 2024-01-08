@@ -7,10 +7,10 @@
 //
 
 import Foundation
-
 import UIKit
 import ABKit
 import Domain
+import TopicFeature
 import FeatureDependency
 
 extension HomeTabView {
@@ -23,7 +23,7 @@ extension HomeTabView {
             flowLayout.scrollDirection = .horizontal
             
             let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
-            collectionView.register(cellType: HomeTopicCollectionViewCell.self)
+            collectionView.register(cellType: TopicDetailCollectionViewCell.self)
             collectionView.backgroundColor = .clear
             collectionView.isScrollEnabled = false
             return collectionView

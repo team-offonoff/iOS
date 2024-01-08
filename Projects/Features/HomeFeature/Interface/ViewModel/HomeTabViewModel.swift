@@ -9,10 +9,11 @@
 import Foundation
 import Combine
 import Domain
+import TopicFeatureInterface
 import FeatureDependency
 
 public protocol HomeTabViewModel: TopicPageControlViewModel, TimerControlViewModel, TopicVoteViewModel, TopicBottomSheetViewModel, ErrorHandleable {
-    var currentTopic: HomeTopicItemViewModel { get }
+    var currentTopic: TopicDetailItemViewModel { get }
     func viewDidLoad()
 }
 
@@ -31,7 +32,7 @@ public protocol TopicVoteViewModel {
 }
 
 public protocol TopicPageControlViewModel {
-    var topics: [HomeTopicItemViewModel] { get }
+    var topics: [TopicDetailItemViewModel] { get }
     var canMovePrevious: Bool { get }
     var canMoveNext: Bool { get }
     var willMovePage: AnyPublisher<IndexPath, Never> { get }

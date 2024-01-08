@@ -1,22 +1,23 @@
 //
-//  HomeTabView.swift
-//  HomeFeature
+//  TopicDetailCollectionViewCell.swift
+//  TopicFeature
 //
-//  Created by 박소윤 on 2023/09/25.
-//  Copyright © 2023 AB. All rights reserved.
+//  Created by 박소윤 on 2024/01/08.
+//  Copyright © 2024 AB. All rights reserved.
 //
 
+import Foundation
 import ABKit
 import UIKit
 import Domain
+import TopicFeatureInterface
 import FeatureDependency
 import Core
-import HomeFeatureInterface
 import Combine
 
-class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
+public class TopicDetailCollectionViewCell: BaseCollectionViewCell, Binding{
     
-    weak var delegate: (VoteDelegate & TopicBottomSheetDelegate & ChatBottomSheetDelegate)?
+    public weak var delegate: (VoteDelegate & TopicBottomSheetDelegate & ChatBottomSheetDelegate)?
     private var cancellable: Set<AnyCancellable> = []
     
     // 스와이프 제스처 관련 프로퍼티
@@ -32,18 +33,18 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
     private let userGroup: UserGroup = UserGroup()
     private let choiceGroup: ChoiceGroup = ChoiceGroup()
     private let etcGroup: EtcGroup = EtcGroup()
-    private let chat: ChatView = ChatView()
+    private let chat: CommentView = CommentView()
     
     private let profileStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 8)
     private let choiceStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 15)
     private let informationStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 7)
     
-    override func prepareForReuse() {
+    public override func prepareForReuse() {
         choiceGroup.aChoiceView.removeContent()
         choiceGroup.bChoiceView.removeContent()
     }
     
-    override func hierarchy() {
+    public override func hierarchy() {
 
         baseView.addSubviews([etcGroup.realTimeTitleLabel, topicGroup.titleLabel, profileStackView, choiceGroup.swipeableView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.etcButton, chat])
         
@@ -56,7 +57,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         informationStackView.addArrangedSubviews([topicGroup.sideLabel, etcGroup.separatorLine, topicGroup.keywordLabel])
     }
     
-    override func layout() {
+    public override func layout() {
         
         etcGroup.realTimeTitleLabel.snp.makeConstraints{
             $0.top.centerX.equalToSuperview()
@@ -119,7 +120,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
         }
     }
     
-    override func initialize() {
+    public override func initialize() {
 
         addTarget()
         addTapGesture()
@@ -240,13 +241,13 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
 
 //MARK: Input
 
-extension HomeTopicCollectionViewCell {
+extension TopicDetailCollectionViewCell {
     
-    func binding(timer: TimerInfo) {
+    public func binding(timer: TimerInfo) {
         topicGroup.timer.binding(data: timer)
     }
     
-    func binding(data: HomeTopicItemViewModel) {
+    public func binding(data: TopicDetailItemViewModel) {
         if data.isVoted {
             guard let choice = data.selectedOption else { return }
             select(choice: choice)
@@ -265,7 +266,7 @@ extension HomeTopicCollectionViewCell {
         chat.likeCountFrame.binding(data.likeCount)
     }
     
-    func select(choice: Choice){
+    public func select(choice: Choice){
         choiceGroup.completeView.fill(choice: choice)
         toggle(isVoted: true)
     }
@@ -281,22 +282,22 @@ extension HomeTopicCollectionViewCell {
         chat.canUserInteraction = value
     }
     
-    func failVote() {
+    public func failVote() {
         choiceStackView.isHidden = false
     }
 }
 
 //MARK: Output
 
-extension HomeTopicCollectionViewCell {
-    func standardOfCommentBottomSheetNormalState() -> UIView{
+extension TopicDetailCollectionViewCell {
+    public func standardOfCommentBottomSheetNormalState() -> UIView{
         profileStackView
     }
 }
 
 //MARK: UI
 
-extension HomeTopicCollectionViewCell {
+extension TopicDetailCollectionViewCell {
     
     final class TopicGroup {
         let titleLabel: UILabel = {
@@ -418,4 +419,3 @@ extension HomeTopicCollectionViewCell {
         }()
     }
 }
-
