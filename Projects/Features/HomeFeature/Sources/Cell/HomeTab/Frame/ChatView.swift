@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import ABKit
 
-extension HomeTopicCollectionViewCell {
+extension TopicDetailCollectionViewCell {
     
     final class ChatView: BaseView {
         

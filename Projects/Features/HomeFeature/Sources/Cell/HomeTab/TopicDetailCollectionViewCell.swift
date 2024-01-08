@@ -1,5 +1,5 @@
 //
-//  HomeTabView.swift
+//  TopicDetailCollectionViewCell.swift
 //  HomeFeature
 //
 //  Created by 박소윤 on 2023/09/25.
@@ -14,7 +14,7 @@ import Core
 import HomeFeatureInterface
 import Combine
 
-class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
+class TopicDetailCollectionViewCell: BaseCollectionViewCell, Binding{
     
     weak var delegate: (VoteDelegate & TopicBottomSheetDelegate & ChatBottomSheetDelegate)?
     private var cancellable: Set<AnyCancellable> = []
@@ -240,7 +240,7 @@ class HomeTopicCollectionViewCell: BaseCollectionViewCell, Binding{
 
 //MARK: Input
 
-extension HomeTopicCollectionViewCell {
+extension TopicDetailCollectionViewCell {
     
     func binding(timer: TimerInfo) {
         topicGroup.timer.binding(data: timer)
@@ -288,7 +288,7 @@ extension HomeTopicCollectionViewCell {
 
 //MARK: Output
 
-extension HomeTopicCollectionViewCell {
+extension TopicDetailCollectionViewCell {
     func standardOfCommentBottomSheetNormalState() -> UIView{
         profileStackView
     }
@@ -296,7 +296,7 @@ extension HomeTopicCollectionViewCell {
 
 //MARK: UI
 
-extension HomeTopicCollectionViewCell {
+extension TopicDetailCollectionViewCell {
     
     final class TopicGroup {
         let titleLabel: UILabel = {

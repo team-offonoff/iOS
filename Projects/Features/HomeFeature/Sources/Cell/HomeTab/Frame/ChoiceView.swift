@@ -10,7 +10,7 @@ import UIKit
 import ABKit
 import Domain
 
-extension HomeTopicCollectionViewCell {
+extension TopicDetailCollectionViewCell {
     
     class ChoiceView: BaseView {
         

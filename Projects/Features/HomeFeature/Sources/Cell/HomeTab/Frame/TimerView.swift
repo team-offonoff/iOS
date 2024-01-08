@@ -11,7 +11,7 @@ import UIKit
 import ABKit
 import FeatureDependency
 
-extension HomeTopicCollectionViewCell {
+extension TopicDetailCollectionViewCell {
     
     class TimerView: BaseView {
         

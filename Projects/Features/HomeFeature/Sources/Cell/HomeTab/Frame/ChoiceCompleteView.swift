@@ -11,7 +11,7 @@ import UIKit
 import ABKit
 import Domain
 
-extension HomeTopicCollectionViewCell {
+extension TopicDetailCollectionViewCell {
     
     final class ChoiceCompleteView: BaseView {
         

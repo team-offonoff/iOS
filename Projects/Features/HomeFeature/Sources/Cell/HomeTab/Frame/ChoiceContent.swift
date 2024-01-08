@@ -20,7 +20,7 @@ protocol ChoiceContent{
     func setBLayout()
 }
 
-extension HomeTopicCollectionViewCell {
+extension TopicDetailCollectionViewCell {
     
     final class TextChoiceContent: ChoiceContent {
         
