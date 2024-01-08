@@ -13,6 +13,7 @@ public extension Dep {
         public struct Onboarding {}
         public struct Home {}
         public struct Topic {}
+        public struct Comment {}
     }
     
     struct Modules {}
@@ -58,3 +59,8 @@ public extension Dep.Features.Home {
 public extension Dep.Features.Topic {
     static let Feature = Dep.Features.project(name: Dep.Features.name, group: "Topic")
 }
+
+public extension Dep.Features.Comment {
+    static let Feature = Dep.Features.project(name: Dep.Features.name, group: "Comment")
+}
+
