@@ -24,14 +24,13 @@ extension TopicDetailCollectionViewCell {
         }
         
         private let headerFrame: UIView = {
-           let view = UIView()
+            let view = UIView()
             view.backgroundColor = UIColor(r: 100, g: 81, b: 155)
             return view
         }()
         private let contentFrame: UIView = UIView()
         private let blurView: CustomVisualEffectView = CustomVisualEffectView(effect: UIBlurEffect(style: .regular), intensity: 0.06)
         
-        //TODO: replace to table view
         private let contentCell: ChatTableViewCell = ChatTableViewCell()
         
         private let induceSelectChip: PaddingLabel = {
@@ -90,44 +89,47 @@ extension TopicDetailCollectionViewCell {
                 $0.leading.trailing.equalToSuperview()
             }
         }
+    }
+}
+
+extension TopicDetailCollectionViewCell.ChatView {
+    
+    class CountStackView: BaseStackView {
         
-        class CountStackView: BaseStackView {
-            
-            init(explain: String) {
-                super.init()
-                explainLabel.text = explain
-            }
-            
-            required init(coder: NSCoder) {
-                fatalError("init(coder:) has not been implemented")
-            }
-            
-            private let countLabel: UILabel = {
-               let label = UILabel()
-                label.textColor = Color.white
-                label.setTypo(Pretendard.semibold14)
-                return label
-            }()
-            
-            private let explainLabel: UILabel = {
-                let label = UILabel()
-                 label.textColor = Color.white60
-                 label.setTypo(Pretendard.semibold14)
-                 return label
-            }()
-            
-            override func style() {
-                axis = .horizontal
-                spacing = 1
-            }
-            
-            override func hierarchy() {
-                addArrangedSubviews([countLabel, explainLabel])
-            }
-            
-            func binding(_ count: String) {
-                countLabel.text = count
-            }
+        init(explain: String) {
+            super.init()
+            explainLabel.text = explain
+        }
+        
+        required init(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        private let countLabel: UILabel = {
+            let label = UILabel()
+            label.textColor = Color.white
+            label.setTypo(Pretendard.semibold14)
+            return label
+        }()
+        
+        private let explainLabel: UILabel = {
+            let label = UILabel()
+            label.textColor = Color.white60
+            label.setTypo(Pretendard.semibold14)
+            return label
+        }()
+        
+        override func style() {
+            axis = .horizontal
+            spacing = 1
+        }
+        
+        override func hierarchy() {
+            addArrangedSubviews([countLabel, explainLabel])
+        }
+        
+        func binding(_ count: String) {
+            countLabel.text = count
         }
     }
 }
