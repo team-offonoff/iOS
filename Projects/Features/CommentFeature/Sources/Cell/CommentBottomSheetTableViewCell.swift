@@ -63,7 +63,7 @@ final class CommentContentTableViewCell: BaseTableViewCell {
     
     private let moreButton: UIButton = {
         let button = UIButton()
-        button.setImage(Image.dot.withTintColor(Color.black40), for: .normal)
+        button.setImage(Image.more.withTintColor(Color.black40), for: .normal)
         button.snp.makeConstraints{
             $0.width.height.equalTo(24)
         }

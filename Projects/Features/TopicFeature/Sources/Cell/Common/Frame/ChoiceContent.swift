@@ -112,7 +112,7 @@ extension TopicDetailCollectionViewCell {
 //        }()
         private let imageExpandIcon: UIImageView = {
             let button = UIImageView()
-            button.image = Image.choiceImageExpand
+            button.image = Image.imageExpand
             button.snp.makeConstraints{
                 $0.width.height.equalTo(24)
             }

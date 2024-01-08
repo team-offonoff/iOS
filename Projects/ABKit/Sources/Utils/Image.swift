@@ -16,9 +16,9 @@ extension UIImage{
 
 public struct Image{
     
-    public static let arrowDown = UIImage.load(name: "arrow_down")
-    public static let arrowLeft = UIImage.load(name: "arrow_left")
-    public static let modalDismiss = UIImage.load(name: "modal_dismiss")
+    public static let down = UIImage.load(name: "down")
+    public static let back = UIImage.load(name: "back")
+    public static let exit = UIImage.load(name: "exit")
     
     //MARK: Login
     
@@ -54,14 +54,14 @@ public struct Image{
     
     //MARK: Home
 
-    public static let close = UIImage.load(name: "close")
-    public static let choiceTextExpand = UIImage.load(name: "choice_text_expand")
-    public static let choiceImageExpand = UIImage.load(name: "choice_image_expand")
+    public static let imageExpandDismiss = UIImage.load(name: "image_expand_dismiss")
+    public static let textExpand = UIImage.load(name: "text_expand")
+    public static let imageExpand = UIImage.load(name: "image_expand")
     public static let slide = UIImage.load(name: "slide")
-    public static let dot = UIImage.load(name: "dot")
-    public static let homeArrow = UIImage.load(name: "home_arrow")
-    public static let homeAlarmOn = UIImage.load(name: "home_alarm_on")
-    public static let homeAlarmOff = UIImage.load(name: "home_alarm_off")
+    public static let more = UIImage.load(name: "more")
+    public static let next = UIImage.load(name: "next")
+    public static let alarmOn = UIImage.load(name: "alarm_on")
+    public static let alarm = UIImage.load(name: "alarm")
     
     //MARK: Topic Generate
 

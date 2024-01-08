@@ -21,8 +21,8 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         self.viewModel = viewModel
         super.init(
             headerView: HeaderView(
-                icon: Image.homeAlarmOff,
-                selectedIcon: Image.homeAlarmOn),
+                icon: Image.alarm,
+                selectedIcon: Image.alarmOn),
             mainView: HomeTabView()
         )
     }

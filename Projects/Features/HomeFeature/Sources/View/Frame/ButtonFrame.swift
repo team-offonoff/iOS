@@ -17,13 +17,13 @@ extension HomeTabView.ScrollFrame {
         
         lazy var nextButton: UIButton = {
             let button = UIButton()
-            button.setImage(Image.homeArrow, for: .normal)
+            button.setImage(Image.next, for: .normal)
             return button
         }()
         
         lazy var previousButton: UIButton = {
             let button = UIButton()
-            button.setImage(Image.homeArrow.withHorizontallyFlippedOrientation(), for: .normal)
+            button.setImage(Image.next.withHorizontallyFlippedOrientation(), for: .normal)
             return button
         }()
         

@@ -21,7 +21,7 @@ public final class ImagePopUpView: BaseView {
     }()
     let closeButton: UIButton = {
         let button = UIButton()
-        button.setImage(Image.close, for: .normal)
+        button.setImage(Image.imageExpandDismiss, for: .normal)
         button.snp.makeConstraints{
             $0.width.height.equalTo(34)
         }
