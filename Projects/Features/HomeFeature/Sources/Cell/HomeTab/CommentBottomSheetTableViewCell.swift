@@ -14,7 +14,7 @@ import Domain
 import FeatureDependency
 import HomeFeatureInterface
 
-final class CommentBottomSheetTableViewCell: BaseTableViewCell {
+final class CommentContentTableViewCell: BaseTableViewCell {
     
     weak var delegate: TapDelegate?
     

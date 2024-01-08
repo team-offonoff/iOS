@@ -67,7 +67,7 @@ final class CommentBottomSheetViewController: UIViewController {
     private lazy var tableView: UITableView = {
         let tableView: UITableView = UITableView()
         tableView.separatorStyle = .none
-        tableView.registers(cellTypes: [CommentBottomSheetTableViewCell.self, LoadingTableViewCell.self])
+        tableView.registers(cellTypes: [CommentContentTableViewCell.self, LoadingTableViewCell.self])
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tableViewBottomInset, right: 0)
         return tableView
     }()
@@ -189,7 +189,7 @@ final class CommentBottomSheetViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink{ [weak self] index in
                 guard let self = self else { return }
-                let cell = self.tableView.cellForRow(at: .init(row: index), cellType: CommentBottomSheetTableViewCell.self)
+                let cell = self.tableView.cellForRow(at: .init(row: index), cellType: CommentContentTableViewCell.self)
                 cell?.state(isLike: self.viewModel.comments[index].isLike, count: self.viewModel.comments[index].countOfLike)
             }
             .store(in: &cancellable)
@@ -198,7 +198,7 @@ final class CommentBottomSheetViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink{ [weak self] index in
                 guard let self = self else { return }
-                let cell = self.tableView.cellForRow(at: .init(row: index), cellType: CommentBottomSheetTableViewCell.self)
+                let cell = self.tableView.cellForRow(at: .init(row: index), cellType: CommentContentTableViewCell.self)
                 cell?.state(isDislike: self.viewModel.comments[index].isHate)
             }
             .store(in: &cancellable)
@@ -413,7 +413,7 @@ extension CommentBottomSheetViewController: UITableViewDelegate, UITableViewData
         }
         
         func commentCell() -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(for: indexPath, cellType: CommentBottomSheetTableViewCell.self)
+            let cell = tableView.dequeueReusableCell(for: indexPath, cellType: CommentContentTableViewCell.self)
             cell.fill(viewModel.comments[indexPath.row])
             cell.delegate = self
             return cell
