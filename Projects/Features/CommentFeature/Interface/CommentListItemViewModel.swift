@@ -1,6 +1,6 @@
 //
 //  CommentListItemViewModel.swift
-//  HomeFeatureInterface
+//  CommentFeatureInterface
 //
 //  Created by 박소윤 on 2023/12/12.
 //  Copyright © 2023 AB. All rights reserved.

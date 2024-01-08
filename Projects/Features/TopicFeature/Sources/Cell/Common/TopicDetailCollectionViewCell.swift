@@ -411,7 +411,7 @@ extension TopicDetailCollectionViewCell {
         }()
         let etcButton: UIButton = {
             let button = UIButton()
-            button.setImage(Image.dot, for: .normal)
+            button.setImage(Image.more, for: .normal)
             button.snp.makeConstraints{
                 $0.width.height.equalTo(22)
             }

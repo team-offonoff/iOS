@@ -4,10 +4,9 @@ import DependencyPlugin
 
 let project = Project.makeModule(
     name: "RootFeature",
-    targets: [.unitTest, .staticFramework],
+    targets: [.staticFramework],
     internalDependencies: [
         .Features.Home.Feature,
-        .Features.Topic.Feature,
         .Features.Onboarding.Feature
     ]
 )

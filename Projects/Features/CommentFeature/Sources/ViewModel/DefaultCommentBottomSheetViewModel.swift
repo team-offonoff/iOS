@@ -1,6 +1,6 @@
 //
 //  DefaultCommentBottomSheetViewModel.swift
-//  HomeFeature
+//  CommentFeature
 //
 //  Created by 박소윤 on 2023/12/12.
 //  Copyright © 2023 AB. All rights reserved.
@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import FeatureDependency
-import HomeFeatureInterface
+import CommentFeatureInterface
 import Domain
 import Core
 

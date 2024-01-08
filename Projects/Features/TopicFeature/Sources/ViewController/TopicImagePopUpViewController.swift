@@ -1,6 +1,6 @@
 //
 //  ImagePopUpViewController.swift
-//  HomeFeature
+//  TopicFeature
 //
 //  Created by 박소윤 on 2023/12/10.
 //  Copyright © 2023 AB. All rights reserved.
@@ -12,11 +12,11 @@ import ABKit
 import FeatureDependency
 import Domain
 
-final class ImagePopUpViewController: BaseViewController<BaseHeaderView, ImagePopUpView, DefaultHomeCoordinator> {
+public final class TopicImagePopUpViewController: BaseViewController<BaseHeaderView, ImagePopUpView, NullCoordinator> {
     
     private let choice: Choice
     
-    init(choice: Choice) {
+    public init(choice: Choice) {
         self.choice = choice
         super.init(headerView: nil, mainView: ImagePopUpView())
     }
@@ -25,7 +25,7 @@ final class ImagePopUpViewController: BaseViewController<BaseHeaderView, ImagePo
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         // curveEaseOut: 시작은 천천히, 끝날 땐 빠르게
@@ -34,7 +34,7 @@ final class ImagePopUpViewController: BaseViewController<BaseHeaderView, ImagePo
             self?.mainView.isHidden = false
         }
     }
-    override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         // curveEaseIn: 시작은 빠르게, 끝날 땐 천천히
@@ -44,11 +44,11 @@ final class ImagePopUpViewController: BaseViewController<BaseHeaderView, ImagePo
         }
     }
     
-    override func style() {
+    public override func style() {
         view.backgroundColor = Color.black60
     }
     
-    override func initialize() {
+    public override func initialize() {
         
         modifyViewLayout()
         addCloseTarget()

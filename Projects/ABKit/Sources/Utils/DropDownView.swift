@@ -60,7 +60,7 @@ public final class DropDownView: InsetTextField {
         setHeight()
         
         func setRightView() {
-            let arrowImage = UIImageView(image: Image.arrowDown.withTintColor(Color.subPurple))
+            let arrowImage = UIImageView(image: Image.down.withTintColor(Color.subPurple))
             rightView = arrowImage
             rightViewMode = .always
         }

@@ -13,7 +13,7 @@ public class ModalityHeaderView: HeaderView, ModalDismissable {
     
     public lazy var dismissButton: UIButton = {
        let button = UIButton()
-        button.setImage(Image.modalDismiss, for: .normal)
+        button.setImage(Image.exit, for: .normal)
         return button
     }()
     

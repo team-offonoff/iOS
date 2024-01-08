@@ -1,6 +1,6 @@
 //
 //  ImagePopUpView.swift
-//  HomeFeature
+//  TopicFeature
 //
 //  Created by 박소윤 on 2023/12/10.
 //  Copyright © 2023 AB. All rights reserved.
@@ -11,7 +11,7 @@ import UIKit
 import ABKit
 import Domain
 
-final class ImagePopUpView: BaseView {
+public final class ImagePopUpView: BaseView {
     
     private let contentStackView: UIStackView = {
         let stackView = UIStackView(axis: .vertical, spacing: 0)
@@ -21,7 +21,7 @@ final class ImagePopUpView: BaseView {
     }()
     let closeButton: UIButton = {
         let button = UIButton()
-        button.setImage(Image.close, for: .normal)
+        button.setImage(Image.imageExpandDismiss, for: .normal)
         button.snp.makeConstraints{
             $0.width.height.equalTo(34)
         }
@@ -48,14 +48,14 @@ final class ImagePopUpView: BaseView {
         return label
     }()
     
-    override func hierarchy() {
+    public override func hierarchy() {
         addSubview(contentStackView)
         contentStackView.addArrangedSubviews([imageView, optionBackgroundView])
         contentStackView.addSubview(closeButton)
         optionBackgroundView.addSubview(optionLabel)
     }
     
-    override func layout() {
+    public override func layout() {
         contentStackView.snp.makeConstraints{
             $0.top.equalToSuperview().offset(162)
             $0.leading.equalToSuperview().offset(20)
@@ -71,14 +71,8 @@ final class ImagePopUpView: BaseView {
     }
     
     func fill(_ choice: Choice) {
-        let (color, text) = {
-            switch choice.option {
-            case .A:    return (Color.mainA, "A")
-            case .B:    return (Color.mainB, "B")
-            }
-        }()
-        optionBackgroundView.backgroundColor = color
-        optionLabel.text = text
+        optionBackgroundView.backgroundColor = choice.option.content.color
+        optionLabel.text = choice.option.content.title
         imageView.backgroundColor = .black
     }
 }

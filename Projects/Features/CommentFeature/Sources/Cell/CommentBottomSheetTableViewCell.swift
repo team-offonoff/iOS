@@ -1,6 +1,6 @@
 //
 //  ChatBottomSheetTableViewCell.swift
-//  HomeFeature
+//  CommentFeature
 //
 //  Created by 박소윤 on 2023/12/09.
 //  Copyright © 2023 AB. All rights reserved.
@@ -9,12 +9,12 @@
 import Foundation
 import UIKit
 import ABKit
-import Combine
-import Domain
+import CommentFeatureInterface
 import FeatureDependency
-import HomeFeatureInterface
+import Domain
+import Combine
 
-final class CommentBottomSheetTableViewCell: BaseTableViewCell {
+final class CommentContentTableViewCell: BaseTableViewCell {
     
     weak var delegate: TapDelegate?
     
@@ -63,7 +63,7 @@ final class CommentBottomSheetTableViewCell: BaseTableViewCell {
     
     private let moreButton: UIButton = {
         let button = UIButton()
-        button.setImage(Image.dot.withTintColor(Color.black40), for: .normal)
+        button.setImage(Image.more.withTintColor(Color.black40), for: .normal)
         button.snp.makeConstraints{
             $0.width.height.equalTo(24)
         }
@@ -168,7 +168,7 @@ final class CommentBottomSheetTableViewCell: BaseTableViewCell {
     }
 }
 
-extension CommentBottomSheetTableViewCell {
+extension CommentContentTableViewCell {
     
     private class LikeContentView: BaseStackView {
         

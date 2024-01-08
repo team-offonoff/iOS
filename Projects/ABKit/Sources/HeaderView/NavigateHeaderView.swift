@@ -12,7 +12,7 @@ public class NavigateHeaderView: HeaderView, Navigatable {
     
     public lazy var popButton: UIButton = {
        let button = UIButton()
-        button.setImage(Image.arrowLeft, for: .normal)
+        button.setImage(Image.back, for: .normal)
         return button
     }()
     

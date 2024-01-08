@@ -1,6 +1,6 @@
 //
 //  ChatBottomSheetViewController.swift
-//  HomeFeature
+//  CommentFeature
 //
 //  Created by 박소윤 on 2023/12/08.
 //  Copyright © 2023 AB. All rights reserved.
@@ -10,12 +10,12 @@ import Foundation
 import UIKit
 import ABKit
 import Combine
-import HomeFeatureInterface
+import CommentFeatureInterface
 import FeatureDependency
 import Domain
 import Core
 
-final class CommentBottomSheetViewController: UIViewController {
+public final class CommentBottomSheetViewController: UIViewController {
     
     ///Summary
     ///
@@ -24,7 +24,7 @@ final class CommentBottomSheetViewController: UIViewController {
     /// - Parameters:
     ///     - standard: 댓글 바텀시트의 기준으로 삼는 뷰의 maxY 값
     ///
-    init(standard: CGFloat, viewModel: CommentBottomSheetViewModel){
+    public init(standard: CGFloat, viewModel: CommentBottomSheetViewModel){
         self.normalStateY = standard + 42
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -34,7 +34,7 @@ final class CommentBottomSheetViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public weak var coordinator: HomeCoordinator?
+    public weak var coordinator: CommentCoordinator?
     private var focusIndex: Index?
     private var viewModel: any CommentBottomSheetViewModel
     private var cancellable: Set<AnyCancellable> = []
@@ -67,12 +67,12 @@ final class CommentBottomSheetViewController: UIViewController {
     private lazy var tableView: UITableView = {
         let tableView: UITableView = UITableView()
         tableView.separatorStyle = .none
-        tableView.registers(cellTypes: [CommentBottomSheetTableViewCell.self, LoadingTableViewCell.self])
+        tableView.registers(cellTypes: [CommentContentTableViewCell.self, LoadingTableViewCell.self])
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tableViewBottomInset, right: 0)
         return tableView
     }()
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         hierarchy()
         layout()
         initialize()
@@ -189,7 +189,7 @@ final class CommentBottomSheetViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink{ [weak self] index in
                 guard let self = self else { return }
-                let cell = self.tableView.cellForRow(at: .init(row: index), cellType: CommentBottomSheetTableViewCell.self)
+                let cell = self.tableView.cellForRow(at: .init(row: index), cellType: CommentContentTableViewCell.self)
                 cell?.state(isLike: self.viewModel.comments[index].isLike, count: self.viewModel.comments[index].countOfLike)
             }
             .store(in: &cancellable)
@@ -198,7 +198,7 @@ final class CommentBottomSheetViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink{ [weak self] index in
                 guard let self = self else { return }
-                let cell = self.tableView.cellForRow(at: .init(row: index), cellType: CommentBottomSheetTableViewCell.self)
+                let cell = self.tableView.cellForRow(at: .init(row: index), cellType: CommentContentTableViewCell.self)
                 cell?.state(isDislike: self.viewModel.comments[index].isHate)
             }
             .store(in: &cancellable)
@@ -301,7 +301,7 @@ final class CommentBottomSheetViewController: UIViewController {
     
     private var isLoading: Bool = false
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
@@ -351,7 +351,7 @@ extension CommentBottomSheetViewController: CommentSendDelegate {
 
 extension CommentBottomSheetViewController: UIGestureRecognizerDelegate {
     //바텀시트 스와이프가 시작되기 전, 테이블 뷰의 크기 잠시 늘림
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         contentView.snp.updateConstraints{
             $0.height.equalTo(expandHeight)
         }
@@ -362,7 +362,7 @@ extension CommentBottomSheetViewController: UIGestureRecognizerDelegate {
 
 extension CommentBottomSheetViewController: TapDelegate {
     
-    func tap(_ recognizer: DelegateSender) {
+    public func tap(_ recognizer: DelegateSender) {
         
         guard let indexPath = recognizer.data as? IndexPath else { return }
         let index = indexPath.row
@@ -390,11 +390,11 @@ extension CommentBottomSheetViewController: TapDelegate {
 
 extension CommentBottomSheetViewController: UITableViewDelegate, UITableViewDataSource {
     
-    func numberOfSections(in tableView: UITableView) -> Int {
+    public func numberOfSections(in tableView: UITableView) -> Int {
         2
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return viewModel.comments.count
         } else if section == 1 && isLoading && viewModel.hasNextPage() {
@@ -404,7 +404,7 @@ extension CommentBottomSheetViewController: UITableViewDelegate, UITableViewData
         }
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         switch indexPath.section {
         case 0:     return commentCell()
@@ -413,7 +413,7 @@ extension CommentBottomSheetViewController: UITableViewDelegate, UITableViewData
         }
         
         func commentCell() -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(for: indexPath, cellType: CommentBottomSheetTableViewCell.self)
+            let cell = tableView.dequeueReusableCell(for: indexPath, cellType: CommentContentTableViewCell.self)
             cell.fill(viewModel.comments[indexPath.row])
             cell.delegate = self
             return cell
