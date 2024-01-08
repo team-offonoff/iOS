@@ -4,7 +4,7 @@ import DependencyPlugin
 
 let project = Project.makeModule(
     name: "Core",
-    targets: [.unitTest, .dynamicFramework],
+    targets: [.dynamicFramework],
     internalDependencies: [
         .thirdPartyLibs
     ]

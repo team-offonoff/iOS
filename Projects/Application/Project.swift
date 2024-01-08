@@ -5,7 +5,7 @@ import EnvironmentPlugin
 
 let project = Project.makeModule(
     name: Environment.workspaceName,
-    targets: [.app, .unitTest],
+    targets: [.app],
     internalDependencies: [
         .Features.RootFeature
 //        .SPM.FirebaseMessaging
