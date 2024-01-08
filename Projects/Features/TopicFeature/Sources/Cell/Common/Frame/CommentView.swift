@@ -53,40 +53,58 @@ extension TopicDetailCollectionViewCell {
             layer.masksToBounds = true
         }
         override func hierarchy() {
-            addSubviews([headerFrame, contentFrame])
-            headerFrame.addSubviews([countStackView])
-            contentFrame.addSubviews([contentCell, blurView, induceSelectChip])
-            countStackView.addArrangedSubviews([chatCountFrame, likeCountFrame])
+            
+            outline()
+            header()
+            content()
+            
+            func outline() {
+                addSubviews([headerFrame, contentFrame])
+            }
+            func header() {
+                headerFrame.addSubviews([countStackView])
+                countStackView.addArrangedSubviews([chatCountFrame, likeCountFrame])
+            }
+            func content() {
+                contentFrame.addSubviews([contentCell, blurView, induceSelectChip])
+            }
         }
         override func layout() {
             
-            headerFrame.snp.makeConstraints{
-                $0.top.leading.trailing.equalToSuperview()
+            outline()
+            header()
+            content()
+            
+            func outline() {
+                headerFrame.snp.makeConstraints{
+                    $0.top.leading.trailing.equalToSuperview()
+                }
+                contentFrame.snp.makeConstraints{
+                    $0.top.equalTo(headerFrame.snp.bottom)
+                    $0.leading.trailing.bottom.equalToSuperview()
+                }
             }
             
-            countStackView.snp.makeConstraints{
-                $0.top.bottom.equalToSuperview().inset(10)
-                $0.leading.equalToSuperview().offset(16)
+            func header() {
+                countStackView.snp.makeConstraints{
+                    $0.top.bottom.equalToSuperview().inset(10)
+                    $0.leading.equalToSuperview().offset(16)
+                }
             }
             
-            contentFrame.snp.makeConstraints{
-                $0.top.equalTo(headerFrame.snp.bottom)
-                $0.leading.trailing.bottom.equalToSuperview()
-            }
-            
-            blurView.snp.makeConstraints{
-                $0.top.leading.trailing.bottom.equalToSuperview()
-            }
-            
-            induceSelectChip.snp.makeConstraints{
-                $0.top.equalToSuperview().offset(14)
-                $0.centerX.centerY.equalToSuperview()
-                $0.height.equalTo(29)
-            }
-            
-            contentCell.snp.makeConstraints{
-                $0.top.bottom.equalToSuperview().inset(14)
-                $0.leading.trailing.equalToSuperview()
+            func content() {
+                blurView.snp.makeConstraints{
+                    $0.top.leading.trailing.bottom.equalToSuperview()
+                }
+                induceSelectChip.snp.makeConstraints{
+                    $0.top.equalToSuperview().offset(14)
+                    $0.centerX.centerY.equalToSuperview()
+                    $0.height.equalTo(29)
+                }
+                contentCell.snp.makeConstraints{
+                    $0.top.bottom.equalToSuperview().inset(14)
+                    $0.leading.trailing.equalToSuperview()
+                }
             }
         }
     }
