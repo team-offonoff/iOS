@@ -12,7 +12,7 @@ import ABKit
 
 extension TopicDetailCollectionViewCell {
     
-    final class ChatView: BaseView {
+    final class CommentView: BaseView {
         
         var canUserInteraction = false {
             didSet {
@@ -92,7 +92,7 @@ extension TopicDetailCollectionViewCell {
     }
 }
 
-extension TopicDetailCollectionViewCell.ChatView {
+extension TopicDetailCollectionViewCell.CommentView {
     
     class CountStackView: BaseStackView {
         

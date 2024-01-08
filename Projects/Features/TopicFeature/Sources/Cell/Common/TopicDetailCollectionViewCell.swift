@@ -33,7 +33,7 @@ public class TopicDetailCollectionViewCell: BaseCollectionViewCell, Binding{
     private let userGroup: UserGroup = UserGroup()
     private let choiceGroup: ChoiceGroup = ChoiceGroup()
     private let etcGroup: EtcGroup = EtcGroup()
-    private let chat: ChatView = ChatView()
+    private let chat: CommentView = CommentView()
     
     private let profileStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 8)
     private let choiceStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 15)
