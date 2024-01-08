@@ -71,14 +71,8 @@ public final class ImagePopUpView: BaseView {
     }
     
     func fill(_ choice: Choice) {
-        let (color, text) = {
-            switch choice.option {
-            case .A:    return (Color.mainA, "A")
-            case .B:    return (Color.mainB, "B")
-            }
-        }()
-        optionBackgroundView.backgroundColor = color
-        optionLabel.text = text
+        optionBackgroundView.backgroundColor = choice.option.content.color
+        optionLabel.text = choice.option.content.title
         imageView.backgroundColor = .black
     }
 }
