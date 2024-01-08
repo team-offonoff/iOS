@@ -1,6 +1,6 @@
 //
 //  WritersCommentBottomSheetViewController.swift
-//  HomeFeature
+//  CommentFeature
 //
 //  Created by 박소윤 on 2023/12/17.
 //  Copyright © 2023 AB. All rights reserved.
@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import ABKit
-import HomeFeatureInterface
+import CommentFeatureInterface
 import FeatureDependency
 import Domain
 
