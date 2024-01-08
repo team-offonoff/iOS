@@ -9,6 +9,7 @@
 import UIKit
 import HomeFeatureInterface
 import CommentFeatureInterface
+import TopicFeature
 import CommentFeature
 import Domain
 import Data
@@ -74,7 +75,7 @@ public class DefaultHomeCoordinator: HomeCoordinator {
     }
     
     public func startImagePopUp(choice: Choice) {
-        let popUpViewController = ImagePopUpViewController(choice: choice)
+        let popUpViewController = TopicImagePopUpViewController(choice: choice)
         popUpViewController.modalPresentationStyle = .overFullScreen
         navigationController.present(popUpViewController, animated: false)
     }
