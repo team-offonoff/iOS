@@ -4,7 +4,7 @@ import DependencyPlugin
 
 let project = Project.makeModule(
     name: "CommentFeature",
-    targets: [.unitTest, .staticFramework, .demo, .interface],
+    targets: [.unitTest, .staticFramework, .interface],
     interfaceDependencies: [
         .Features.FeatureDependency
     ]
