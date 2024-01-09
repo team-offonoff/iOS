@@ -16,8 +16,7 @@ public struct CommentListItemViewModel {
         _ comment: Comment, _ options: [Choice]
     ) {
         self.id = comment.commentId
-        self.profileImageUrl = comment.writer.profileImageURl
-        self.nickname = comment.writer.nickname
+        self.writer = .init(id: comment.writer.id, nickname: comment.writer.nickname, profileImageUrl: comment.writer.profileImageURl)
         self.createdAt = comment.createdAt
         self.selectedOption = selectedOption()
         self.content = comment.content
@@ -65,5 +64,13 @@ public struct CommentListItemViewModel {
             UTCTime.current - createdAt
         }
         
+    }
+}
+
+extension CommentListItemViewModel {
+    public struct WriterItemViewModel{
+        public let id: Int
+        public let nickname: String
+        public let profileImageUrl: URL?
     }
 }

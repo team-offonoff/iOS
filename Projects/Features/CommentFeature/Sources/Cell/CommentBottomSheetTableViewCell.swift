@@ -149,7 +149,7 @@ final class CommentContentTableViewCell: BaseTableViewCell {
     }
     
     func fill(_ comment: CommentListItemViewModel) {
-        nicknameLabel.text = comment.nickname
+        nicknameLabel.text = comment.writer.nickname
         dateLabel.text = comment.elapsedTime
         choiceLabel.textColor = (comment.selectedOption.option?.content.color ?? Color.subNavy).withAlphaComponent(0.6)
         choiceLabel.text = comment.selectedOption.content
