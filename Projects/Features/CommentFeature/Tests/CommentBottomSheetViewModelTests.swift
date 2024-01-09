@@ -16,16 +16,16 @@ import Core
 
 final class CommentBottomSheetViewModelTests: XCTestCase {
 
-    private var commentBottomSheetViewModel: CommentBottomSheetViewModel!
     private let topicId = 0
     private let generateCommentUseCase: MockGenerateCommentUseCase = MockGenerateCommentUseCase()
     private let patchCommentUseCase: MockPatchCommentUseCase = MockPatchCommentUseCase()
+    private let deleteCommentUseCase: MockDeleteCommentUseCase = MockDeleteCommentUseCase()
     private let fetchCommentsUseCase: MockFetchCommentsUseCase = MockFetchCommentsUseCase()
     private let patchLikeUseCase: MockPatchCommentLikeStateUseCase = MockPatchCommentLikeStateUseCase()
     private let patchDislikeUseCase: MockPatchCommentDislikeStateUseCase = MockPatchCommentDislikeStateUseCase()
-    private let commentRepository: CommentRepository = DefaultCommentRepository()
-    private var cancellable: Set<AnyCancellable> = []
     
+    private var commentBottomSheetViewModel: CommentBottomSheetViewModel!
+    private var cancellable: Set<AnyCancellable> = []
     
     override func setUp() {
         
@@ -40,7 +40,7 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
             patchCommentUseCase: patchCommentUseCase,
             patchCommentLikeUseCase: patchLikeUseCase,
             patchCommentDislikeUseCase: patchDislikeUseCase,
-            deleteCommentUseCase: DefaultDeleteCommentUseCase(repository: commentRepository)
+            deleteCommentUseCase: deleteCommentUseCase
         )
         
         func setDefaultPaging() {
@@ -66,10 +66,10 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
         
         guard var sut = commentBottomSheetViewModel else { return }
         sut.reloadData = {
-            //then
             defer {
                 expectation.fulfill()
             }
+            //then
             XCTAssertTrue(sut.comments.count > 0)
             XCTAssertEqual(sut.comments.count, self.fetchCommentsUseCase.comments.count)
             XCTAssertEqual(sut.currentPage, 0)
@@ -94,10 +94,10 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
         var requestNextPage = false
         sut.reloadData = {
             if requestNextPage {
-                //then
                 defer {
                     expectation.fulfill()
                 }
+                //then
                 XCTAssertTrue(sut.comments.count > 0)
                 XCTAssertEqual(sut.comments.count, self.fetchCommentsUseCase.comments.count*2)
                 XCTAssertEqual(sut.currentPage, 1)
@@ -130,6 +130,7 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
                 defer {
                     expectation.fulfill()
                 }
+                //then
                 XCTAssertEqual(index, 0)
                 XCTAssertTrue(sut.comments[index].isLike)
                 XCTAssertEqual(sut.comments[index].likeCount, 1)
@@ -156,6 +157,7 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
                 defer {
                     expectation.fulfill()
                 }
+                //then
                 XCTAssertEqual(index, 1)
                 XCTAssertTrue(!sut.comments[index].isLike)
                 XCTAssertEqual(sut.comments[index].likeCount, 0)
@@ -183,6 +185,7 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
                 defer {
                     expectation.fulfill()
                 }
+                //then
                 XCTAssertEqual(index, 0)
                 XCTAssertTrue(sut.comments[index].isHate)
             }
@@ -209,6 +212,7 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
                 defer {
                     expectation.fulfill()
                 }
+                //then
                 XCTAssertEqual(index, 1)
                 XCTAssertTrue(!sut.comments[index].isHate)
             }
@@ -324,5 +328,29 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
     
     func test_when_댓글_삭제_성공_then_댓글_데이터_변화_확인() {
         
+        let expectation = expectation(description: "댓글 삭제 성공한 경우, 데이터 변화 학인")
+        
+        //given
+        fetchCommentsUseCase.mockType = .success
+        deleteCommentUseCase.mockType = .success
+        
+        guard let sut = commentBottomSheetViewModel else { return }
+        sut.fetchComments()
+        sut.deleteItem
+            .sink{ index in
+                defer {
+                    expectation.fulfill()
+                }
+                //then
+                XCTAssertEqual(index, 0)
+                XCTAssertTrue(sut.comments[0].id != 0)
+                XCTAssertEqual(sut.comments.count, self.fetchCommentsUseCase.comments.count-1)
+            }
+            .store(in: &cancellable)
+        
+        //when
+        sut.delete(at: 0)
+        
+        waitForExpectations(timeout: 10)
     }
 }
