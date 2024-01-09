@@ -48,7 +48,7 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
         func setDefaultComments() {
             fetchCommentsUseCase.comments = [
                 .init(commentId: 0, topicId: 0, writer: .init(id: 0, nickname: "A", profileImageURl: nil), content: "작성자 댓글", likeCount: 0, hateCount: 0, isLike: false, isHate: false, createdAt: UTCTime.current),
-                .init(commentId: 1, topicId: 0, writer: .init(id: 1, nickname: "B", profileImageURl: nil), content: "댓글1", likeCount: 0, hateCount: 0, isLike: false, isHate: false, createdAt: UTCTime.current)
+                .init(commentId: 1, topicId: 0, writer: .init(id: 1, nickname: "B", profileImageURl: nil), content: "댓글1", likeCount: 1, hateCount: 1, isLike: true, isHate: true, createdAt: UTCTime.current)
             ]
         }
     }
@@ -112,13 +112,53 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
     }
     
     func test_when_댓글_좋아요_성공_then_댓글_데이터_변화_확인() {
+        
+        let expectation = expectation(description: "댓글 좋아요 성공한 경우, publisher가 방출되며 댓글 데이터가 정상적으로 변경되었는지 확인")
+        
         //given
+        fetchCommentsUseCase.mockType = .success
         patchLikeUseCase.mockType = .success
         guard let sut = commentBottomSheetViewModel else { return }
+        sut.fetchComments()
+        sut.toggleLikeState
+            .sink{ index in
+                defer {
+                    expectation.fulfill()
+                }
+                XCTAssertTrue(sut.comments[index].isLike)
+                XCTAssertEqual(sut.comments[index].likeCount, 1)
+            }
+            .store(in: &cancellable)
+        
+        //when
+        sut.toggleLikeState(at: 0)
+        
+        waitForExpectations(timeout: 10)
     }
     
     func test_when_댓글_좋아요_취소_성공_then_댓글_데이터_변화_확인() {
         
+        let expectation = expectation(description: "댓글 좋아요 취소 성공한 경우, publisher가 방출되며 댓글 데이터가 정상적으로 변경되었는지 확인")
+        
+        //given
+        fetchCommentsUseCase.mockType = .success
+        patchLikeUseCase.mockType = .success
+        guard let sut = commentBottomSheetViewModel else { return }
+        sut.fetchComments()
+        sut.toggleLikeState
+            .sink{ index in
+                defer {
+                    expectation.fulfill()
+                }
+                XCTAssertTrue(!sut.comments[index].isLike)
+                XCTAssertEqual(sut.comments[index].likeCount, 0)
+            }
+            .store(in: &cancellable)
+        
+        //when
+        sut.toggleLikeState(at: 1)
+        
+        waitForExpectations(timeout: 10)
     }
     
     func test_when_댓글_싫어요_성공_then_댓글_데이터_변화_확인() {
@@ -126,6 +166,14 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
     }
     
     func test_when_댓글_싫어요_취소_성공_then_댓글_데이터_변화_확인() {
+        
+    }
+    
+    func test_when_유저가_댓글_작성자인_경우_then_닉네임_작성자로_표시() {
+        
+    }
+    
+    func test_when_유저가_댓글_작성자가_아닌_경우_then_닉네임_활용() {
         
     }
     
