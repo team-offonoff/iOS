@@ -59,7 +59,7 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
     public let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     public func isWriterItem(at index: Int) -> Bool {
-        index % 2 == 0 ? true : false //comments[index].userId == userId
+        comments[index].writer.id == UserManager.shared.memberId
     }
     
     public func hasNextPage() -> Bool {
