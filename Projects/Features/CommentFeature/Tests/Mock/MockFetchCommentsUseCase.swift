@@ -22,8 +22,11 @@ final class MockFetchCommentsUseCase: FetchCommentsUseCase {
     }
     
     private let mockType: MOCKType
-    private let paging = Paging(page: 0, size: 50, isEmpty: false, last: false)
-    private let comments: [Comment] = [
+    
+    //MARK: Output
+    
+    var paging: Paging!
+    let comments: [Comment] = [
         .init(commentId: 0, topicId: 0, writer: .init(id: 0, nickname: "A", profileImageURl: nil), content: "작성자 댓글", likeCount: 0, hateCount: 0, isLike: false, isHate: false, createdAt: UTCTime.current),
         .init(commentId: 1, topicId: 0, writer: .init(id: 1, nickname: "B", profileImageURl: nil), content: "댓글1", likeCount: 0, hateCount: 0, isLike: false, isHate: false, createdAt: UTCTime.current)
     ]
