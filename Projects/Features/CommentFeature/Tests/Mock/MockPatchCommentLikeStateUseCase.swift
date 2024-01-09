@@ -1,5 +1,5 @@
 //
-//  MockFetchCommentsUseCase.swift
+//  MockPatchCommentLikeStateUseCase.swift
 //  CommentFeatureTests
 //
 //  Created by 박소윤 on 2024/01/09.
@@ -7,12 +7,12 @@
 //
 
 import Foundation
-import Combine
 import Domain
+import Combine
 
-final class MockFetchCommentsUseCase: FetchCommentsUseCase {
+final class MockPatchCommentLikeStateUseCase: PatchCommentLikeStateUseCase {
     
-    init() {
+    init(){
         
     }
     
@@ -20,30 +20,23 @@ final class MockFetchCommentsUseCase: FetchCommentsUseCase {
         fatalError()
     }
     
-    //MARK: Input
-    
     var mockType: MOCKType!
     
-    //MARK: Output
-    
-    var paging: Paging!
-    var comments: [Comment]!
-    
-    func execute(topicId: Int, page: Int) -> NetworkResultPublisher<(Paging, [Comment])?> {
+    func execute(commentId: Int, isLike: Bool) -> NetworkResultPublisher<Any?> {
         switch mockType {
         case .success:
-            return AnyPublisher(Just((
+            return Just((
                 isSuccess: true,
-                data: Optional((paging, comments)),
+                data: Optional<Any>(nil),
                 error: Optional<ErrorContent>(nil))
-            ))
+            ).eraseToAnyPublisher()
             
         case .failure:
-            return AnyPublisher(Just((
+            return Just((
                 isSuccess: false,
-                data: Optional<(Paging, [Comment])>(nil),
+                data: Optional<Any>(nil),
                 error: Optional<ErrorContent>(ErrorContent(code: .emptyAuthorization, message: "통신 에러"))
-            )))
+            )).eraseToAnyPublisher()
             
         default:
             fatalError()
