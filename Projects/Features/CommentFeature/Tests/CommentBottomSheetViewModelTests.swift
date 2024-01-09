@@ -19,6 +19,7 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
     private var commentBottomSheetViewModel: CommentBottomSheetViewModel!
     private let fetchCommentsUseCase: MockFetchCommentsUseCase = MockFetchCommentsUseCase()
     private let patchLikeUseCase: MockPatchCommentLikeStateUseCase = MockPatchCommentLikeStateUseCase()
+    private let patchDislikeUseCase: MockPatchCommentDislikeStateUseCase = MockPatchCommentDislikeStateUseCase()
     private let commentRepository: CommentRepository = DefaultCommentRepository()
     private var cancellable: Set<AnyCancellable> = []
     
@@ -35,7 +36,7 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
             fetchCommentsUseCase: self.fetchCommentsUseCase,
             patchCommentUseCase: DefaultPatchCommentUseCase(repository: commentRepository),
             patchCommentLikeUseCase: self.patchLikeUseCase,
-            patchCommentDislikeUseCase: DefaultPatchCommentDislikeStateUseCase(repository: commentRepository),
+            patchCommentDislikeUseCase: self.patchDislikeUseCase,
             deleteCommentUseCase: DefaultDeleteCommentUseCase(repository: commentRepository)
         )
         
@@ -118,6 +119,7 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
         //given
         fetchCommentsUseCase.mockType = .success
         patchLikeUseCase.mockType = .success
+        
         guard let sut = commentBottomSheetViewModel else { return }
         sut.fetchComments()
         sut.toggleLikeState
@@ -125,6 +127,7 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
                 defer {
                     expectation.fulfill()
                 }
+                XCTAssertEqual(index, 0)
                 XCTAssertTrue(sut.comments[index].isLike)
                 XCTAssertEqual(sut.comments[index].likeCount, 1)
             }
@@ -150,6 +153,7 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
                 defer {
                     expectation.fulfill()
                 }
+                XCTAssertEqual(index, 1)
                 XCTAssertTrue(!sut.comments[index].isLike)
                 XCTAssertEqual(sut.comments[index].likeCount, 0)
             }
@@ -163,10 +167,54 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
     
     func test_when_댓글_싫어요_성공_then_댓글_데이터_변화_확인() {
         
+        let expectation = expectation(description: "댓글 싫어요 성공한 경우, publisher가 방출되며 댓글 데이터가 정상적으로 변경되었는지 확인")
+        
+        //given
+        fetchCommentsUseCase.mockType = .success
+        patchDislikeUseCase.mockType = .success
+        
+        guard let sut = commentBottomSheetViewModel else { return }
+        sut.fetchComments()
+        sut.toggleDislikeState
+            .sink{ index in
+                defer {
+                    expectation.fulfill()
+                }
+                XCTAssertEqual(index, 0)
+                XCTAssertTrue(sut.comments[index].isHate)
+            }
+            .store(in: &cancellable)
+        
+        //when
+        sut.toggleDislikeState(at: 0)
+        
+        waitForExpectations(timeout: 10)
     }
     
     func test_when_댓글_싫어요_취소_성공_then_댓글_데이터_변화_확인() {
         
+        let expectation = expectation(description: "댓글 싫어요 취소 성공한 경우, publisher가 방출되며 댓글 데이터가 정상적으로 변경되었는지 확인")
+        
+        //given
+        fetchCommentsUseCase.mockType = .success
+        patchDislikeUseCase.mockType = .success
+        
+        guard let sut = commentBottomSheetViewModel else { return }
+        sut.fetchComments()
+        sut.toggleDislikeState
+            .sink{ index in
+                defer {
+                    expectation.fulfill()
+                }
+                XCTAssertEqual(index, 1)
+                XCTAssertTrue(!sut.comments[index].isHate)
+            }
+            .store(in: &cancellable)
+        
+        //when
+        sut.toggleDislikeState(at: 1)
+        
+        waitForExpectations(timeout: 10)
     }
     
     func test_when_유저가_댓글_작성자인_경우_then_닉네임_작성자로_표시() {
