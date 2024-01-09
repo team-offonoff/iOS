@@ -17,6 +17,8 @@ import Core
 final class CommentBottomSheetViewModelTests: XCTestCase {
 
     private var commentBottomSheetViewModel: CommentBottomSheetViewModel!
+    private let topicId = 0
+    private let generateCommentUseCase: MockGenerateCommentUseCase = MockGenerateCommentUseCase()
     private let fetchCommentsUseCase: MockFetchCommentsUseCase = MockFetchCommentsUseCase()
     private let patchLikeUseCase: MockPatchCommentLikeStateUseCase = MockPatchCommentLikeStateUseCase()
     private let patchDislikeUseCase: MockPatchCommentDislikeStateUseCase = MockPatchCommentDislikeStateUseCase()
@@ -30,9 +32,9 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
         setDefaultPaging()
         
         self.commentBottomSheetViewModel = DefaultCommentBottomSheetViewModel(
-            topicId: 0,
+            topicId: self.topicId,
             choices: mockTextChoices,
-            generateCommentUseCase: DefaultGenerateCommentUseCase(repository: commentRepository),
+            generateCommentUseCase: generateCommentUseCase,
             fetchCommentsUseCase: self.fetchCommentsUseCase,
             patchCommentUseCase: DefaultPatchCommentUseCase(repository: commentRepository),
             patchCommentLikeUseCase: self.patchLikeUseCase,
@@ -48,7 +50,7 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
         
         func setDefaultComments() {
             fetchCommentsUseCase.comments = [
-                .init(commentId: 0, topicId: 0, writer: .init(id: 0, nickname: "A", profileImageURl: nil), votedOption: .A, content: "작성자 댓글", likeCount: 0, hateCount: 0, isLike: false, isHate: false, createdAt: UTCTime.current),
+                .init(commentId: 0, topicId: 0, writer: .init(id: 0, nickname: "A", profileImageURl: nil), votedOption: nil, content: "작성자 댓글", likeCount: 0, hateCount: 0, isLike: false, isHate: false, createdAt: UTCTime.current),
                 .init(commentId: 1, topicId: 0, writer: .init(id: 1, nickname: "B", profileImageURl: nil), votedOption: .B, content: "댓글1", likeCount: 1, hateCount: 1, isLike: true, isHate: true, createdAt: UTCTime.current)
             ]
         }
@@ -251,9 +253,50 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
     
     func test_when_댓글_생성_성공_then_댓글_0번째_인덱스_추가_확인() {
         
+        let expectation = expectation(description: "댓글 작성 성공한 경우, 데이터 변화 학인")
+        
+        //given
+        fetchCommentsUseCase.mockType = .success
+        
+        generateCommentUseCase.mockType = .success
+        generateCommentUseCase.comment = .init(
+            commentId: 3,
+            topicId: topicId,
+            writer: .init(id: 3, nickname: "C", profileImageURl: nil),
+            votedOption: .A,
+            content: "새로운 댓글",
+            likeCount: 0,
+            hateCount: 0,
+            isLike: false,
+            isHate: false,
+            createdAt: UTCTime.current
+        )
+        
+        guard let sut = commentBottomSheetViewModel else { return }
+        sut.fetchComments()
+        sut.generateItem
+            .sink{ _ in
+                defer {
+                    expectation.fulfill()
+                }
+                //then
+                XCTAssertEqual(sut.comments.count, self.fetchCommentsUseCase.comments.count+1)
+                XCTAssertEqual(sut.comments[0].id, 3)
+            }
+            .store(in: &cancellable)
+        
+        //when
+        sut.generateComment(content: "새로운 댓글")
+        
+        waitForExpectations(timeout: 10)
     }
     
     func test_when_댓글_수정_성공_then_댓글_데이터_변화_확인() {
+        
+        //given
+        guard let sut = commentBottomSheetViewModel else { return }
+        sut.fetchComments()
+        
         
     }
     
