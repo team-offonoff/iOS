@@ -50,4 +50,46 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
         
         waitForExpectations(timeout: 10)
     }
+    
+    func test_when_다음_페이지가_존재하는_경우_then_새로운_페이지_요청() {
+        
+        let expectation = expectation(description: "마지막 페이지가 아닌 경우, 조건 검사 후 다음 페이지 요청")
+        
+        //given
+        let fetchCommentsUseCase = MockFetchCommentsUseCase(.success)
+        fetchCommentsUseCase.paging = Paging(page: 0, size: fetchCommentsUseCase.comments.count, isEmpty: false, last: false)
+        let sut = DefaultCommentBottomSheetViewModel(
+            topicId: 0,
+            choices: mockTextChoices,
+            generateCommentUseCase: DefaultGenerateCommentUseCase(repository: commentRepository),
+            fetchCommentsUseCase: fetchCommentsUseCase,
+            patchCommentUseCase: DefaultPatchCommentUseCase(repository: commentRepository),
+            patchCommentLikeUseCase: DefaultPatchCommentLikeStateUseCase(repository: commentRepository),
+            patchCommentDislikeUseCase: DefaultPatchCommentDislikeStateUseCase(repository: commentRepository),
+            deleteCommentUseCase: DefaultDeleteCommentUseCase(repository: commentRepository)
+        )
+        
+        //첫 번째 페이지 요청은 무시한다
+        var requestNextPage = false
+        sut.reloadData = {
+            if requestNextPage {
+                //then
+                defer {
+                    expectation.fulfill()
+                }
+                XCTAssertEqual(sut.comments.count, fetchCommentsUseCase.comments.count*2)
+                XCTAssertEqual(sut.currentPage, 1)
+            }
+        }
+
+        //when
+        sut.fetchComments()
+        if sut.hasNextPage() {
+            requestNextPage = true
+            fetchCommentsUseCase.paging = Paging(page: 1, size: fetchCommentsUseCase.comments.count, isEmpty: false, last: true)
+            sut.fetchNextPage()
+        }
+        
+        waitForExpectations(timeout: 10)
+    }
 }
