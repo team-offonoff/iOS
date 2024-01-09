@@ -48,8 +48,8 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
         
         func setDefaultComments() {
             fetchCommentsUseCase.comments = [
-                .init(commentId: 0, topicId: 0, writer: .init(id: 0, nickname: "A", profileImageURl: nil), content: "작성자 댓글", likeCount: 0, hateCount: 0, isLike: false, isHate: false, createdAt: UTCTime.current),
-                .init(commentId: 1, topicId: 0, writer: .init(id: 1, nickname: "B", profileImageURl: nil), content: "댓글1", likeCount: 1, hateCount: 1, isLike: true, isHate: true, createdAt: UTCTime.current)
+                .init(commentId: 0, topicId: 0, writer: .init(id: 0, nickname: "A", profileImageURl: nil), votedOption: .A, content: "작성자 댓글", likeCount: 0, hateCount: 0, isLike: false, isHate: false, createdAt: UTCTime.current),
+                .init(commentId: 1, topicId: 0, writer: .init(id: 1, nickname: "B", profileImageURl: nil), votedOption: .B, content: "댓글1", likeCount: 1, hateCount: 1, isLike: true, isHate: true, createdAt: UTCTime.current)
             ]
         }
     }
@@ -217,12 +217,36 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
         waitForExpectations(timeout: 10)
     }
     
-    func test_when_유저가_댓글_작성자인_경우_then_닉네임_작성자로_표시() {
+    func test_when_유저가_댓글_작성자인_경우_then_선택지_작성자로_표시() {
+         
+        //given
+        fetchCommentsUseCase.mockType = .success
         
+        guard let sut = commentBottomSheetViewModel else { return }
+        sut.fetchComments()
+        
+        //when
+        UserManager.shared.memberId = 0
+        
+        //then
+        XCTAssertEqual(sut.comments[0].selectedOption.option, nil)
+        XCTAssertEqual(sut.comments[0].selectedOption.content, "작성자")
     }
     
-    func test_when_유저가_댓글_작성자가_아닌_경우_then_닉네임_활용() {
+    func test_when_유저가_댓글_작성자가_아닌_경우_then_선택지_데이터_확인() {
         
+        //given
+        fetchCommentsUseCase.mockType = .success
+        
+        guard let sut = commentBottomSheetViewModel else { return }
+        sut.fetchComments()
+        
+        //when
+        UserManager.shared.memberId = 0
+        
+        //then
+        XCTAssertTrue(sut.comments[1].selectedOption.option != nil)
+        XCTAssertTrue(sut.comments[1].selectedOption.content.starts(with: "B."))
     }
     
     func test_when_댓글_생성_성공_then_댓글_0번째_인덱스_추가_확인() {
