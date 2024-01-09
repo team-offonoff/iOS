@@ -48,6 +48,7 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
     
     //MARK: - OUTPUT
     public var reloadData: (() -> Void)?
+    public var currentPage: Int { pageInfo?.page ?? 0 }
     public var commentsCountTitle: String { ABFormat.count(comments.count) + " 개" }
     public var comments: [CommentListItemViewModel] = []
     public let toggleLikeState: PassthroughSubject<Index, Never> = PassthroughSubject()

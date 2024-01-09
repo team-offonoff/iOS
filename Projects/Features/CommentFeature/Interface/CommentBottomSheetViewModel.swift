@@ -27,6 +27,7 @@ public protocol CommentBottomSheetViewModelInput {
 public protocol CommentBottomSheetViewModelOutput {
     var comments: [CommentListItemViewModel] { get }
     var commentsCountTitle: String { get }
+    var currentPage: Int { get }
     var reloadData: (() -> Void)? { get set }
     var generateItem: PassthroughSubject<Void, Never> { get }
     var toggleLikeState: PassthroughSubject<Index, Never> { get }
