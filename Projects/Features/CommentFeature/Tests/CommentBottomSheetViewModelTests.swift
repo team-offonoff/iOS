@@ -51,9 +51,9 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
         waitForExpectations(timeout: 10)
     }
     
-    func test_when_다음_페이지가_존재하는_경우_then_새로운_페이지_요청() {
+    func test_when_다음_페이지가_존재하는_경우_새로운_페이지_요청_성공_then_페이지와_댓글_데이터_변화() {
         
-        let expectation = expectation(description: "마지막 페이지가 아닌 경우, 조건 검사 후 다음 페이지 요청")
+        let expectation = expectation(description: "마지막 페이지가 아닌 경우, 조건 검사 후 다음 페이지 요청하며 페이지 수와 댓글 개수 증가 확인")
         
         //given
         let fetchCommentsUseCase = MockFetchCommentsUseCase(.success)
