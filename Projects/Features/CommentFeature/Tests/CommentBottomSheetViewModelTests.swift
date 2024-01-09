@@ -19,6 +19,7 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
     private var commentBottomSheetViewModel: CommentBottomSheetViewModel!
     private let topicId = 0
     private let generateCommentUseCase: MockGenerateCommentUseCase = MockGenerateCommentUseCase()
+    private let patchCommentUseCase: MockPatchCommentUseCase = MockPatchCommentUseCase()
     private let fetchCommentsUseCase: MockFetchCommentsUseCase = MockFetchCommentsUseCase()
     private let patchLikeUseCase: MockPatchCommentLikeStateUseCase = MockPatchCommentLikeStateUseCase()
     private let patchDislikeUseCase: MockPatchCommentDislikeStateUseCase = MockPatchCommentDislikeStateUseCase()
@@ -32,13 +33,13 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
         setDefaultPaging()
         
         self.commentBottomSheetViewModel = DefaultCommentBottomSheetViewModel(
-            topicId: self.topicId,
+            topicId: topicId,
             choices: mockTextChoices,
             generateCommentUseCase: generateCommentUseCase,
-            fetchCommentsUseCase: self.fetchCommentsUseCase,
-            patchCommentUseCase: DefaultPatchCommentUseCase(repository: commentRepository),
-            patchCommentLikeUseCase: self.patchLikeUseCase,
-            patchCommentDislikeUseCase: self.patchDislikeUseCase,
+            fetchCommentsUseCase: fetchCommentsUseCase,
+            patchCommentUseCase: patchCommentUseCase,
+            patchCommentLikeUseCase: patchLikeUseCase,
+            patchCommentDislikeUseCase: patchDislikeUseCase,
             deleteCommentUseCase: DefaultDeleteCommentUseCase(repository: commentRepository)
         )
         
@@ -293,11 +294,32 @@ final class CommentBottomSheetViewModelTests: XCTestCase {
     
     func test_when_댓글_수정_성공_then_댓글_데이터_변화_확인() {
         
+        let expectation = expectation(description: "댓글 수정 성공한 경우, 데이터 변화 학인")
+        
         //given
+        fetchCommentsUseCase.mockType = .success
+        
+        patchCommentUseCase.mockType = .success
+        patchCommentUseCase.comment = .init(commentId: 0, topicId: 0, writer: .init(id: 0, nickname: "A", profileImageURl: nil), votedOption: nil, content: "작성자 댓글 수정", likeCount: 0, hateCount: 0, isLike: false, isHate: false, createdAt: UTCTime.current)
+        
         guard let sut = commentBottomSheetViewModel else { return }
         sut.fetchComments()
+        sut.modifyItem
+            .sink{ index in
+                defer {
+                    expectation.fulfill()
+                }
+                XCTAssertEqual(UserManager.shared.memberId, sut.comments[0].writer.id)
+                XCTAssertEqual(index, 0)
+                XCTAssertEqual(sut.comments[0].content, "작성자 댓글 수정")
+            }
+            .store(in: &cancellable)
         
+        //when
+        UserManager.shared.memberId = 0
+        sut.modifyComment(at: 0, content: "작성자 댓글 수정")
         
+        waitForExpectations(timeout: 10)
     }
     
     func test_when_댓글_삭제_성공_then_댓글_데이터_변화_확인() {
