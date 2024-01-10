@@ -161,9 +161,10 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
             )
             .sink{ [weak self] result in
                 guard let self = self else { return }
-                if result.isSuccess {
+                if result.isSuccess, let comment = result.data {
                     self.topics[self.currentIndexPath.row].votedOption = option
                     self.successVote.send(option)
+                    //TODO: 댓글 1개 미리보기
                 }
                 else {
                     if let error = result.error {
