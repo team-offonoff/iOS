@@ -158,21 +158,20 @@ public final class DefaultTopicRepository: TopicRepository {
         }
     }
     
-    public func cancelVote(topicId: Int, request: CancelVoteUseCaseRequestValue) -> NetworkResultPublisher<Any?> {
+    public func revote(topicId: Int, request: RevoteUseCaseRequestValue) -> NetworkResultPublisher<Comment?> {
         
         var urlComponents = networkService.baseUrlComponents
         urlComponents?.path = basePath + path(topicId) + path("vote")
         
         guard let requestBody = try? JSONEncoder().encode(makeDTO()),
-              let urlRequest = urlComponents?.toURLRequest(method: .delete, httpBody: requestBody) else {
+              let urlRequest = urlComponents?.toURLRequest(method: .patch, httpBody: requestBody) else {
             fatalError("json encoding or url parsing error")
         }
         
-        return dataTask(request: urlRequest)
+        return dataTask(request: urlRequest, responseType: CommentResponseDTO.self)
         
-        func makeDTO() -> CancelVoteRequestDTO {
-            .init(canceledAt: request.canceledAt)
+        func makeDTO() -> RevoteRequestDTO {
+            .init(modifiedOption: request.modifiedOption.toDTO(), modifiedAt: request.modifiedAt)
         }
-        
     }
 }

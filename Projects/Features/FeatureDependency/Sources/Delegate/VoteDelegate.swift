@@ -10,5 +10,5 @@ import Foundation
 import Domain
 
 public protocol VoteDelegate: AnyObject {
-    func vote(choice: Choice.Option)
+    func vote(_ option: Choice.Option)
 }

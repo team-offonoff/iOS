@@ -226,7 +226,7 @@ public class TopicDetailCollectionViewCell: BaseCollectionViewCell, Binding{
                     completion: { [weak self] _ in
                         guard let self = self else { return }
                         initializeChoiceView()
-                        self.delegate?.vote(choice: option)
+                        self.delegate?.vote(option)
                     }
                 )
                 
@@ -273,6 +273,10 @@ extension TopicDetailCollectionViewCell {
     public func select(choice: Choice){
         choiceGroup.completeView.fill(choice: choice)
         toggle(isVoted: true)
+    }
+    
+    public func clearVote() {
+        toggle(isVoted: false)
     }
     
     private func toggle(isVoted value: Bool) {

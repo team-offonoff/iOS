@@ -12,7 +12,7 @@ import Domain
 import TopicFeatureInterface
 import FeatureDependency
 
-public protocol HomeTabViewModel: TopicPageControlViewModel, TimerControlViewModel, TopicVoteViewModel, TopicBottomSheetViewModel, ErrorHandleable {
+public protocol HomeTabViewModel: AnyObject, TopicPageControlViewModel, TimerControlViewModel, TopicVoteViewModel, TopicBottomSheetViewModel, ErrorHandleable {
     var currentTopic: TopicDetailItemViewModel { get }
     func viewDidLoad()
 }
@@ -20,7 +20,8 @@ public protocol HomeTabViewModel: TopicPageControlViewModel, TimerControlViewMod
 public protocol TopicVoteViewModel {
     var successVote: PassthroughSubject<Choice.Option, Never> { get }
     var failVote: PassthroughSubject<Void, Never> { get }
-    func vote(choice: Choice.Option)
+    func vote(_ option: Choice.Option)
+    func revote(_ option: Choice.Option)
 }
 
 public protocol TopicPageControlViewModel {

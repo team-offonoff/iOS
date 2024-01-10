@@ -33,7 +33,7 @@ public final class TopicBottomSheetViewController: BaseBottomSheetViewController
         
         func setResetEnableState() {
             guard let index = actions.map({ $0 as! Topic.Action }).firstIndex(where: { $0 == Topic.Action.revote }) else { return }
-            mainView.itemViews[index].isDisabled = !viewModel.canChoiceReset
+            mainView.itemViews[index].isDisabled = !viewModel.canRevote
         }
     }
     
@@ -45,8 +45,6 @@ public final class TopicBottomSheetViewController: BaseBottomSheetViewController
                 case .hide:
                     dismiss()
                 case .report:
-                    dismiss()
-                case .revote:
                     dismiss()
                 default:
                     fatalError()
@@ -67,7 +65,8 @@ public final class TopicBottomSheetViewController: BaseBottomSheetViewController
         case .report:
             viewModel.reportTopic()
         case .revote:
-            viewModel.resetChoice()
+            NotificationCenter.default.post(name: Notification.Name(Topic.Action.revote.identifier), object: viewModel)
+            self.dismiss(animated: true)
         default:
             fatalError("매개변수로 잘못된 액션 전달")
         }

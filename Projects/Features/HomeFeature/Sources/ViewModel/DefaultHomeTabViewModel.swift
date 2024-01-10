@@ -19,18 +19,18 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     private let fetchTopicsUseCase: any FetchTopicsUseCase
     private let reportTopicUseCase: any ReportTopicUseCase
     private let voteTopicUseCase: any GenerateVoteUseCase
-    private let cancelVoteTopicUseCase: any CancelVoteUseCase
+    private let revoteTopicUseCase: any RevoteUseCase
     
     init(
         fetchTopicsUseCase: any FetchTopicsUseCase,
         reportTopicUseCase: any ReportTopicUseCase,
         voteTopicUseCase: any GenerateVoteUseCase,
-        cancelVoteTopicUseCase: any CancelVoteUseCase
+        revoteTopicUseCase: any RevoteUseCase
     ) {
         self.fetchTopicsUseCase = fetchTopicsUseCase
         self.reportTopicUseCase = reportTopicUseCase
         self.voteTopicUseCase = voteTopicUseCase
-        self.cancelVoteTopicUseCase = cancelVoteTopicUseCase
+        self.revoteTopicUseCase = revoteTopicUseCase
         super.init()
     }
 
@@ -150,20 +150,20 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         }
     }
     
-    func vote(choice: Choice.Option) {
+    func vote(_ option: Choice.Option) {
         voteTopicUseCase
             .execute(
                 topicId: topics[currentIndexPath.row].id,
                 request: .init(
-                    choiceOption: choice,
+                    choiceOption: option,
                     votedAt: UTCTime.current
                 )
             )
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
-                    self.topics[self.currentIndexPath.row].votedOption = choice
-                    self.successVote.send(choice)
+                    self.topics[self.currentIndexPath.row].votedOption = option
+                    self.successVote.send(option)
                 }
                 else {
                     if let error = result.error {
@@ -174,9 +174,28 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
             }.store(in: &cancellable)
     }
     
+    func revote(_ option: Choice.Option) {
+        revoteTopicUseCase
+            .execute(topicId: topics[currentIndexPath.row].id, request: .init(modifiedOption: option, modifiedAt: UTCTime.current))
+            .sink{ [weak self] result in
+                guard let self = self else { return }
+                if result.isSuccess {
+                    self.topics[self.currentIndexPath.row].votedOption = option
+                    self.successVote.send(option)
+                }
+                else {
+                    if let error = result.error {
+                        self.errorHandler.send(error)
+                    }
+                    self.failVote.send(())
+                }
+            }
+            .store(in: &cancellable)
+    }
+    
     //MARK: - Topic Bottom Sheet View Model
     
-    var canChoiceReset: Bool {
+    var canRevote: Bool {
         topics[currentIndexPath.row].isVoted
     }
     
@@ -191,24 +210,6 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
                 guard let self = self else { return }
                 if result.isSuccess {
                     self.successTopicAction.send(Topic.Action.report)
-                }
-                else if let error = result.error {
-                    print(error)
-                    self.errorHandler.send(error)
-                }
-            }
-            .store(in: &cancellable)
-    }
-    
-    func resetChoice() {
-        cancelVoteTopicUseCase
-            .execute(topicId: topics[currentIndexPath.row].id, request: .init(canceledAt: UTCTime.current))
-            .sink{ [weak self] result in
-                guard let self = self else { return }
-                if result.isSuccess {
-                    self.topics[self.currentIndexPath.row].votedOption = nil
-                    self.successTopicAction.send(Topic.Action.revote)
-                    self.reloadTopics.send(())
                 }
                 else if let error = result.error {
                     print(error)
