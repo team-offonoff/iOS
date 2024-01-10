@@ -44,6 +44,10 @@ public class TopicDetailCollectionViewCell: BaseCollectionViewCell, Binding{
         choiceGroup.bChoiceView.removeContent()
     }
     
+    public override func style() {
+        clipsToBounds = true
+    }
+    
     public override func hierarchy() {
 
         baseView.addSubviews([etcGroup.realTimeTitleLabel, topicGroup.titleLabel, profileStackView, choiceGroup.swipeableView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.etcButton, chat])

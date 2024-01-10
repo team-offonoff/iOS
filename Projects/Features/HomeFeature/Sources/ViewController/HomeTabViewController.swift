@@ -175,15 +175,6 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         currentTopicCell = cell as? TopicDetailCollectionViewCell
     }
-    
-    // clipsToBounds를 활용하여 토픽 전환(scroll)시 선택지 뷰가 셀 자체 크기를 넘기지 못하도록 한다.
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        currentTopicCell?.clipsToBounds = true
-    }
-    
-    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        currentTopicCell?.clipsToBounds = false
-    }
 }
 
 extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelegate {
