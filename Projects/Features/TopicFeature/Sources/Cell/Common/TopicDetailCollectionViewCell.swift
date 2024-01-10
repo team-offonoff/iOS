@@ -253,12 +253,12 @@ extension TopicDetailCollectionViewCell {
     
     public func binding(data: TopicDetailItemViewModel) {
         if data.isVoted {
-            guard let choice = data.selectedOption else { return }
-            select(choice: choice)
+            guard let votedOption = data.votedOption, let votedChoice = data.choices[votedOption] else { return }
+            select(choice: votedChoice)
         }
         else {
-            choiceGroup.aChoiceView.fill(data.aOption)
-            choiceGroup.bChoiceView.fill(data.bOption)
+            choiceGroup.aChoiceView.fill(data.choices[.A]!)
+            choiceGroup.bChoiceView.fill(data.choices[.B]!)
             toggle(isVoted: false)
         }
         

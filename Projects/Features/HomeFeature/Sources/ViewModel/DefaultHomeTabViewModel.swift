@@ -41,8 +41,8 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
     
     var willMovePage: AnyPublisher<IndexPath, Never>{ $currentIndexPath.filter{ _ in self.topics.count > 0 }.eraseToAnyPublisher() }
-    var successVote: AnyPublisher<Choice, Never> { $selectedOption.compactMap{ $0 }.eraseToAnyPublisher() }
     
+    let successVote: PassthroughSubject<Choice.Option, Never> = PassthroughSubject()
     let failVote: PassthroughSubject<Void, Never> = PassthroughSubject()
     let reloadTopics: PassthroughSubject<Void, Never> = PassthroughSubject()
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
@@ -53,7 +53,6 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     
     private let hourUnit = 60*60
     
-    @Published private var selectedOption: Choice?
     @Published private var currentIndexPath: IndexPath = IndexPath(row: 0, section: 0)
     
     override func bind(){
@@ -163,13 +162,8 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
-                    self.topics[self.currentIndexPath.row].selectedOption = {
-                        switch choice {
-                        case .A:    return self.topics[self.currentIndexPath.row].aOption
-                        case .B:    return self.topics[self.currentIndexPath.row].bOption
-                        }
-                    }()
-                    self.selectedOption = self.topics[self.currentIndexPath.row].selectedOption
+                    self.topics[self.currentIndexPath.row].votedOption = choice
+                    self.successVote.send(choice)
                 }
                 else {
                     if let error = result.error {
@@ -212,7 +206,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
-                    self.topics[self.currentIndexPath.row].selectedOption = nil
+                    self.topics[self.currentIndexPath.row].votedOption = nil
                     self.successTopicAction.send(Topic.Action.reset)
                     self.reloadTopics.send(())
                 }

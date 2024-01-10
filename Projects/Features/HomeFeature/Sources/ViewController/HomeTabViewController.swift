@@ -74,7 +74,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         bindReloadTopics()
         bindMoveTopic()
         bindTimer()
-        bindSelectionSuccess()
+        bindVoteSuccess()
         bindImageExpandNotification()
         bindFailVote()
         
@@ -111,11 +111,12 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
             }
         }
         
-        func bindSelectionSuccess() {
+        func bindVoteSuccess() {
             viewModel.successVote
-                .receive(on: RunLoop.main)
+                .receive(on: DispatchQueue.main)
                 .sink{ [weak self] choice in
-                    self?.currentTopicCell?.select(choice: choice)
+                    guard let self = self else { return }
+                    self.currentTopicCell?.select(choice: self.viewModel.currentTopic.choices[choice]!)
                 }
                 .store(in: &cancellables)
         }
@@ -188,7 +189,7 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
                 .startCommentBottomSheet(
                     standard: standardOfCommentBottomSheet(),
                     topicId: viewModel.currentTopic.id,
-                    choices: viewModel.currentTopic.choices
+                    choices: viewModel.currentTopic.choices.map{ $0.value }
                 )
         default:
             return
