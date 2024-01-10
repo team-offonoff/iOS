@@ -19,7 +19,7 @@ extension Topic.Action: BottomSheetAction {
         switch self {
         case .hide:     return HideTopicActionContent()
         case .report:   return ReportTopicActionContent()
-        case .reset:    return ResetTopicActionContent()
+        case .revote:    return ResetTopicActionContent()
         default: fatalError()
         }
     }

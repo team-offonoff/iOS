@@ -207,7 +207,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
                 guard let self = self else { return }
                 if result.isSuccess {
                     self.topics[self.currentIndexPath.row].votedOption = nil
-                    self.successTopicAction.send(Topic.Action.reset)
+                    self.successTopicAction.send(Topic.Action.revote)
                     self.reloadTopics.send(())
                 }
                 else if let error = result.error {

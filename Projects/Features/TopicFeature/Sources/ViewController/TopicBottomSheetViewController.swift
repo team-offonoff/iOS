@@ -1,6 +1,6 @@
 //
 //  TopicBottomSheetViewController.swift
-//  HomeFeature
+//  TopicFeature
 //
 //  Created by 박소윤 on 2023/12/03.
 //  Copyright © 2023 AB. All rights reserved.
@@ -18,7 +18,7 @@ public final class TopicBottomSheetViewController: BaseBottomSheetViewController
     
     public init(viewModel: TopicBottomSheetViewModel){
         self.viewModel = viewModel
-        super.init(actions: [Topic.Action.hide, Topic.Action.report, Topic.Action.reset])
+        super.init(actions: [Topic.Action.hide, Topic.Action.report, Topic.Action.revote])
     }
     
     required init?(coder: NSCoder) {
@@ -32,7 +32,7 @@ public final class TopicBottomSheetViewController: BaseBottomSheetViewController
         setResetEnableState()
         
         func setResetEnableState() {
-            guard let index = actions.map({ $0 as! Topic.Action }).firstIndex(where: { $0 == Topic.Action.reset }) else { return }
+            guard let index = actions.map({ $0 as! Topic.Action }).firstIndex(where: { $0 == Topic.Action.revote }) else { return }
             mainView.itemViews[index].isDisabled = !viewModel.canChoiceReset
         }
     }
@@ -46,7 +46,7 @@ public final class TopicBottomSheetViewController: BaseBottomSheetViewController
                     dismiss()
                 case .report:
                     dismiss()
-                case .reset:
+                case .revote:
                     dismiss()
                 default:
                     fatalError()
@@ -66,7 +66,7 @@ public final class TopicBottomSheetViewController: BaseBottomSheetViewController
             viewModel.hideTopic()
         case .report:
             viewModel.reportTopic()
-        case .reset:
+        case .revote:
             viewModel.resetChoice()
         default:
             fatalError("매개변수로 잘못된 액션 전달")
