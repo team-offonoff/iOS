@@ -16,8 +16,7 @@ public struct CommentListItemViewModel {
         _ comment: Comment, _ options: [Choice]
     ) {
         self.id = comment.commentId
-        self.profileImageUrl = comment.writer.profileImageURl
-        self.nickname = comment.writer.nickname
+        self.writer = .init(id: comment.writer.id, nickname: comment.writer.nickname, profileImageUrl: comment.writer.profileImageURl)
         self.createdAt = comment.createdAt
         self.selectedOption = selectedOption()
         self.content = comment.content
@@ -34,8 +33,7 @@ public struct CommentListItemViewModel {
     }
     
     public let id: Int
-    public let profileImageUrl: URL?
-    public let nickname: String
+    public let writer: WriterItemViewModel
     private let createdAt: Int
     ///option이 nil인 경우, 토픽 작성자를 의미한다
     public let selectedOption: (option: Choice.Option?, content: String)
@@ -65,5 +63,13 @@ public struct CommentListItemViewModel {
             UTCTime.current - createdAt
         }
         
+    }
+}
+
+extension CommentListItemViewModel {
+    public struct WriterItemViewModel{
+        public let id: Int
+        public let nickname: String
+        public let profileImageUrl: URL?
     }
 }

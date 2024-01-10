@@ -25,7 +25,7 @@ public struct Comment {
         commentId: Int,
         topicId: Int,
         writer: Comment.WriterEntity,
-        votedOption: Choice.Option? = nil,
+        votedOption: Choice.Option?,
         content: String,
         likeCount: Int,
         hateCount: Int,
