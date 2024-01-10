@@ -17,14 +17,6 @@ public protocol HomeTabViewModel: TopicPageControlViewModel, TimerControlViewMod
     func viewDidLoad()
 }
 
-public protocol TopicBottomSheetViewModel {
-    var successTopicAction: PassthroughSubject<Topic.Action, Never> { get }
-    var canChoiceReset: Bool { get }
-    func hideTopic()
-    func reportTopic()
-    func resetChoice()
-}
-
 public protocol TopicVoteViewModel {
     var successVote: PassthroughSubject<Choice.Option, Never> { get }
     var failVote: PassthroughSubject<Void, Never> { get }
