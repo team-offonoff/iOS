@@ -71,11 +71,9 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
             NotificationCenter.default.publisher(for: Notification.Name(Topic.Action.revote.identifier), object: viewModel)
                 .receive(on: DispatchQueue.main)
                 .sink{ [weak self] _ in
-                    
                     guard let self = self else { return }
- 
                     // 1. 토스트 메시지 보여주기
-//                    ToastMessage.shared.register(message: "다시 선택하면, 해당 토픽에 작성한 댓글이 삭제돼요")
+                    ToastMessage.shared.register(message: "다시 선택하면, 해당 토픽에 작성한 댓글이 삭제돼요")
                     // 2. 선택지 다시 보여주기
                     self.currentTopicCell?.clearVote()
                     
