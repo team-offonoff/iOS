@@ -192,6 +192,8 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         currentTopicCell = cell as? TopicDetailCollectionViewCell
+        //셀이 다시 보여질 때마다 재로드 시킨다
+        currentTopicCell?.binding(data: viewModel.topics[indexPath.row])
     }
 }
 
