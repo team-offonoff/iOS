@@ -13,7 +13,7 @@ import CommentFeatureInterface
 import FeatureDependency
 import Domain
 
-public final class OthersCommnetBottomSheetViewController: BaseBottomSheetViewController {
+public final class OthersCommnetBottomSheetViewController: ActionBottomSheetViewController {
     
     public init(index: Int, viewModel: any OthersCommentBottomSheetViewModel) {
         self.index = index

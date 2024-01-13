@@ -1,5 +1,5 @@
 //
-//  BaseBottomSheetViewController.swift
+//  ActionBottomSheetViewController.swift
 //  FeatureDependency
 //
 //  Created by 박소윤 on 2023/12/16.
@@ -21,7 +21,7 @@ public protocol BottomSheetActionContent {
     var title: String { get }
 }
 
-open class BaseBottomSheetViewController: UIViewController {
+open class ActionBottomSheetViewController: UIViewController {
     
     public init(actions: [any BottomSheetAction]){
         self.actions = actions
@@ -104,7 +104,7 @@ open class BaseBottomSheetViewController: UIViewController {
 }
 
 
-extension BaseBottomSheetViewController {
+extension ActionBottomSheetViewController {
     
     public class BaseBottomSheetView: BaseView {
         

@@ -13,7 +13,7 @@ import CommentFeatureInterface
 import FeatureDependency
 import Domain
 
-public final class WritersCommentBottomSheetViewController: BaseBottomSheetViewController {
+public final class WritersCommentBottomSheetViewController: ActionBottomSheetViewController {
     
     public init(index: Int, viewModel: any WritersCommentBottomSheetViewModel) {
         self.index = index
