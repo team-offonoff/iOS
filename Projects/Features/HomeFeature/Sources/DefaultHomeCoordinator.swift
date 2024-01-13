@@ -40,7 +40,7 @@ public class DefaultHomeCoordinator: HomeCoordinator {
             fetchTopicsUseCase: getFetchTopicsUseCase(),
             reportTopicUseCase: getReportTopicUseCase(),
             voteTopicUseCase: getVoteTopicUseCase(),
-            cancelVoteTopicUseCase: getCancelVoteTopicUseCase()
+            revoteTopicUseCase: getRevoteTopicUseCase()
         )
         
         func getFetchTopicsUseCase() -> any FetchTopicsUseCase {
@@ -55,8 +55,8 @@ public class DefaultHomeCoordinator: HomeCoordinator {
             DefaultGenerateVoteUseCase(repository: topicRepository)
         }
         
-        func getCancelVoteTopicUseCase() -> any CancelVoteUseCase {
-            DefaultCancelVoteUseCase(repository: topicRepository)
+        func getRevoteTopicUseCase() -> any RevoteUseCase {
+            DefaultRevoteUseCase(repository: topicRepository)
         }
     }
     

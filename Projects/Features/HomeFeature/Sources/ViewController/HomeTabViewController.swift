@@ -49,6 +49,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         
         setDelegate()
         addButtonFrameTarget()
+        addRevoteNotification()
         
         func setDelegate(){
             mainView.scrollFrame.setDelegate(to: self)
@@ -65,6 +66,20 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
                     self?.viewModel.moveNextTopic()
                 }.store(in: &cancellables)
         }
+        
+        func addRevoteNotification() {
+            NotificationCenter.default.publisher(for: Notification.Name(Topic.Action.revote.identifier), object: viewModel)
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] _ in
+                    guard let self = self else { return }
+                    // 1. 토스트 메시지 보여주기
+                    ToastMessage.shared.register(message: "다시 선택하면, 해당 토픽에 작성한 댓글이 삭제돼요")
+                    // 2. 선택지 다시 보여주기
+                    self.currentTopicCell?.clearVote()
+                    
+                }
+                .store(in: &cancellables)
+        }
     }
     
     override func bind() {
@@ -74,7 +89,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         bindReloadTopics()
         bindMoveTopic()
         bindTimer()
-        bindSelectionSuccess()
+        bindVoteSuccess()
         bindImageExpandNotification()
         bindFailVote()
         
@@ -111,11 +126,12 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
             }
         }
         
-        func bindSelectionSuccess() {
+        func bindVoteSuccess() {
             viewModel.successVote
-                .receive(on: RunLoop.main)
+                .receive(on: DispatchQueue.main)
                 .sink{ [weak self] choice in
-                    self?.currentTopicCell?.select(choice: choice)
+                    guard let self = self else { return }
+                    self.currentTopicCell?.select(choice: self.viewModel.currentTopic.choices[choice]!)
                 }
                 .store(in: &cancellables)
         }
@@ -174,15 +190,8 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         currentTopicCell = cell as? TopicDetailCollectionViewCell
-    }
-    
-    // clipsToBounds를 활용하여 토픽 전환(scroll)시 선택지 뷰가 셀 자체 크기를 넘기지 못하도록 한다.
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        currentTopicCell?.clipsToBounds = true
-    }
-    
-    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        currentTopicCell?.clipsToBounds = false
+        //셀이 다시 보여질 때마다 재로드 시킨다
+        currentTopicCell?.binding(data: viewModel.topics[indexPath.row])
     }
 }
 
@@ -197,7 +206,7 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
                 .startCommentBottomSheet(
                     standard: standardOfCommentBottomSheet(),
                     topicId: viewModel.currentTopic.id,
-                    choices: viewModel.currentTopic.choices
+                    choices: viewModel.currentTopic.choices.map{ $0.value }
                 )
         default:
             return
@@ -210,8 +219,13 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
 }
 
 extension HomeTabViewController: VoteDelegate {
-    func vote(choice: Choice.Option) {
-        print(choice)
-        viewModel.vote(choice: choice)
+    func vote(_ option: Choice.Option) {
+        print(option)
+        if viewModel.currentTopic.isVoted {
+            viewModel.revote(option)
+        }
+        else {
+            viewModel.vote(option)
+        }
     }
 }

@@ -12,23 +12,16 @@ import Domain
 import TopicFeatureInterface
 import FeatureDependency
 
-public protocol HomeTabViewModel: TopicPageControlViewModel, TimerControlViewModel, TopicVoteViewModel, TopicBottomSheetViewModel, ErrorHandleable {
+public protocol HomeTabViewModel: AnyObject, TopicPageControlViewModel, TimerControlViewModel, TopicVoteViewModel, TopicBottomSheetViewModel, ErrorHandleable {
     var currentTopic: TopicDetailItemViewModel { get }
     func viewDidLoad()
 }
 
-public protocol TopicBottomSheetViewModel {
-    var successTopicAction: PassthroughSubject<Topic.Action, Never> { get }
-    var canChoiceReset: Bool { get }
-    func hideTopic()
-    func reportTopic()
-    func resetChoice()
-}
-
 public protocol TopicVoteViewModel {
-    var successVote: AnyPublisher<Choice, Never> { get }
+    var successVote: PassthroughSubject<Choice.Option, Never> { get }
     var failVote: PassthroughSubject<Void, Never> { get }
-    func vote(choice: Choice.Option)
+    func vote(_ option: Choice.Option)
+    func revote(_ option: Choice.Option)
 }
 
 public protocol TopicPageControlViewModel {

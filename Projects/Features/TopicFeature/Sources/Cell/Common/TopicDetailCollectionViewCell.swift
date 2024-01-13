@@ -44,6 +44,10 @@ public class TopicDetailCollectionViewCell: BaseCollectionViewCell, Binding{
         choiceGroup.bChoiceView.removeContent()
     }
     
+    public override func style() {
+        clipsToBounds = true
+    }
+    
     public override func hierarchy() {
 
         baseView.addSubviews([etcGroup.realTimeTitleLabel, topicGroup.titleLabel, profileStackView, choiceGroup.swipeableView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.etcButton, chat])
@@ -222,7 +226,7 @@ public class TopicDetailCollectionViewCell: BaseCollectionViewCell, Binding{
                     completion: { [weak self] _ in
                         guard let self = self else { return }
                         initializeChoiceView()
-                        self.delegate?.vote(choice: option)
+                        self.delegate?.vote(option)
                     }
                 )
                 
@@ -249,12 +253,12 @@ extension TopicDetailCollectionViewCell {
     
     public func binding(data: TopicDetailItemViewModel) {
         if data.isVoted {
-            guard let choice = data.selectedOption else { return }
-            select(choice: choice)
+            guard let votedOption = data.votedOption, let votedChoice = data.choices[votedOption] else { return }
+            select(choice: votedChoice)
         }
         else {
-            choiceGroup.aChoiceView.fill(data.aOption)
-            choiceGroup.bChoiceView.fill(data.bOption)
+            choiceGroup.aChoiceView.fill(data.choices[.A]!)
+            choiceGroup.bChoiceView.fill(data.choices[.B]!)
             toggle(isVoted: false)
         }
         
@@ -269,6 +273,10 @@ extension TopicDetailCollectionViewCell {
     public func select(choice: Choice){
         choiceGroup.completeView.fill(choice: choice)
         toggle(isVoted: true)
+    }
+    
+    public func clearVote() {
+        toggle(isVoted: false)
     }
     
     private func toggle(isVoted value: Bool) {

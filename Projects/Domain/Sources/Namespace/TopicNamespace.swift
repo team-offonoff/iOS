@@ -43,7 +43,7 @@ extension Topic {
         case choiceA
         case choiceB
         case expandImage
-        case reset
+        case revote
         case report
         case hide
         case showBottomSheet

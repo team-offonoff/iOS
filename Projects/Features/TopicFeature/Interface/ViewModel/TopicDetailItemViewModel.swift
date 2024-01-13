@@ -20,9 +20,8 @@ public struct TopicDetailItemViewModel {
     public let deadline: Int
     public let chatCount: String
     public let likeCount: String
-    public let aOption: Choice
-    public let bOption: Choice
-    public var selectedOption: Choice?
+    public var votedOption: Choice.Option?
+    public let choices: [Choice.Option: Choice]
 }
 
 extension TopicDetailItemViewModel {
@@ -37,17 +36,16 @@ extension TopicDetailItemViewModel {
         self.deadline = topic.deadline
         self.chatCount = ABFormat.count(1000) + " 개"
         self.likeCount = ABFormat.count(1200) + " 명"
-        self.aOption = .init(id: 0, content: .init(text: "10년 전 과거로 가기", imageURL: nil), option: .A) //topic.choices.first(where: { $0.option == .A })!
-        self.bOption = .init(id: 0, content: .init(text: "10년 전 과거로 가기", imageURL: nil), option: .B)//topic.choices.first(where: { $0.option == .B })!
-        self.selectedOption = nil
+        self.votedOption = topic.selectedOption
+        self.choices = [
+            .A: .init(id: 0, content: .init(text: "10년 전 과거로 가기", imageURL: nil), option: .A), //topic.choices.first(where: { $0.option == .A })!
+            .B: .init(id: 0, content: .init(text: "10년 전 과거로 가기", imageURL: nil), option: .B)//topic.choices.first(where: { $0.option == .B })!
+        ]
+        
     }
     
     public var isVoted: Bool {
-        selectedOption != nil
-    }
-    
-    public var choices: [Choice] {
-        [aOption, bOption]
+        votedOption != nil
     }
 }
 

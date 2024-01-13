@@ -13,7 +13,7 @@ import Combine
 public final class ToastMessage {
     
     private init() {
-
+        register(message: "")
     }
     
     public static let shared: ToastMessage = ToastMessage()
@@ -97,9 +97,9 @@ public final class ToastMessage {
                             self.isAnimating = false
                             restart()
                         }
+                        self.topViewController?.isUserInteractionEnabled = true
                         self.topViewController = nil
                         self.toastMessageView.removeFromSuperview()
-                        self.topViewController?.isUserInteractionEnabled = true
                     }
                 )
             }
