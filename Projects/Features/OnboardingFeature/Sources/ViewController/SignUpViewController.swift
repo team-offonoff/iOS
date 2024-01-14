@@ -117,7 +117,7 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
     func bindMoveNext() {
         viewModel.moveNext = {
             DispatchQueue.main.async{
-                print("move home")
+                self.coordinator?.startTermsBottomSheet()
             }
         }
     }

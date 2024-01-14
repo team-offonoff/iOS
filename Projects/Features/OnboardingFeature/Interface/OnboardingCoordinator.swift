@@ -10,5 +10,6 @@ import FeatureDependency
 
 public protocol OnboardingCoordinator: Coordinator {
     func startSignUp()
+    func startTermsBottomSheet()
     func startHome()
 }
