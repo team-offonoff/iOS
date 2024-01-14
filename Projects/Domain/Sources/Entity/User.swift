@@ -12,16 +12,6 @@ import Core
 public struct User {
     
     public init(
-        memberId: Int,
-        joinStatus: JoinStatus
-    ) {
-        self.isNewMember = nil
-        self.memberId = memberId
-        self.joinStatus = joinStatus
-        self.accessToken = nil
-    }
-    
-    public init(
         isNewMember: Bool?,
         memberId: Int?,
         joinStatus: JoinStatus?,

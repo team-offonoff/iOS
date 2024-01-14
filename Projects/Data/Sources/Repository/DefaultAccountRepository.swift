@@ -39,4 +39,26 @@ public final class DefaultAuthRepository: AuthRepository {
             )
         }
     }
+    
+    public func registerTerms(request: RegisterTersmUseCaseRequestValue) -> NetworkResultPublisher<User?> {
+        
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = path("auth") + path("signup") + path("terms")
+        
+        guard let requestBody = try? JSONEncoder().encode(makeDTO()) else {
+            fatalError("json parsing error")
+        }
+        guard let urlRequest = urlComponents?.toURLRequest(method: .post, httpBody: requestBody) else {
+            fatalError("url parsing error")
+        }
+        
+        return dataTask(request: urlRequest, responseType: SignUpResponseDTO.self)
+        
+        func makeDTO() -> RegisterTermsRequestDTO {
+            .init(
+                memberId: request.memberId,
+                listenMarketing: request.listenMarketing
+            )
+        }
+    }
 }

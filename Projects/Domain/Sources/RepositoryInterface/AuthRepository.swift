@@ -11,4 +11,5 @@ import Core
 
 public protocol AuthRepository: Repository{
     func generateProfile(request: GenerateProfileUseCaseRequestValue) -> NetworkResultPublisher<User?>
+    func registerTerms(request: RegisterTersmUseCaseRequestValue) -> NetworkResultPublisher<User?>
 }
