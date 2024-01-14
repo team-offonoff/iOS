@@ -35,7 +35,7 @@ public final class DefaultAuthRepository: AuthRepository {
                 nickname: request.nickname,
                 birth: request.birth,
                 gender: request.gender.toDTO(),
-                job: request.job
+                job: request.job.rawValue //TODO: Key 값으로 변경 필요
             )
         }
     }

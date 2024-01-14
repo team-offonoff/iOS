@@ -31,14 +31,14 @@ public struct GenerateProfileUseCaseRequestValue {
     public let nickname: String
     public let birth: String
     public let gender: Gender
-    public let job: String
+    public let job: Job
     
     public init(
         memberId: Int,
         nickname: String,
         birth: String,
         gender: Gender,
-        job: String
+        job: Job
     ) {
         self.memberId = memberId
         self.nickname = nickname
