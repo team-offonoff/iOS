@@ -75,6 +75,7 @@ public final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
                     }
                 }
                 else if let error = result.error {
+                    UserManager.shared.memberId = error.payload
                     self.errorHandler.send(error)
                 }
             }
