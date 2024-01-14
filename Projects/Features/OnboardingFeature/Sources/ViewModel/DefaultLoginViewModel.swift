@@ -27,6 +27,7 @@ public final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
     
     public var moveHome: (() -> Void)?
     public var moveSignUp: (() -> Void)?
+    public var moveTermsBottomSheet: (() -> Void)?
     
     @Published private var kakaoUser: (oauthToken: KakaoSDKAuth.OAuthToken?, user: KakaoSDKUser.User?) = (nil, nil)
     public let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
@@ -66,6 +67,7 @@ public final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
                         self.moveSignUp?()
                     case .personalRegistered:
                         // 약관 동의 페이지로 이동
+                        self.moveTermsBottomSheet?()
                         break
                     case .complete:
                         // 홈 화면으로 이동
@@ -85,7 +87,7 @@ public final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
     //MARK: Kakao Login
     
     public func startKakaoLogin() {
-        
+
         if UserApi.isKakaoTalkLoginAvailable() {
             loginWithKakaoTalk()
         }
