@@ -12,6 +12,7 @@ import Domain
 import FeatureDependency
 
 public protocol SignUpViewModelInput {
+    var jobSubject: PassthroughSubject<Job, Never> { get }
     func input(_ input: SignUpViewModelInputValue)
 }
 
@@ -41,15 +42,9 @@ public protocol SignUpViewModelOutput {
     ///닉네임의 유효성과 닉네임이 유효하지 않은 경우의 에러 메시지를 방출
     var nicknameValidation: PassthroughSubject<(Bool, String?), Never> { get }
     var birthdayValidation: PassthroughSubject<(Bool, String?), Never> { get }
-    var canMove: PassthroughSubject<Bool, Never> { get }
-    var moveHome: (() -> Void)? { get set }
+    var canMove: CurrentValueSubject<Bool, Never> { get }
+    var moveNext: (() -> Void)? { get set }
 //    var failSignUp: PassthroughSubject<Void, Never> { get }
 }
-
-//public protocol JobSelectable {
-//    var jobs: [Job] { get }
-//    var selectedJob: CurrentValueSubject<Job?, Never> { get }
-//    func selectJob(_ job: Job)
-//}
 
 public typealias SignUpViewModel = SignUpViewModelInput & SignUpViewModelOutput & ErrorHandleable

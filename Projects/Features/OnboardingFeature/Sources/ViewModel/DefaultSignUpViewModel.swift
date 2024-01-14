@@ -26,7 +26,8 @@ public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
     
     //MARK: Output
     
-    public let canMove: PassthroughSubject<Bool, Never> = PassthroughSubject()
+    public let jobSubject: PassthroughSubject<Job, Never> = PassthroughSubject()
+    public let canMove: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     public let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     public let nicknameValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
     public let birthdayValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
@@ -35,7 +36,7 @@ public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
     public let nicknameLimitCount: Int = 8
     public let birthdayLimitCount: Int = 8
     
-    public var moveHome: (() -> Void)?
+    public var moveNext: (() -> Void)?
 }
 
 //MARK: Input
@@ -77,15 +78,25 @@ extension DefaultSignUpViewModel {
                     if birthday.count != self.birthdayLimitCount {
                         return (false, "* 생년월일을 8자로 입력해주세요.")
                     }
+                    else if wrongFormat() {
+                        return (false, "* 잘못된 날짜 형식입니다.")
+                    }
                     return (true, nil)
+                        
+                    func wrongFormat() -> Bool {
+                        let formatter = DateFormatter()
+                        //입력값 기준 포맷
+                        formatter.dateFormat = "yyyyMMdd"
+                        return  formatter.date(from: birthday) == nil
+                    }
                 }
                 
             }
             .store(in: &cancellable)
         
         nicknameValidation
-            .combineLatest(birthdayValidation, input.gender)
-            .sink{ [weak self] nickname, birthday, _ in
+            .combineLatest(birthdayValidation, input.gender, jobSubject)
+            .sink{ [weak self] nickname, birthday, gender, job in
                 
                 guard let self = self else { return }
                 
@@ -98,23 +109,24 @@ extension DefaultSignUpViewModel {
             .store(in: &cancellable)
         
         //signUpRequestValue 갱신을 위해 combine lastest로 데이터를 모으고, 조건을 검사한다.
-        canMove.combineLatest(input.nicknameEditingEnd, input.birthdayEditingEnd, input.gender)
-            .sink{ [weak self] canMove, nickname, birth, gender in
-                if canMove {
+        jobSubject.combineLatest(input.nicknameEditingEnd, input.birthdayEditingEnd, input.gender)
+            .sink{ [weak self] job, nickname, birth, gender in
+                guard let self = self else { return }
+                if self.canMove.value {
                     guard let memberId = UserManager.shared.memberId else { return }
-                    self?.signUpRequestValue = GenerateProfileUseCaseRequestValue(
+                    self.signUpRequestValue = GenerateProfileUseCaseRequestValue(
                         memberId: memberId,
                         nickname: nickname,
                         birth: birthFormat(),
                         gender: gender,
-                        job: ""
+                        job: job
                     )
                 }
                 else {
-                    self?.signUpRequestValue = nil
+                    self.signUpRequestValue = nil
                 }
                 
-                func birthFormat() -> String{
+                func birthFormat() -> String {
                     let formatter = DateFormatter()
                     //입력값 기준 포맷
                     formatter.dateFormat = "yyyyMMdd"
@@ -137,7 +149,7 @@ extension DefaultSignUpViewModel {
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {
-                    self.moveHome?()
+                    self.moveNext?()
                 }
                 else {
                     if let error = result.error {

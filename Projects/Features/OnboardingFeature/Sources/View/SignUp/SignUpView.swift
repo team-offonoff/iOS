@@ -51,7 +51,7 @@ public final class SignUpView: BaseView {
         return view
     }()
     let ctaButton: CTAButton = {
-        let button = CTAButton(title: "AB 시작하기")
+        let button = CTAButton(title: "다 입력 했어요")
         button.isEnabled = false
         return button
     }()
