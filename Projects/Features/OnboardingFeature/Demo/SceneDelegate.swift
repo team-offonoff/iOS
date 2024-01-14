@@ -10,10 +10,12 @@ import Foundation
 import UIKit
 import KakaoSDKAuth
 import OnboardingFeature
+import FeatureDependency
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    var coordinator: Coordinator?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
@@ -22,8 +24,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: scene)
         window?.windowScene = scene
         
-        let onboardingCoordinator = DefaultOnboardingCoordinator(window: window)
-        onboardingCoordinator.start()
+        coordinator = DefaultOnboardingCoordinator(window: window)
+        coordinator?.start()
         
         window?.overrideUserInterfaceStyle = .light
         window?.makeKeyAndVisible()
