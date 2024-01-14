@@ -12,6 +12,7 @@ import UIKit
 public protocol ABTextFieldViewConfiguration {
     var backgroundColor: UIColor { get }
     var textColor: UIColor { get }
+    var font: UIFont { get }
     var countColor: UIColor { get }
     var countFont: UIFont { get }
     var errorColor: UIColor { get }
@@ -30,6 +31,7 @@ public protocol ABTextFieldViewStateConfiguration {
 public struct DefaultABTextFieldViewConfiguration: ABTextFieldViewConfiguration {
     public let backgroundColor: UIColor = Color.subNavy2.withAlphaComponent(0.4)
     public let textColor: UIColor = Color.white
+    public let font: UIFont = Pretendard.semibold14.font
     public let countColor: UIColor = Color.subPurple.withAlphaComponent(0.6)
     public let countFont: UIFont = Pretendard.semibold14.font
     public let errorColor: UIColor = Color.subPurple2

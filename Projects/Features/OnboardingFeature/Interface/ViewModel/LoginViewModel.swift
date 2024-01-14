@@ -29,6 +29,7 @@ public protocol LoginViewModelInput: KakaoLoginDelegate, AppleLoginDelegate {
 public protocol LoginViewModelOutput {
     var moveHome: (() -> Void)? { get set }
     var moveSignUp: (() -> Void)? { get set }
+    var moveTermsBottomSheet: (() -> Void)? { get set }
 }
 
 public typealias LoginViewModel = LoginViewModelInput & LoginViewModelOutput & ErrorHandleable

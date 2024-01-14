@@ -12,10 +12,16 @@ import Domain
 struct SignUpResponseDTO: Decodable {
     let memberId : Int
     let joinStatus : String
+    let accessToken: String?
 }
 
 extension SignUpResponseDTO: Domainable {
     func toDomain() -> User {
-        .init(memberId: memberId, joinStatus: JoinStatus.toDomain(joinStatus))
+        .init(
+            isNewMember: nil,
+            memberId: memberId,
+            joinStatus: JoinStatus.toDomain(joinStatus),
+            accessToken: accessToken
+        )
     }
 }

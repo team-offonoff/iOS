@@ -10,5 +10,6 @@ import Foundation
 import Core
 
 public protocol AuthRepository: Repository{
-    func signUp(request: SignUpUseCaseRequestValue) -> NetworkResultPublisher<User?>
+    func generateProfile(request: GenerateProfileUseCaseRequestValue) -> NetworkResultPublisher<User?>
+    func registerTerms(request: RegisterTersmUseCaseRequestValue) -> NetworkResultPublisher<User?>
 }

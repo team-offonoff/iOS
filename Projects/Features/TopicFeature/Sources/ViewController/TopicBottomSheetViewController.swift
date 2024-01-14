@@ -14,7 +14,7 @@ import TopicFeatureInterface
 import FeatureDependency
 import Domain
 
-public final class TopicBottomSheetViewController: BaseBottomSheetViewController {
+public final class TopicBottomSheetViewController: ActionBottomSheetViewController {
     
     public init(viewModel: TopicBottomSheetViewModel){
         self.viewModel = viewModel

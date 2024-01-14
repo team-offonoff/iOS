@@ -15,7 +15,7 @@ public final class DefaultAuthRepository: AuthRepository {
     
     public init() { }
     
-    public func signUp(request: SignUpUseCaseRequestValue) -> NetworkResultPublisher<User?> {
+    public func generateProfile(request: GenerateProfileUseCaseRequestValue) -> NetworkResultPublisher<User?> {
         
         var urlComponents = networkService.baseUrlComponents
         urlComponents?.path = path("auth") + path("signup") + path("profile")
@@ -35,7 +35,29 @@ public final class DefaultAuthRepository: AuthRepository {
                 nickname: request.nickname,
                 birth: request.birth,
                 gender: request.gender.toDTO(),
-                job: request.job
+                job: request.job.rawValue //TODO: Key 값으로 변경 필요
+            )
+        }
+    }
+    
+    public func registerTerms(request: RegisterTersmUseCaseRequestValue) -> NetworkResultPublisher<User?> {
+        
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = path("auth") + path("signup") + path("terms")
+        
+        guard let requestBody = try? JSONEncoder().encode(makeDTO()) else {
+            fatalError("json parsing error")
+        }
+        guard let urlRequest = urlComponents?.toURLRequest(method: .post, httpBody: requestBody) else {
+            fatalError("url parsing error")
+        }
+        
+        return dataTask(request: urlRequest, responseType: SignUpResponseDTO.self)
+        
+        func makeDTO() -> RegisterTermsRequestDTO {
+            .init(
+                memberId: request.memberId,
+                listenMarketing: request.listenMarketing
             )
         }
     }

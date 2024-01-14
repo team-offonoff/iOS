@@ -25,6 +25,7 @@ extension NetworkErrorResponeDTO {
         let message: String
         let hint: String
         let httpCode: Int
+        let payload: Int?
     }
 }
 
@@ -33,7 +34,8 @@ extension NetworkErrorResponeDTO: Domainable {
     public func toDomain() -> ErrorContent {
         .init(
             code: NetworkServiceError(rawValue: code)!,
-            message: content.message
+            message: content.message,
+            payload: content.payload
         )
     }
 }

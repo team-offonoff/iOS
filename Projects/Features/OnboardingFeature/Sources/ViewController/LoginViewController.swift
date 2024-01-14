@@ -53,6 +53,11 @@ class LoginViewController: BaseViewController<BaseHeaderView, LoginView, Default
                 self?.coordinator?.startSignUp()
             }
         }
+        viewModel.moveTermsBottomSheet = {
+            DispatchQueue.main.async { [weak self] in
+                self?.coordinator?.startTermsBottomSheet()
+            }
+        }
     }
     
     @objc private func startKakaoLogin(_ recognizer: UITapGestureRecognizer){

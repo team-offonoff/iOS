@@ -1,5 +1,5 @@
 //
-//  SignUpUseCase.swift
+//  GenerateProfileUseCase.swift
 //  Domain
 //
 //  Created by 박소윤 on 2023/12/23.
@@ -8,11 +8,11 @@
 
 import Foundation
 
-public protocol SignUpUseCase: UseCase {
-    func execute(request: SignUpUseCaseRequestValue) -> NetworkResultPublisher<User?>
+public protocol GenerateProfileUseCase: UseCase {
+    func execute(request: GenerateProfileUseCaseRequestValue) -> NetworkResultPublisher<User?>
 }
 
-public final class DefaultSignUpUseCase: SignUpUseCase {
+public final class DefaultGenerateProfileUseCase: GenerateProfileUseCase {
     
     private let repository: AuthRepository
     
@@ -20,25 +20,25 @@ public final class DefaultSignUpUseCase: SignUpUseCase {
         self.repository = repository
     }
     
-    public func execute(request: SignUpUseCaseRequestValue) -> NetworkResultPublisher<User?> {
-        return repository.signUp(request: request)
+    public func execute(request: GenerateProfileUseCaseRequestValue) -> NetworkResultPublisher<User?> {
+        return repository.generateProfile(request: request)
     }
 }
 
-public struct SignUpUseCaseRequestValue {
+public struct GenerateProfileUseCaseRequestValue {
     
     public let memberId: Int
     public let nickname: String
     public let birth: String
     public let gender: Gender
-    public let job: String
+    public let job: Job
     
     public init(
         memberId: Int,
         nickname: String,
         birth: String,
         gender: Gender,
-        job: String
+        job: Job
     ) {
         self.memberId = memberId
         self.nickname = nickname

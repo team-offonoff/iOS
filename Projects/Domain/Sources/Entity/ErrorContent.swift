@@ -12,12 +12,15 @@ public struct ErrorContent {
     
     public init(
         code: NetworkServiceError,
-        message: String
+        message: String,
+        payload: Int?
     ) {
         self.code = code
         self.message = message
+        self.payload = payload
     }
     
     public let code: NetworkServiceError
     public let message: String
+    public let payload: Int?
 }

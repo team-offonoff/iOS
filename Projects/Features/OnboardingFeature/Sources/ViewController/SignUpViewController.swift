@@ -11,6 +11,8 @@ import UIKit
 import ABKit
 import FeatureDependency
 import OnboardingFeatureInterface
+import Domain
+import Core
 
 public final class SignUpViewController: BaseViewController<BaseHeaderView, SignUpView, DefaultOnboardingCoordinator> {
     
@@ -28,20 +30,27 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
     public override func initialize() {
         
         setNicknameLimitCount()
+        addJobMenu()
         
-        mainView.jobView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showBottomSheet)))
+        func addJobMenu() {
+            mainView.jobView.contentView.menu = {
+                let children = Job.allCases.reversed().map{ type in
+                    let action = UIAction(title: type.rawValue, handler: { action in
+                        self.viewModel.jobSubject.send(type)
+                    })
+                    return action
+                }
+                return UIMenu(title: "", children: children)
+            }()
+        }
         
         func setNicknameLimitCount() {
             mainView.nicknameView.contentView.limitCount = viewModel.nicknameLimitCount
         }
     }
-    
+
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
-    }
-    
-    @objc private func showBottomSheet() {
-
     }
     
     public override func bind() {
@@ -49,8 +58,9 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
         input()
         bindNicknameValidation()
         bindBirthdayValidation()
+        bindJobSelection()
         bindCanMove()
-        bindMoveHome()
+        bindMoveNext()
         bindError()
         
         func input() {
@@ -87,6 +97,14 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
             .store(in: &cancellables)
     }
     
+    func bindJobSelection() {
+        viewModel.jobSubject
+            .sink{ [weak self] job in
+                self?.mainView.jobView.contentView.update(text: job.rawValue)
+            }
+            .store(in: &cancellables)
+    }
+    
     func bindCanMove() {
         viewModel.canMove
             .sink{ [weak self] canMove in
@@ -96,16 +114,17 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
             .store(in: &cancellables)
     }
     
-    func bindMoveHome() {
-        viewModel.moveHome = { //[weak self] in
+    func bindMoveNext() {
+        viewModel.moveNext = {
             DispatchQueue.main.async{
-                print("move home")
+                self.coordinator?.startTermsBottomSheet()
             }
         }
     }
     
     func bindError() {
         viewModel.errorHandler
+            .receive(on: DispatchQueue.main)
             .sink{ error in
                 ToastMessage.shared.register(message: error.message)
             }

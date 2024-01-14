@@ -30,6 +30,7 @@ public class DefaultOnboardingCoordinator: OnboardingCoordinator {
     }
     
     private let navigationController: UINavigationController
+    private let authRepository: AuthRepository = DefaultAuthRepository()
     
     public func start() {
         
@@ -57,7 +58,22 @@ public class DefaultOnboardingCoordinator: OnboardingCoordinator {
         navigationController.pushViewController(viewController, animated: true)
         
         func getViewModel() -> SignUpViewModel {
-            DefaultSignUpViewModel(signUpUseCase: DefaultSignUpUseCase(repository: DefaultAuthRepository()))
+            DefaultSignUpViewModel(signUpUseCase: DefaultGenerateProfileUseCase(repository: authRepository))
+        }
+    }
+    
+    public func startTermsBottomSheet() {
+        
+        let bottomSheetViewController = TermsAgreementBottomSheetViewController(viewModel: viewModel())
+        bottomSheetViewController.coordinator = self
+        navigationController.present(bottomSheetViewController, animated: true)
+        
+        func viewModel() -> TermsAgreementViewModel {
+            DefaultTermsAgreementViewModel(registerTermsUseCase: useCase())
+        }
+        
+        func useCase() -> any RegisterTersmUseCase {
+            DefaultRegisterTersmUseCase(repository: authRepository)
         }
     }
     
