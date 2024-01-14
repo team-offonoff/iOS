@@ -11,15 +11,24 @@ import Combine
 import OnboardingFeatureInterface
 import FeatureDependency
 import Domain
+import Core
 
 final class DefaultTermsAgreementViewModel: BaseViewModel, TermsAgreementViewModel {
     
+    init(registerTermsUseCase: any RegisterTersmUseCase) {
+        self.registerTermsUseCase = registerTermsUseCase
+    }
+    
+    private let registerTermsUseCase: any RegisterTersmUseCase
+    
+    //MARK: Output
     let allAgreementSubject: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     let serviceUseSubject: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     let privacySubject: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     let marketingSubject: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
-    
     let canMove: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
+    
     var successRegister: (() -> Void)?
     
     override func bind() {
@@ -45,6 +54,8 @@ final class DefaultTermsAgreementViewModel: BaseViewModel, TermsAgreementViewMod
             .store(in: &cancellable)
     }
     
+    //MARK: Input
+    
     func toggleAll() {
         let newValue = !allAgreementSubject.value
         [serviceUseSubject, privacySubject, marketingSubject].forEach{
@@ -58,5 +69,27 @@ final class DefaultTermsAgreementViewModel: BaseViewModel, TermsAgreementViewMod
         case .privacy:      privacySubject.send(!privacySubject.value)
         case .marketing:    marketingSubject.send(!marketingSubject.value)
         }
+    }
+    
+    func register() {
+        guard let memberId = UserManager.shared.memberId else { return }
+        registerTermsUseCase
+            .execute(request: .init(
+                memberId: memberId,
+                listenMarketing: marketingSubject.value
+            ))
+            .sink{ [weak self] result in
+                guard let self = self else { return }
+                if result.isSuccess, let data = result.data {
+                    defer {
+                        UserManager.shared.accessToken = data.accessToken
+                    }
+                    self.successRegister?()
+                }
+                else if let error = result.error {
+                    self.errorHandler.send(error)
+                }
+            }
+            .store(in: &cancellable)
     }
 }

@@ -23,7 +23,8 @@ final class TermsAgreementBottomSheetViewController: BaseBottomSheetViewControll
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let viewModel: TermsAgreementViewModel
+    weak var coordinator: OnboardingCoordinator?
+    private var viewModel: TermsAgreementViewModel
     
     override func style() {
         super.style()
@@ -48,6 +49,12 @@ final class TermsAgreementBottomSheetViewController: BaseBottomSheetViewControll
                 }
                 .store(in: &cancellable)
         }
+        
+        mainView.ctaButton.tapPublisher
+            .sink{ [weak self] _ in
+                self?.viewModel.register()
+            }
+            .store(in: &cancellable)
     }
     
     override func bind() {
@@ -85,5 +92,13 @@ final class TermsAgreementBottomSheetViewController: BaseBottomSheetViewControll
                 self.mainView.ctaButton.isEnabled = value
             }
             .store(in: &cancellable)
+        
+        viewModel.successRegister = {
+            DispatchQueue.main.async {
+                self.dismiss(animated: true) {
+                    self.coordinator?.startHome()
+                }
+            }
+        }
     }
 }

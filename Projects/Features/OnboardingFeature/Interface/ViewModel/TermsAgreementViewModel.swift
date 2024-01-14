@@ -7,14 +7,16 @@
 //
 
 import Foundation
-import Domain
 import Combine
+import FeatureDependency
+import Domain
 
-public typealias TermsAgreementViewModel = TermsAgreementViewModelInput & TermsAgreementViewModelOutput
+public typealias TermsAgreementViewModel = TermsAgreementViewModelInput & TermsAgreementViewModelOutput & ErrorHandleable
 
 public protocol TermsAgreementViewModelInput {
     func toggleAll()
     func toggle(term: Term)
+    func register()
 }
 
 public protocol TermsAgreementViewModelOutput {
@@ -23,5 +25,5 @@ public protocol TermsAgreementViewModelOutput {
     var privacySubject: CurrentValueSubject<Bool, Never> { get }
     var marketingSubject: CurrentValueSubject<Bool, Never> { get }
     var canMove: CurrentValueSubject<Bool, Never> { get }
-    var successRegister: (() -> Void)? { get }
+    var successRegister: (() -> Void)? { get set }
 }
