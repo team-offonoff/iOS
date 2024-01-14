@@ -15,7 +15,7 @@ public final class DefaultAuthRepository: AuthRepository {
     
     public init() { }
     
-    public func signUp(request: SignUpUseCaseRequestValue) -> NetworkResultPublisher<User?> {
+    public func generateProfile(request: GenerateProfileUseCaseRequestValue) -> NetworkResultPublisher<User?> {
         
         var urlComponents = networkService.baseUrlComponents
         urlComponents?.path = path("auth") + path("signup") + path("profile")

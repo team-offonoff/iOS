@@ -16,13 +16,13 @@ import Core
 public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
     
     public init(
-        signUpUseCase: any SignUpUseCase
+        signUpUseCase: any GenerateProfileUseCase
     ){
         self.signUpUseCase = signUpUseCase
     }
     
-    private let signUpUseCase: any SignUpUseCase
-    private var signUpRequestValue: SignUpUseCaseRequestValue?
+    private let signUpUseCase: any GenerateProfileUseCase
+    private var signUpRequestValue: GenerateProfileUseCaseRequestValue?
     
     //MARK: Output
     
@@ -102,7 +102,7 @@ extension DefaultSignUpViewModel {
             .sink{ [weak self] canMove, nickname, birth, gender in
                 if canMove {
                     guard let memberId = UserManager.shared.memberId else { return }
-                    self?.signUpRequestValue = SignUpUseCaseRequestValue(
+                    self?.signUpRequestValue = GenerateProfileUseCaseRequestValue(
                         memberId: memberId,
                         nickname: nickname,
                         birth: birthFormat(),
