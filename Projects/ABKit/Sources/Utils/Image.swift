@@ -19,6 +19,7 @@ public struct Image{
     public static let down = UIImage.load(name: "down")
     public static let back = UIImage.load(name: "back")
     public static let exit = UIImage.load(name: "exit")
+    public static let dropdown = UIImage.load(name: "dropdown")
     
     public static let checkbox = UIImage.load(name: "checkbox")
     public static let checkboxFill = UIImage.load(name: "checkbox_fill")

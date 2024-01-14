@@ -21,7 +21,16 @@ public final class DropDownView: ABTextFieldView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @Published public var viewState: State = .noraml
+    public var menu: UIMenu? {
+        didSet {
+            backButton.menu = menu
+        }
+    }
+    private let backButton: UIButton = {
+        let button = UIButton()
+        button.showsMenuAsPrimaryAction = true
+        return button
+    }()
     private var cancellable: Set<AnyCancellable> = []
     
     public override func initialize() {
@@ -30,7 +39,13 @@ public final class DropDownView: ABTextFieldView {
         
         addBackButton()
         setRightView()
-        setHeight()
+        
+        func addBackButton() {
+            addSubview(backButton)
+            backButton.snp.makeConstraints{
+                $0.top.leading.trailing.bottom.equalToSuperview()
+            }
+        }
         
         func setRightView() {
             let arrowImage = UIImageView(image: Image.dropdown.withTintColor(Color.subPurple))
