@@ -34,6 +34,7 @@ public class DefaultTabCoordinator: TabCoordinator {
     }
     
     private var coordinators: [Coordinator] = []
+    private var topicGenerateCoordinator: TopicGenerateCoordinator?
     
     public func start() {
         window?.rootViewController = tabBarController
@@ -78,9 +79,9 @@ public class DefaultTabCoordinator: TabCoordinator {
 //        let userCoordinator: HomeCoordinator = DefaultHomeCoordinator(navigationController: userTabNavigationController)
 //        userCoordinator.start()
     }
-    
+
     public func startTopicGenerate() {
-        let topicGenerateCoordinator: TopicGenerateCoordinator = DefaultTopicGenerateCoordinator(rootViewController: tabBarController)
-        topicGenerateCoordinator.start()
+        topicGenerateCoordinator = DefaultTopicGenerateCoordinator(rootViewController: tabBarController)
+        topicGenerateCoordinator?.start()
     }
 }
