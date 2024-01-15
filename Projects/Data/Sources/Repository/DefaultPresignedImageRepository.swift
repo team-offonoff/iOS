@@ -47,14 +47,15 @@ final class DefaultPresignedImageRepository: PresignedImageRepository {
             throw NetworkServiceError.IMAGE_UPLOAD_FAIL
         }
         
-        let urlComponents = URLComponents(string: String(url.split(separator: "?").first!))
+        let urlComponents = URLComponents(string: url)
         
         guard let urlRequest = urlComponents?.toURLRequest(method: .put, httpBody: image.jpegData(compressionQuality: 1), contentType: "image/jpeg") else {
             fatalError("url parsing error")
         }
         
-        if await networkService.dataTask(request: urlRequest, type: EmptyData.self).isSuccess {
-            return url
+        if await networkService.dataTask(request: urlRequest, type: EmptyData.self, requireToken: false).isSuccess {
+            //쿼리스트링을 제외한 URL을 반환한다
+            return String(url.split(separator: "?").first!)
         } else {
             throw NetworkServiceError.IMAGE_UPLOAD_FAIL
         }

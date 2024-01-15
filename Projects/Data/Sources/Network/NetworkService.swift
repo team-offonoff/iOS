@@ -32,12 +32,13 @@ public final class NetworkService {
         URLComponents(string: baseURL)
     }
     
-    public func dataTask<DTO: Decodable>(request: URLRequest, type: DTO.Type) async -> NetworkServiceResult<DTO?> {
+    public func dataTask<DTO: Decodable>(request: URLRequest, type: DTO.Type, requireToken: Bool = true) async -> NetworkServiceResult<DTO?> {
 
         print("🌐 " + (request.httpMethod ?? "") + ": " + String(request.url?.absoluteString ?? ""))
 
         do{
-            let (data, response) = try await URLSession.shared.data(for: addToken(to: request))
+            let request = requireToken ? addToken(to: request) : request
+            let (data, response) = try await URLSession.shared.data(for: request)
             return try mapResult(data: data, response: response)
         } catch {
             return (false, nil, nil)
