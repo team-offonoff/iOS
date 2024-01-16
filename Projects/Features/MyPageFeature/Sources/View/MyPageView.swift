@@ -47,7 +47,7 @@ final class MyPageView: BaseView {
         stackView.alignment = .leading
         return stackView
     }()
-    let modifyInformationSection: ModifyInformationSection = ModifyInformationSection()
+    let modifyInformationSection: MoveCell = MoveCell(title: "내 정보 수정")
     private let separatorLine1: SeparatorLine = SeparatorLine(color: Color.white.withAlphaComponent(0.1), height: 1)
     let termSection: UILabel = {
         let label = UILabel()
@@ -96,10 +96,19 @@ final class MyPageView: BaseView {
 
 extension MyPageView {
     
-    final class ModifyInformationSection: BaseStackView {
-        private let titleLabel: UILabel = {
+    class MoveCell: BaseStackView {
+        
+        init(title: String) {
+            super.init()
+            titleLabel.text = title
+        }
+        
+        required init(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        let titleLabel: UILabel = {
             let label = UILabel()
-            label.text = "내 정보 수정"
             label.textColor = Color.white
             label.setTypo(Pretendard.regular16)
             return label

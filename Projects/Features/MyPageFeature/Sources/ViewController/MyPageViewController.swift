@@ -71,8 +71,7 @@ final class MyPageViewController: BaseViewController<HeaderView, MyPageView, Def
             coordinator?.startModifyInformation()
             
         case mainView.termSection:
-            break
-//            coordinator.startTerm()
+            coordinator?.startTerm()
             
         case mainView.logoutSection:
             break

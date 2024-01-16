@@ -51,4 +51,9 @@ public final class DefaultMyPageCoordinator: MyPageCoordinator {
         let bottomSheetViewController = ProfileImageDeleteBottomSheetViewController(viewModel: myPageViewModel)
         navigationController.present(bottomSheetViewController, animated: true)
     }
+    
+    public func startTerm() {
+        let viewController = TermListViewController()
+        navigationController.pushViewController(viewController, animated: true)
+    }
 }
