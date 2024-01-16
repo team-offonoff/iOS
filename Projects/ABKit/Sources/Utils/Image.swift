@@ -24,6 +24,8 @@ public struct Image{
     public static let checkbox = UIImage.load(name: "checkbox")
     public static let checkboxFill = UIImage.load(name: "checkbox_fill")
     
+    public static let modifyProfileImage = UIImage.load(name: "modify_profile_image")
+    
     
     //MARK: Login
     
