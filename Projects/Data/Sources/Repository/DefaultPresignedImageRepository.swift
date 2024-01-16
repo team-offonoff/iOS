@@ -10,15 +10,7 @@ import Foundation
 import UIKit
 import Domain
 
-protocol PresignedImageRepository: Repository {
-    func upload(bucket: ImageBucket, request: UIImage) async throws -> String
-}
-
-enum ImageBucket {
-    
-    case profile
-    case topic
-    
+extension ImageBucket {
     var method: HTTPMethod {
         switch self {
         case .profile, .topic:      return .post
@@ -33,13 +25,13 @@ enum ImageBucket {
     }
 }
 
-final class DefaultPresignedImageRepository: PresignedImageRepository {
+public final class DefaultPresignedImageRepository: PresignedImageRepository {
 
     private let networkService: NetworkService = NetworkService.shared
     
     public init() { }
     
-    func upload(bucket: ImageBucket, request image: UIImage) async throws -> String {
+    public func upload(bucket: ImageBucket, request image: UIImage) async throws -> String {
 
         let response = await requestPresignedUrl()
         
