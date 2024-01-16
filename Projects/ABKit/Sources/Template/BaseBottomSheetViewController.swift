@@ -39,7 +39,7 @@ open class BaseBottomSheetViewController<V: UIView>: UIViewController {
             guard let sheetPresentationController = sheetPresentationController else { return }
 
             let detent = UISheetPresentationController.Detent.custom(resolver: { _ in
-                return self.detent()
+                return self.detent() + self.insets.bottom + (Device.safeAreaInsets?.bottom ?? 0)
             })
 
             sheetPresentationController.prefersGrabberVisible = false
