@@ -63,9 +63,9 @@ open class BaseBottomSheetViewController<V: UIView>: UIViewController {
     }
     
     open func style() {
-        view.layer.cornerRadius = 24
-        view.layer.masksToBounds = true
-        view.backgroundColor = Color.white
+        mainView.layer.cornerRadius = 24
+        mainView.layer.masksToBounds = true
+        mainView.backgroundColor = Color.white
     }
     
     open func initialize() {
