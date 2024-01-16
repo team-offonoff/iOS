@@ -107,6 +107,7 @@ open class ABTextFieldView: BaseStackView {
             textField.backgroundColor = configuration.backgroundColor
             textField.textColor = configuration.textColor
             textField.font = configuration.font
+            textField.customPlaceholder(font: configuration.font)
             countLabel.textColor = configuration.countColor
             countLabel.font = configuration.countFont
             errorLabel.textColor = configuration.errorColor
