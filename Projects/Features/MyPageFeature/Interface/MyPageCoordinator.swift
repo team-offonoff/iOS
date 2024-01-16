@@ -11,4 +11,6 @@ import FeatureDependency
 
 public protocol MyPageCoordinator: Coordinator {
     func startModifyInformation()
+    func startProfileImageActionBottomSheet()
+    func startDeleteProfileImageBottomSheet()
 }

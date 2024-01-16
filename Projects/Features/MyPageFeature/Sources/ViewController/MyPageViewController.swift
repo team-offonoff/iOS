@@ -16,7 +16,8 @@ import PhotosUI
 
 final class MyPageViewController: BaseViewController<HeaderView, MyPageView, DefaultMyPageCoordinator> {
     
-    init() {
+    init(viewModel: any MyPageViewModel) {
+        self.viewModel = viewModel
         super.init(headerView: HeaderView(title: "MY"), mainView: MyPageView())
     }
     
