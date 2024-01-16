@@ -13,10 +13,29 @@ import Domain
 
 public typealias ModifyUserInformationViewModel = ModifyUserInformationViewModelInput & ModifyUserInformationViewModelOutput
 
+public struct ModifyUserInformationViewModelInputValue {
+    
+    public init(
+        nicknameEditingEnd: AnyPublisher<String, Never>,
+        registerTap: AnyPublisher<Void, Never>
+    ) {
+        self.nicknameEditingEnd = nicknameEditingEnd
+        self.registerTap = registerTap
+    }
+    
+    public let nicknameEditingEnd: AnyPublisher<String, Never>
+    public let registerTap: AnyPublisher<Void, Never>
+}
+
 public protocol ModifyUserInformationViewModelInput {
     var jobSubject: PassthroughSubject<Job, Never> { get }
+    func input(_ input: ModifyUserInformationViewModelInputValue)
 }
 
 public protocol ModifyUserInformationViewModelOutput {
+    var nicknameLimitCount: Int { get }
+    var nicknameValidation: PassthroughSubject<(Bool, String?), Never> { get }
     var jobSubject: PassthroughSubject<Job, Never> { get }
+    var canMove: CurrentValueSubject<Bool, Never> { get }
+    var successRegister: (() -> Void)? { get set }
 }

@@ -24,11 +24,16 @@ final class ModifyUserInformationViewController: BaseViewController<NavigateHead
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let viewModel: any ModifyUserInformationViewModel
+    private var viewModel: any ModifyUserInformationViewModel
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
     
     override func initialize() {
 
         jobMenu()
+        nicknameLimitCount()
         
         func jobMenu() {
             mainView.jobView.contentView.menu = {
@@ -41,11 +46,39 @@ final class ModifyUserInformationViewController: BaseViewController<NavigateHead
                 return UIMenu(title: "", children: children)
             }()
         }
+        
+        func nicknameLimitCount() {
+            mainView.nicknameView.contentView.limitCount = viewModel.nicknameLimitCount
+        }
     }
     
     override func bind() {
         
+        input()
+        bindNicknameValidation()
         bindJobSelection()
+        bindCanMove()
+        bindSuccessRegister()
+        
+        func input() {
+            viewModel.input(
+                ModifyUserInformationViewModelInputValue(
+                    nicknameEditingEnd: mainView.nicknameView.contentView.textField.publisher(for: .editingDidEnd),
+                    registerTap: mainView.ctaButton.tapPublisher
+                )
+            )
+        }
+        
+        func bindNicknameValidation() {
+            viewModel.nicknameValidation
+                .sink{ [weak self] (isValid, message) in
+                    guard let self = self else { return }
+                    if let message = message {
+                        self.mainView.nicknameView.contentView.error(message: message)
+                    }
+                }
+                .store(in: &cancellables)
+        }
         
         func bindJobSelection() {
             viewModel.jobSubject
@@ -53,6 +86,23 @@ final class ModifyUserInformationViewController: BaseViewController<NavigateHead
                     self?.mainView.jobView.contentView.update(text: job.rawValue)
                 }
                 .store(in: &cancellables)
+        }
+        
+        func bindCanMove() {
+            viewModel.canMove
+                .sink{ [weak self] canMove in
+                    guard let self = self else { return }
+                    self.mainView.ctaButton.isEnabled = canMove
+                }
+                .store(in: &cancellables)
+        }
+        
+        func bindSuccessRegister() {
+            viewModel.successRegister = {
+                DispatchQueue.main.async{
+                   
+                }
+            }
         }
     }
 }
