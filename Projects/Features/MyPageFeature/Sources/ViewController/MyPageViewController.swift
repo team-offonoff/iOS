@@ -30,12 +30,20 @@ final class MyPageViewController: BaseViewController<HeaderView, MyPageView, Def
     override func initialize() {
         
         addGalleryNotificationObserver()
+        addSectionGestureRecognize()
         
         mainView.imageModifyButton.tapPublisher
             .sink{ [weak self] _ in
                 self?.coordinator?.startProfileImageActionBottomSheet()
             }
             .store(in: &cancellables)
+        
+        func addSectionGestureRecognize() {
+            [mainView.modifyInformationSection, mainView.termSection, mainView.logoutSection].forEach{
+                $0.isUserInteractionEnabled = true
+                $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapSection)))
+            }
+        }
         
         func addGalleryNotificationObserver() {
             NotificationCenter.default.publisher(for: Notification.Name(Profile.Image.Action.gallery.identifier))
@@ -53,6 +61,24 @@ final class MyPageViewController: BaseViewController<HeaderView, MyPageView, Def
                     }
                 }
                 .store(in: &cancellables)
+        }
+    }
+    
+    @objc private func tapSection(_ recognizer: UITapGestureRecognizer) {
+        switch recognizer.view {
+            
+        case mainView.modifyInformationSection:
+            coordinator?.startModifyInformation()
+            
+        case mainView.termSection:
+            break
+//            coordinator.startTerm()
+            
+        case mainView.logoutSection:
+            break
+            
+        default:
+            return
         }
     }
     
