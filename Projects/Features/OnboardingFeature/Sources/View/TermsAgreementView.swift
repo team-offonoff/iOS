@@ -9,28 +9,9 @@
 import Foundation
 import UIKit
 import ABKit
+import FeatureDependency
 import Domain
 import Combine
-
-extension Term {
-    
-    var title: String {
-        switch self {
-        case .serviceUse:   return "서비스 이용 약관"
-        case .privacy:      return "개인정보 수집 및 이용 동의"
-        case .marketing:    return "마케팅 정보 수신 동의"
-        }
-    }
-    
-    var isEssential: Bool {
-        switch self {
-        case .serviceUse, .privacy:
-            return true
-        case .marketing:
-            return false
-        }
-    }
-}
 
 final class TermsAgreementView: BaseView {
     
