@@ -14,4 +14,5 @@ public protocol HomeCoordinator: Coordinator {
     func startTopicBottomSheet()
     func startCommentBottomSheet(standard: CGFloat, topicId: Int, choices: [Choice])
     func startImagePopUp(choice: Choice)
+    func startAlarm()
 }

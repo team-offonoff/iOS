@@ -79,4 +79,9 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         popUpViewController.modalPresentationStyle = .overFullScreen
         navigationController.present(popUpViewController, animated: false)
     }
+    
+    public func startAlarm() {
+        let viewController = AlarmViewController()
+        navigationController.pushViewController(viewController, animated: true)
+    }
 }
