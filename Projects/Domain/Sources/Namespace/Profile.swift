@@ -11,7 +11,6 @@ import Foundation
 public enum Profile {
     public enum Image {
         public enum Action: CaseIterable, Identifiable {
-            case takePicture
             case gallery
             case delete
         }
