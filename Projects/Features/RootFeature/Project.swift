@@ -7,7 +7,8 @@ let project = Project.makeModule(
     targets: [.staticFramework],
     internalDependencies: [
         .Features.Home.Feature,
-        .Features.Onboarding.Feature
+        .Features.Onboarding.Feature,
+        .Features.MyPage.Feature
     ]
 )
 

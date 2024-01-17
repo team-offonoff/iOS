@@ -10,15 +10,7 @@ import Foundation
 import UIKit
 import Domain
 
-protocol PresignedImageRepository: Repository {
-    func upload(bucket: ImageBucket, request: UIImage) async throws -> String
-}
-
-enum ImageBucket {
-    
-    case profile
-    case topic
-    
+extension ImageBucket {
     var method: HTTPMethod {
         switch self {
         case .profile, .topic:      return .post
@@ -33,13 +25,13 @@ enum ImageBucket {
     }
 }
 
-final class DefaultPresignedImageRepository: PresignedImageRepository {
+public final class DefaultPresignedImageRepository: PresignedImageRepository {
 
     private let networkService: NetworkService = NetworkService.shared
     
     public init() { }
     
-    func upload(bucket: ImageBucket, request image: UIImage) async throws -> String {
+    public func upload(bucket: ImageBucket, request image: UIImage) async throws -> String {
 
         let response = await requestPresignedUrl()
         
@@ -47,14 +39,15 @@ final class DefaultPresignedImageRepository: PresignedImageRepository {
             throw NetworkServiceError.IMAGE_UPLOAD_FAIL
         }
         
-        let urlComponents = URLComponents(string: String(url.split(separator: "?").first!))
+        let urlComponents = URLComponents(string: url)
         
         guard let urlRequest = urlComponents?.toURLRequest(method: .put, httpBody: image.jpegData(compressionQuality: 1), contentType: "image/jpeg") else {
             fatalError("url parsing error")
         }
         
-        if await networkService.dataTask(request: urlRequest, type: EmptyData.self).isSuccess {
-            return url
+        if await networkService.dataTask(request: urlRequest, type: EmptyData.self, requireToken: false).isSuccess {
+            //쿼리스트링을 제외한 URL을 반환한다
+            return String(url.split(separator: "?").first!)
         } else {
             throw NetworkServiceError.IMAGE_UPLOAD_FAIL
         }

@@ -10,8 +10,10 @@ import UIKit
 import FeatureDependency
 import HomeFeatureInterface
 import TopicFeatureInterface
+import MyPageFeatureInterface
 import HomeFeature
 import TopicFeature
+import MyPageFeature
 
 public class DefaultTabCoordinator: TabCoordinator {
     
@@ -34,6 +36,7 @@ public class DefaultTabCoordinator: TabCoordinator {
     }
     
     private var coordinators: [Coordinator] = []
+    private var topicGenerateCoordinator: TopicGenerateCoordinator?
     
     public func start() {
         window?.rootViewController = tabBarController
@@ -75,12 +78,13 @@ public class DefaultTabCoordinator: TabCoordinator {
     }
     
     private func startUser(){
-//        let userCoordinator: HomeCoordinator = DefaultHomeCoordinator(navigationController: userTabNavigationController)
-//        userCoordinator.start()
+        let userCoordinator: MyPageCoordinator = DefaultMyPageCoordinator(navigationController: userTabNavigationController)
+        coordinators.append(userCoordinator)
+        userCoordinator.start()
     }
-    
+
     public func startTopicGenerate() {
-        let topicGenerateCoordinator: TopicGenerateCoordinator = DefaultTopicGenerateCoordinator(rootViewController: tabBarController)
-        topicGenerateCoordinator.start()
+        topicGenerateCoordinator = DefaultTopicGenerateCoordinator(rootViewController: tabBarController)
+        topicGenerateCoordinator?.start()
     }
 }
