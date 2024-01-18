@@ -28,6 +28,12 @@ public struct Image{
     public static let takePicture = UIImage.load(name: "take_picture")
     public static let gallery = UIImage.load(name: "gallery")
     
+    //MARK: Alarm
+    public static let alarmChat = UIImage.load(name: "alarm_chat")
+    public static let alarmCount = UIImage.load(name: "alarm_count")
+    public static let alarmLike = UIImage.load(name: "alarm_like")
+    public static let alarmTimer = UIImage.load(name: "alarm_timer")
+    
     
     //MARK: Login
     

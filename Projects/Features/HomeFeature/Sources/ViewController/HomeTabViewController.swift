@@ -48,11 +48,20 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
     override func initialize() {
         
         setDelegate()
+        moveAlarm()
         addButtonFrameTarget()
         addRevoteNotification()
         
         func setDelegate(){
             mainView.scrollFrame.setDelegate(to: self)
+        }
+        
+        func moveAlarm() {
+            headerView?.rightItem.tapPublisher
+                .sink{ [weak self] _ in
+                    self?.coordinator?.startAlarm()
+                }
+                .store(in: &cancellables)
         }
         
         func addButtonFrameTarget(){
