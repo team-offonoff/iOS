@@ -9,52 +9,71 @@
 import Foundation
 import UIKit
 
-public protocol ABTextFieldViewConfiguration {
-    var backgroundColor: UIColor { get }
-    var textColor: UIColor { get }
-    var font: UIFont { get }
-    var countColor: UIColor { get }
-    var countFont: UIFont { get }
-    var errorColor: UIColor { get }
-    var errorFont: UIFont { get }
+public struct ABTextFieldViewConfiguration {
+    
+    public init(backgroundColor: UIColor, textColor: UIColor, font: UIFont, countColor: UIColor, countFont: UIFont, errorColor: UIColor, errorFont: UIFont) {
+        self.backgroundColor = backgroundColor
+        self.textColor = textColor
+        self.font = font
+        self.countColor = countColor
+        self.countFont = countFont
+        self.errorColor = errorColor
+        self.errorFont = errorFont
+    }
+    
+    public let backgroundColor: UIColor
+    public let textColor: UIColor
+    public let font: UIFont
+    public let countColor: UIColor
+    public let countFont: UIFont
+    public let errorColor: UIColor
+    public let errorFont: UIFont
 }
 
-public protocol ABTextFieldViewStateConfiguration {
-    var strokeWidth: CGFloat? { get }
-    var strokeColor: UIColor? { get }
-    var isCountLabelHidden: Bool { get }
-    var isErrorLabelHidden: Bool { get }
+public struct ABTextFieldViewStateConfiguration {
+    
+    public init(strokeWidth: CGFloat?, strokeColor: UIColor?, isCountLabelHidden: Bool, isErrorLabelHidden: Bool) {
+        self.strokeWidth = strokeWidth
+        self.strokeColor = strokeColor
+        self.isCountLabelHidden = isCountLabelHidden
+        self.isErrorLabelHidden = isErrorLabelHidden
+    }
+    
+    public let strokeWidth: CGFloat?
+    public let strokeColor: UIColor?
+    public let isCountLabelHidden: Bool
+    public let isErrorLabelHidden: Bool
 }
 
 //MARK: Default Configuration
 
-public struct DefaultABTextFieldViewConfiguration: ABTextFieldViewConfiguration {
-    public let backgroundColor: UIColor = Color.subNavy2.withAlphaComponent(0.4)
-    public let textColor: UIColor = Color.white
-    public let font: UIFont = Pretendard.semibold14.font
-    public let countColor: UIColor = Color.subPurple.withAlphaComponent(0.6)
-    public let countFont: UIFont = Pretendard.semibold14.font
-    public let errorColor: UIColor = Color.subPurple2
-    public let errorFont: UIFont = Pretendard.semibold13.font
-}
+public let defaultABTextFieldViewConfiguration: ABTextFieldViewConfiguration = ABTextFieldViewConfiguration(
+    backgroundColor: Color.subNavy2.withAlphaComponent(0.4),
+    textColor: Color.white,
+    font: Pretendard.semibold14.font,
+    countColor: Color.subPurple.withAlphaComponent(0.6),
+    countFont: Pretendard.semibold14.font,
+    errorColor: Color.subPurple2,
+    errorFont: Pretendard.semibold13.font
+)
 
-public struct ABTextFieldViewEmptyStateConfiguration: ABTextFieldViewStateConfiguration {
-    public let strokeWidth: CGFloat? = 0
-    public let strokeColor: UIColor? = nil
-    public let isCountLabelHidden: Bool = false
-    public let isErrorLabelHidden: Bool = true
-}
+public let abTextFieldViewEmptyStateConfiguration: ABTextFieldViewStateConfiguration = ABTextFieldViewStateConfiguration(
+    strokeWidth: 0,
+    strokeColor: nil,
+    isCountLabelHidden: false,
+    isErrorLabelHidden: true
+)
 
-public struct ABTextFieldViewEditingStateConfiguration: ABTextFieldViewStateConfiguration {
-    public let strokeWidth: CGFloat? = nil
-    public let strokeColor: UIColor? = nil
-    public let isCountLabelHidden: Bool = false
-    public let isErrorLabelHidden: Bool = true
-}
+public let abTextFieldViewEditingStateConfiguration: ABTextFieldViewStateConfiguration = ABTextFieldViewStateConfiguration(
+    strokeWidth: nil,
+    strokeColor: nil,
+    isCountLabelHidden: false,
+    isErrorLabelHidden: true
+)
 
-public struct ABTextFieldViewErrorStateConfiguration: ABTextFieldViewStateConfiguration {
-    public let strokeWidth: CGFloat? = 1
-    public let strokeColor: UIColor? = Color.subPurple2
-    public let isCountLabelHidden: Bool = false
-    public let isErrorLabelHidden: Bool = false
-}
+public let abTextFieldViewErrorStateConfiguration: ABTextFieldViewStateConfiguration = ABTextFieldViewStateConfiguration(
+    strokeWidth: 1,
+    strokeColor: Color.subPurple2,
+    isCountLabelHidden: false,
+    isErrorLabelHidden: false
+)

@@ -16,14 +16,14 @@ public protocol ABTextFieldViewDelegate: AnyObject {
 extension ABTextFieldViewDelegate {
     
     public func configuration(_ textFieldView: ABTextFieldView) -> ABTextFieldViewConfiguration {
-        DefaultABTextFieldViewConfiguration()
+        defaultABTextFieldViewConfiguration
     }
     
     public func configuration(_ textFieldView: ABTextFieldView, of state: ABTextFieldView.State) -> ABTextFieldViewStateConfiguration {
         switch state {
-        case .empty:        return ABTextFieldViewEmptyStateConfiguration()
-        case .editing:      return ABTextFieldViewEditingStateConfiguration()
-        case .error:        return ABTextFieldViewErrorStateConfiguration()
+        case .empty:        return abTextFieldViewEmptyStateConfiguration
+        case .editing:      return abTextFieldViewEditingStateConfiguration
+        case .error:        return abTextFieldViewErrorStateConfiguration
         }
     }
 }
