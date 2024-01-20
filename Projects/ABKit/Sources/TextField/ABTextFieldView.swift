@@ -121,12 +121,12 @@ open class ABTextFieldView: BaseStackView {
             $state
                 .sink{ [weak self] state in
                     
-                    guard let self = self, let delegate = self.delegate else { return }
+                    guard let self = self else { return }
                     
                     updateConfiguration()
                     
                     func updateConfiguration() {
-                        let configuration = delegate.configuration(self, of: state)
+                        let configuration = self.delegate?.configuration(self, of: state) ?? self.configuration(of: state)
                         self.textField.layer.borderWidth = configuration.strokeWidth ?? 0
                         self.textField.layer.borderColor = configuration.strokeColor?.cgColor
                         self.countLabel.isHidden = configuration.isCountLabelHidden
@@ -143,6 +143,14 @@ open class ABTextFieldView: BaseStackView {
                     self.state = .editing
                 }
                 .store(in: &cancellable)
+        }
+    }
+    
+    private func configuration(of state: ABTextFieldView.State) -> ABTextFieldViewStateConfiguration {
+        switch state {
+        case .empty:        return abTextFieldViewEmptyStateConfiguration
+        case .editing:      return abTextFieldViewEditingStateConfiguration
+        case .error:        return abTextFieldViewErrorStateConfiguration
         }
     }
     
