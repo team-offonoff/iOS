@@ -41,7 +41,7 @@ open class ABTextFieldView: BaseStackView {
     }
     
     private let isErrorNeed: Bool
-    private var cancellable: Set<AnyCancellable> = []
+    public var cancellable: Set<AnyCancellable> = []
     ///글자 제한 수를 설정할 경우, 자동으로 카운팅이 동작하며, Lable에 개수를 업데이트한다.
     public var limitCount: Int? {
         didSet {
@@ -53,7 +53,7 @@ open class ABTextFieldView: BaseStackView {
     
     public let textField: InsetTextField
     public let countLabel: UILabel = UILabel()
-    private let errorLabel: UILabel = UILabel()
+    public let errorLabel: UILabel = UILabel()
     
     open override func style() {
         
@@ -70,7 +70,7 @@ open class ABTextFieldView: BaseStackView {
         }
     }
     
-    public override func hierarchy() {
+    open override func hierarchy() {
         addArrangedSubview(textField)
         if isErrorNeed {
             addArrangedSubview(errorLabel)
@@ -78,7 +78,7 @@ open class ABTextFieldView: BaseStackView {
         textField.addSubview(countLabel)
     }
     
-    public override func layout() {
+    open override func layout() {
         textField.snp.makeConstraints{
             $0.leading.trailing.equalToSuperview()
         }
@@ -93,17 +93,12 @@ open class ABTextFieldView: BaseStackView {
         }
     }
     
-    public override func initialize() {
-        
-        setDefaultDelegate()
+    open override func initialize() {
+    
         setConfiguration()
         
-        func setDefaultDelegate() {
-            delegate = self
-        }
-        
         func setConfiguration() {
-            let configuration = configuration(self)
+            let configuration = delegate?.configuration(self) ?? defaultABTextFieldViewConfiguration
             textField.backgroundColor = configuration.backgroundColor
             textField.textColor = configuration.textColor
             textField.font = configuration.font
@@ -125,7 +120,7 @@ open class ABTextFieldView: BaseStackView {
         func bindState() {
             $state
                 .sink{ [weak self] state in
-                   
+                    
                     guard let self = self, let delegate = self.delegate else { return }
                     
                     updateConfiguration()
@@ -184,9 +179,4 @@ extension ABTextFieldView {
         textField.sendActions(for: .editingChanged)
         textField.sendActions(for: .editingDidEnd)
     }
-}
-
-///delegate를 새로 선언하지 않을 경우, 초기 구현된 configuration을 사용합니다.
-extension ABTextFieldView: ABTextFieldViewDelegate {
-    
 }
