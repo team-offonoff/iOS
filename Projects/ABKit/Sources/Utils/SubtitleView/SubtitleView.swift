@@ -9,12 +9,15 @@
 import Foundation
 import UIKit
 
-public final class SubtitleView<V: UIView>: BaseStackView {
+open class SubtitleView<V: UIView>: BaseStackView {
     
-    public init(subtitle: String, content: V) {
+    public init(subtitle: String, content: V, font: UIFont, color: UIColor, spacing: CGFloat) {
         self.contentView = content
         super.init()
         self.subtitleLabel.text = subtitle
+        self.subtitleLabel.textColor = color
+        self.subtitleLabel.font = font
+        self.spacing = spacing
     }
     
     public required init(coder: NSCoder) {
@@ -23,15 +26,9 @@ public final class SubtitleView<V: UIView>: BaseStackView {
     
     public let contentView: V
     public let defaultSideOffset: CGFloat = 20
-    private let subtitleLabel: UILabel = {
-       let label = UILabel()
-        label.setTypo(Pretendard.bold18)
-        label.textColor = Color.white
-        return label
-    }()
+    public let subtitleLabel: UILabel = UILabel()
     
     public override func style() {
-        spacing = 10
         axis = .vertical
     }
     

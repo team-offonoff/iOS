@@ -30,8 +30,8 @@ final class ModifyUserInformationView: BaseView {
         return view
     }()
     
-    let nicknameView: SubtitleView<ABTextFieldView> = SubtitleView(subtitle: "변경할 닉네임을 입력해 주세요", content: ABTextFieldView(placeholder: "한글, 영문, 숫자 최대 8자", insets: UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 45), isErrorNeed: true))
-    let jobView: SubtitleView<DropDownView> = SubtitleView(subtitle: "변경할 직업을 선택해주세요.", content: DropDownView(placeholder: "직업 선택하기"))
+    let nicknameView: SubtitleView<ABTextFieldView> = SemiboldSubtitleView(subtitle: "변경할 닉네임을 입력해 주세요", content: ABTextFieldView(placeholder: "한글, 영문, 숫자 최대 8자", insets: UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 45), isErrorNeed: true))
+    let jobView: SubtitleView<DropDownView> = SemiboldSubtitleView(subtitle: "변경할 직업을 선택해주세요.", content: DropDownView(placeholder: "직업 선택하기"))
     
     let ctaButton: CTAButton = CTAButton(title: "변경하기")
     

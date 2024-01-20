@@ -13,7 +13,7 @@ import ABKit
 final class TopicInputTableViewCell: BaseTableViewCell {
     
     lazy var title: SubtitleView<ABTextFieldView> = {
-        let subview = SubtitleView(subtitle: "토픽 제목", content: ABTextFieldView(placeholder: "어떤 주제로 올리시나요?", insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 40), isErrorNeed: false))
+        let subview = SemiboldSubtitleView(subtitle: "토픽 제목", content: ABTextFieldView(placeholder: "어떤 주제로 올리시나요?", insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 40), isErrorNeed: false))
         subview.contentView.textField.customPlaceholder(font: Pretendard.medium16.font)
         subview.contentView.textField.font = Pretendard.medium16.font
         return subview
@@ -26,7 +26,7 @@ final class TopicInputTableViewCell: BaseTableViewCell {
         return label
     }()
     lazy var keyword: SubtitleView<ABTextFieldView> = {
-        let subview = SubtitleView(subtitle: "토픽 키워드", content: ABTextFieldView(placeholder: "한글, 영문, 숫자만 가능", insets: UIEdgeInsets(top: 16, left: 35, bottom: 16, right: 40), isErrorNeed: false))
+        let subview = SemiboldSubtitleView(subtitle: "토픽 키워드", content: ABTextFieldView(placeholder: "한글, 영문, 숫자만 가능", insets: UIEdgeInsets(top: 16, left: 35, bottom: 16, right: 40), isErrorNeed: false))
         subview.contentView.textField.customPlaceholder(font: Pretendard.medium16.font)
         subview.contentView.textField.font = Pretendard.medium16.font
         return subview

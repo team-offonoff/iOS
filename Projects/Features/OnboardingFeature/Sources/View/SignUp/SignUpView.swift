@@ -20,7 +20,7 @@ extension Gender: RadioButtonData {
 public final class SignUpView: BaseView {
     
     let nicknameView: SubtitleView<ABTextFieldView> = {
-        let subview = SubtitleView(
+        let subview = SemiboldSubtitleView(
             subtitle: "AB에서 사용할 닉네임을 정해주세요.",
             content: ABTextFieldView(placeholder: "한글, 영문, 숫자 최대 8자", insets: UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 15), isErrorNeed: true)
         )
@@ -28,7 +28,7 @@ public final class SignUpView: BaseView {
         return subview
     }()
     let birthdayView: SubtitleView<ABTextFieldView> = {
-        let subview = SubtitleView(
+        let subview = SemiboldSubtitleView(
             subtitle: "생년월일을 입력해주세요.",
             content: ABTextFieldView(placeholder: "YYYY/MM/DD", insets: UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 15), isErrorNeed: true)
         )
@@ -37,7 +37,7 @@ public final class SignUpView: BaseView {
         return subview
     }()
     let genderView: SubtitleView<RadioButtonView> = {
-        let view = SubtitleView(
+        let view = SemiboldSubtitleView(
             subtitle: "성별을 선택해주세요.",
             content: RadioButtonView(elements: Gender.allCases, cellType: GenderRadioButtonCell.self)
         )
@@ -47,7 +47,7 @@ public final class SignUpView: BaseView {
         return view
     }()
     let jobView: SubtitleView<DropDownView> = {
-        let view = SubtitleView(subtitle: "직업을 선택해주세요.", content: DropDownView(placeholder: "직업 선택하기"))
+        let view = SemiboldSubtitleView(subtitle: "직업을 선택해주세요.", content: DropDownView(placeholder: "직업 선택하기"))
         return view
     }()
     let ctaButton: CTAButton = {

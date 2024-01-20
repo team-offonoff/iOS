@@ -35,10 +35,10 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
     }
 
     private let contentTypeChips: ContentTypeGroup = ContentTypeGroup()
-    private let contentSubView: SubtitleView = SubtitleView(subtitle: "토픽 내용", content: UIView())
+    private let contentSubView: SubtitleView = SemiboldSubtitleView(subtitle: "토픽 내용", content: UIView())
     private let textContentView: TextContentView = TextContentView()
     private let imageContentView: ImageContentView = ImageContentView()
-    private let deadlineSubView: SubtitleView = SubtitleView(subtitle: "마감 시간", content: DropDownView(placeholder: "1시간 뒤"))
+    private let deadlineSubView: SubtitleView = SemiboldSubtitleView(subtitle: "마감 시간", content: DropDownView(placeholder: "1시간 뒤"))
     let ctaButton: CTAButton = {
         let button = CTAButton(title: "토픽 올리기")
         button.isEnabled = false
