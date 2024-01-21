@@ -21,11 +21,13 @@ final class TopicGenerateASideView: BaseView {
         subtitle: "어떤 선택지가 있나요?",
         content: OptionsStackView()
     )
+    let optionSwitch: SwitchView = SwitchView()
     
     let ctaButton: CTAButton = CTAButton(title: "토픽 던지기")
     
     override func hierarchy() {
         addSubviews([titleSection, optionsSection, ctaButton])
+        optionsSection.addSubview(optionSwitch)
     }
     
     override func layout() {
@@ -37,6 +39,10 @@ final class TopicGenerateASideView: BaseView {
         optionsSection.snp.makeConstraints{
             $0.top.equalTo(titleSection.snp.bottom).offset(39)
             $0.leading.trailing.equalToSuperview().inset(20)
+        }
+        optionSwitch.snp.makeConstraints{
+            $0.top.equalToSuperview().offset(2)
+            $0.trailing.equalToSuperview()
         }
         
         ctaButton.snp.makeConstraints{

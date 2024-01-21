@@ -17,9 +17,7 @@ final class TopicGenerateBSideSecondView: BaseView {
     let previousInformation: PreviousInformation = PreviousInformation()
     let contentTypeChips: ContentTypeChips = ContentTypeChips()
     let contentSection: SubtitleView = RegularSubtitleView(subtitle: "어떤 선택지가 있나요?", content: UIView())
-    let optionSwitchButton: UIButton = {
-       UIButton()
-    }()
+    let optionSwitch: SwitchView = SwitchView()
     let textContentView: TextContentView = TextContentView()
     let imageContentView: ImageContentView = ImageContentView()
     let deadlineSection: DeadlineSection = DeadlineSection()
@@ -34,6 +32,7 @@ final class TopicGenerateBSideSecondView: BaseView {
     override func hierarchy() {
         addSubviews([previousInformation.stackView, previousInformation.separatorLine, contentTypeChips, contentSection, deadlineSection, pageIndicator])
         previousInformation.stackView.addArrangedSubviews([previousInformation.titleLabel, previousInformation.keywordLabel])
+        contentSection.addSubview(optionSwitch)
         contentSection.contentView.addSubviews([textContentView, imageContentView])
     }
     
@@ -53,6 +52,10 @@ final class TopicGenerateBSideSecondView: BaseView {
         contentSection.snp.makeConstraints{
             $0.top.equalTo(contentTypeChips.snp.bottom).offset(40)
             $0.leading.trailing.equalToSuperview().inset(20)
+        }
+        optionSwitch.snp.makeConstraints{
+            $0.top.equalToSuperview().offset(2)
+            $0.trailing.equalToSuperview()
         }
         textContentView.snp.makeConstraints{
             $0.top.leading.trailing.equalToSuperview()
@@ -185,14 +188,14 @@ extension TopicGenerateBSideSecondView {
     
     class TextContentView: BaseStackView, ImageTextIncludeContentView {
         
-        private let switchButton: UIButton = {
-            let button = UIButton()
-            button.setImage(Image.topicGenerateSwitch, for: .normal)
-            button.snp.makeConstraints{
-                $0.width.height.equalTo(30)
-            }
-            return button
-        }()
+//        private let switchButton: UIButton = {
+//            let button = UIButton()
+//            button.setImage(Image.topicGenerateSwitch, for: .normal)
+//            button.snp.makeConstraints{
+//                $0.width.height.equalTo(30)
+//            }
+//            return button
+//        }()
         private let optionA: OptionTextFieldView = {
             let view = OptionTextFieldView(option: .A)
             view.errorLabel.isHidden = true
@@ -208,24 +211,17 @@ extension TopicGenerateBSideSecondView {
         
         override func hierarchy() {
             addArrangedSubviews([optionA, optionB])
-            addSubview(switchButton)
-        }
-        
-        override func layout() {
-            switchButton.snp.makeConstraints{
-                $0.center.equalToSuperview()
-            }
         }
         
         override func initialize() {
-            switchButton.tapPublisher
-                .sink{ [weak self] _ in
-                    guard let self = self else { return }
-                    let temp = self.optionA.textField.text ?? ""
-                    self.optionA.update(text: self.optionB.textField.text ?? "")
-                    self.optionB.update(text: temp)
-                }
-                .store(in: &cancellable)
+//            switchButton.tapPublisher
+//                .sink{ [weak self] _ in
+//                    guard let self = self else { return }
+//                    let temp = self.optionA.textField.text ?? ""
+//                    self.optionA.update(text: self.optionB.textField.text ?? "")
+//                    self.optionB.update(text: temp)
+//                }
+//                .store(in: &cancellable)
         }
         
         //MARK: Input
