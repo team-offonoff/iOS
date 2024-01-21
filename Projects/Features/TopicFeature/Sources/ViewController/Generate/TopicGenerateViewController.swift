@@ -16,6 +16,7 @@ import Combine
 import Core
 import PhotosUI
 
+/*
 final class TopicGenerateViewController: BaseViewController<TopicGenerateHeaderView, TopicGenerateView, DefaultTopicGenerateCoordinator> {
 
     init(viewModel: any TopicGenerateViewModel) {
@@ -265,3 +266,4 @@ extension TopicGenerateViewController: UICollectionViewDataSource, UICollectionV
         inputCell?.keyword.contentView.update(text: viewModel.recommendKeywords[indexPath.row])
     }
 }
+*/

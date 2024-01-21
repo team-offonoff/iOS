@@ -16,7 +16,7 @@ final class TopicGenerateView: BaseView {
         let tableView = UITableView()
         tableView.separatorStyle = .none
         tableView.backgroundColor = Color.transparent
-        tableView.registers(cellTypes: [TopicInputTableViewCell.self, TopicContentInputTableViewCell.self])
+//        tableView.registers(cellTypes: [TopicInputTableViewCell.self, TopicContentInputTableViewCell.self])
         return tableView
     }()
     

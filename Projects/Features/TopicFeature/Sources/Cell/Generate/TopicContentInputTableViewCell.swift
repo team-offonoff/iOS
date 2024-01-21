@@ -15,14 +15,16 @@ import Domain
 import Combine
 
 protocol ImageTextIncludeContentView: UIView {
-    var aTextPublisher: AnyPublisher<String, Never> { get }
-    var bTextPublisher: AnyPublisher<String, Never> { get }
+    //타입 상관없는 publisher로 사용하는 건 어떤지
+    var aTextPublisher: AnyPublisher<String, Never>? { get }
+    var bTextPublisher: AnyPublisher<String, Never>? { get }
     var aImagePublisher: AnyPublisher<UIImage?, Never>? { get }
     var bImagePublisher: AnyPublisher<UIImage?, Never>? { get }
-    func text(option: Choice.Option) -> String
+    func text(option: Choice.Option) -> String?
     func image(option: Choice.Option) -> UIImage?
 }
 
+/*
 final class TopicContentInputTableViewCell: BaseTableViewCell {
     
     private var selectedContentTypeChip: ContentTypeChip? {
@@ -229,3 +231,5 @@ extension TopicContentInputTableViewCell {
         currentContentView().image(option: option)
     }
 }
+
+*/
