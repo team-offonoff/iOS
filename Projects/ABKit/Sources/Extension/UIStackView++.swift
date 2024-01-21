@@ -16,6 +16,13 @@ public extension UIStackView {
         }
     }
     
+    convenience init(axis: NSLayoutConstraint.Axis, spacing: CGFloat, alignment: Alignment){
+        self.init(frame: .zero)
+        self.axis = axis
+        self.spacing = spacing
+        self.alignment = alignment
+    }
+    
     convenience init(axis: NSLayoutConstraint.Axis, spacing: CGFloat){
         self.init(frame: .zero)
         self.axis = axis

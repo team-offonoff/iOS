@@ -16,7 +16,6 @@ final class TopicGenerateBSideFirstView: BaseView {
         subtitle: "어떤 주제로 물어볼까요?",
         content: TopicTitleTextFieldView()
     )
-    
     private let hashtagLabel: UILabel = {
         let label = UILabel()
         label.textColor = Color.subPurple
