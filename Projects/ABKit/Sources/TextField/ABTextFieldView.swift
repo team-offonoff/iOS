@@ -172,7 +172,7 @@ open class ABTextFieldView: BaseStackView {
 
 extension ABTextFieldView {
     
-    public func error(message: String) {
+    public func error(message: String?) {
         if (textField.text ?? "").count == 0 {
             state = .empty
         }
@@ -181,6 +181,11 @@ extension ABTextFieldView {
             errorLabel.text = message
         }
     }
+    
+    public func complete() {
+        state = .editing
+    }
+
     ///매개변수로 넘긴 값으로 text field의 값을 업데이트한다. 이때 글자 수도 함께 업데이트된다.
     public func update(text: String) {
         textField.text = text
