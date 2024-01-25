@@ -12,10 +12,10 @@ import Domain
 struct TopicGenerateRequestDTO: Encodable {
     
     let side: String
-    let keywordName: String
+    let keywordName: String?
     let title: String
     let choices: [ChoiceRequestDTO]
-    let deadline: Int
+    let deadline: Int?
     
     struct ChoiceRequestDTO: Encodable {
         
@@ -25,7 +25,7 @@ struct TopicGenerateRequestDTO: Encodable {
         struct ContentRequestDTO: Encodable {
             let type: String
             let imageUrl: String?
-            let text: String
+            let text: String?
         }
     }
 }
