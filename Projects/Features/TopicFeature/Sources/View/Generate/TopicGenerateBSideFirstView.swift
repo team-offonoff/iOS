@@ -73,6 +73,11 @@ final class TopicGenerateBSideFirstView: BaseView {
             $0.bottom.equalToSuperview().inset(66)
         }
     }
+    
+    func clear() {
+        titleSection.contentView.update(text: "")
+        keywordSection.contentView.update(text: "")
+    }
 }
 
 extension TopicGenerateBSideFirstView {

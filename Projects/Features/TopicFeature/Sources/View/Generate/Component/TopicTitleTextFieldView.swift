@@ -68,4 +68,24 @@ extension TopicTitleTextFieldView: ABTextFieldViewDelegate {
             errorFont: Pretendard.semibold13.font
         )
     }
+    
+    func configuration(_ textFieldView: ABTextFieldView, of state: ABTextFieldView.State) -> ABTextFieldViewStateConfiguration {
+        switch state {
+        case .empty, .editing:
+            return .init(
+                strokeWidth: nil,
+                strokeColor: nil,
+                isCountLabelHidden: false,
+                isErrorLabelHidden: true
+            )
+            
+        case .error:
+            return .init(
+                strokeWidth: nil,
+                strokeColor: nil,
+                isCountLabelHidden: false,
+                isErrorLabelHidden: false
+            )
+        }
+    }
 }

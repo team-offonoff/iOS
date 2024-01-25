@@ -51,4 +51,11 @@ final class TopicGenerateASideView: BaseView {
         }
     }
     
+    func clear() {
+        titleSection.contentView.update(text: "")
+        optionsSection.contentView.aTextField.update(text: "")
+        optionsSection.contentView.bTextField.update(text: "")
+        optionSwitch.isEnabled = false
+        ctaButton.isEnabled = false
+    }
 }

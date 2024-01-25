@@ -47,6 +47,15 @@ final class DefaultTopicGenerateViewModel: BaseViewModel, TopicGenerateViewModel
     
     //MARK: Output
     
+    var successRegister: (() -> Void)?
+    
+    //Side A
+    let sideATitleValidation: CurrentValueSubject<Validation, Never> = CurrentValueSubject((false, nil))
+    let sideAOptionAValidation: CurrentValueSubject<Validation, Never> = CurrentValueSubject((false, nil))
+    let sideAOptionBValidation: CurrentValueSubject<Validation, Never> = CurrentValueSubject((false, nil))
+    let sideACanSwitchOption: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let canSideARegister: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    
     let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     let canRegister: PassthroughSubject<Bool, Never> = PassthroughSubject()
     let contentValidation: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
@@ -60,31 +69,84 @@ final class DefaultTopicGenerateViewModel: BaseViewModel, TopicGenerateViewModel
     
     //MARK: Input
     
-    func input(content: TopicGenerateContentViewModelInputValue) {
+    private func validation(title: String) -> (Bool, String?) {
+        if title.count > 0 && title.count <= limitCount.title { //특수문자 조건 추가
+            return (true, nil)
+        }
+        return (false, "* 특수문자는 !@#$%^()만 사용하실 수 있습니다.")
+    }
+    
+    private func validation(option: String) -> (Bool, String?) {
+        if option.count > 0 && option.count <= limitCount.textOption { //특수문자 조건 추가
+            return (true, nil)
+        }
+        return (false, "* 특수문자는 !@#$%^()만 사용하실 수 있습니다.")
+    }
+    
+    func sideAInput(content: TopicGenerateContentViewModelInputValue, choices: TopicGenerateChoiceContentViewModelInputValueTest) {
         
         content.titleDidEnd
-            .combineLatest(content.keywordDidEnd)
-            .sink{ [weak self] title , keyword in
-                
+            .sink{ [weak self] in
                 guard let self = self else { return }
-                
-                self.contentValidation.send(isValid())
-                
-                func isValid() -> Bool {
-                    
-                    return titleValidation() && keywordValidation()
-                    
-                    func titleValidation() -> Bool {
-                        title.count > 0 && title.count <= self.limitCount.title
-                    }
-                    
-                    func keywordValidation() -> Bool {
-                        keyword.count > 0 && keyword.count <= self.limitCount.keyword
-                    }
-                }
-                
+                self.sideATitleValidation.send(self.validation(title: $0))
             }
             .store(in: &cancellable)
+        
+        choices.choiceA
+            .sink{ [weak self] option in
+                guard let self = self, let option = option as? String else { return }
+                self.sideAOptionAValidation.send(self.validation(option: option))
+            }
+            .store(in: &cancellable)
+        
+        choices.choiceB
+            .sink{ [weak self] option in
+                guard let self = self, let option = option as? String else { return }
+                self.sideAOptionBValidation.send(self.validation(option: option))
+            }
+            .store(in: &cancellable)
+        
+        
+        sideATitleValidation
+            .combineLatest(sideAOptionAValidation, sideAOptionBValidation)
+            .sink{ [weak self] title, optionA, optionB in
+                guard let self = self else { return }
+                self.sideACanSwitchOption.send(self.sideAOptionAValidation.value.0 || self.sideAOptionBValidation.value.0)
+                self.canSideARegister.send(title.0 && optionA.0 && optionB.0)
+            }
+            .store(in: &cancellable)
+    }
+    
+    func sideBInput(content: TopicGenerateContentViewModelInputValue) {
+        
+    }
+    
+    
+    func input(content: TopicGenerateContentViewModelInputValue) {
+        
+//        content.titleDidEnd
+//            .combineLatest(content.keywordDidEnd)
+//            .sink{ [weak self] title , keyword in
+//
+//                guard let self = self else { return }
+//
+//                self.contentValidation.send(isValid())
+//
+//                func isValid() -> Bool {
+//
+//                    return titleValidation() && keywordValidation()
+//
+//                    func titleValidation() -> Bool {
+//                        title.count > 0 && title.count <= self.limitCount.title
+//                    }
+//
+//                    func keywordValidation() -> Bool {
+//                        keyword.count > 0 && keyword.count <= self.limitCount.keyword
+//                    }
+//                }
+//
+//            }
+//            .store(in: &cancellable)
     }
     
     func input(choiceContent: TopicGenerateChoiceContentViewModelInputValue) {
@@ -135,6 +197,7 @@ final class DefaultTopicGenerateViewModel: BaseViewModel, TopicGenerateViewModel
                 .sink{ [weak self] result in
                     if result.isSuccess {
                         print("success")
+                        self?.successRegister?()
                     }
                     else {
                         if let error = result.error {
@@ -145,7 +208,6 @@ final class DefaultTopicGenerateViewModel: BaseViewModel, TopicGenerateViewModel
                 .store(in: &cancellable)
         }
     }
-    
     
     override func bind() {
         contentValidation.combineLatest($choiceContentValidation)
