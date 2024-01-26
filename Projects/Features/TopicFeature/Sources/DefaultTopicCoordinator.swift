@@ -38,9 +38,15 @@ public class DefaultTopicGenerateCoordinator: TopicGenerateCoordinator {
         }
         navigationController.modalPresentationStyle = .overFullScreen
         rootViewController?.present(navigationController, animated: true)
+//        startTopicGenerate()
     }
     
     public func startTopicGenerate() {
-        navigationController.pushViewController(TopicGenerateViewController(viewModel: topicGenerateViewModel), animated: true)
+//        navigationController.pushViewController(TopicGenerateViewController(viewModel: topicGenerateViewModel), animated: true)
+        navigationController.pushViewController(TopicGenerateViewControllerTest(viewModel: topicGenerateViewModel), animated: true)
+    }
+    
+    public func startBsideTopicGenerate() {
+        navigationController.pushViewController(BsideTopicGenerateViewController(viewModel: topicGenerateViewModel), animated: true)
     }
 }
