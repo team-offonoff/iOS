@@ -127,95 +127,110 @@ final class TopicGenerateViewControllerTest: BaseViewController<TopicGenerateHea
         }
     }
     
-    @objc func optionSwitch() {
+    @objc private func optionSwitch() {
         let temp = aSideView.optionsSection.contentView.aTextField.textField.text ?? ""
         aSideView.optionsSection.contentView.aTextField.update(text: aSideView.optionsSection.contentView.bTextField.textField.text ?? "")
         aSideView.optionsSection.contentView.bTextField.update(text: temp)
     }
     
     override func bind() {
-        viewModel.topicSide
-            .receive(on: DispatchQueue.main)
-            .sink{ [weak self] side in
-                guard let self = self else { return }
-                switch side {
-                case .A:
-                    self.aSideView.clear()
-                    self.currentSideView = self.aSideView
-                    self.viewModel.sideAInput(
-                        content: .init(titleDidEnd: self.aSideView.titleSection.contentView.textField.publisher(for: .editingDidEnd), keywordDidEnd: nil),
-                        choices: .init(
-                            choiceA: self.aSideView.optionsSection.contentView.aTextField.textField.anyPublisher(for: .editingDidEnd),
-                            choiceB: self.aSideView.optionsSection.contentView.bTextField.textField.anyPublisher(for: .editingDidEnd))
-                    )
-                case .B:
-                    self.bSideView.clear()
-                    self.currentSideView = self.bSideView
-                    self.viewModel.sideBInput(
-                        content: .init(
-                            titleDidEnd: self.bSideView.titleSection.contentView.textField.publisher(for: .editingDidEnd),
-                            keywordDidEnd: self.bSideView.keywordSection.contentView.textField.publisher(for: .editingDidEnd)
+        
+        bindTopicSide()
+        bindSideA()
+        bindSideB()
+
+        
+        func bindTopicSide() {
+            viewModel.topicSide
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] side in
+                    guard let self = self else { return }
+                    switch side {
+                    case .A:
+                        self.aSideView.clear()
+                        self.currentSideView = self.aSideView
+                        self.viewModel.sideAInput(
+                            content: .init(titleDidEnd: self.aSideView.titleSection.contentView.textField.publisher(for: .editingDidEnd), keywordDidEnd: nil),
+                            choices: .init(
+                                choiceA: self.aSideView.optionsSection.contentView.aTextField.textField.anyPublisher(for: .editingDidEnd),
+                                choiceB: self.aSideView.optionsSection.contentView.bTextField.textField.anyPublisher(for: .editingDidEnd))
                         )
-                    )
+                    case .B:
+                        self.bSideView.clear()
+                        self.currentSideView = self.bSideView
+                        self.viewModel.sideBInput(
+                            content: .init(
+                                titleDidEnd: self.bSideView.titleSection.contentView.textField.publisher(for: .editingDidEnd),
+                                keywordDidEnd: self.bSideView.keywordSection.contentView.textField.publisher(for: .editingDidEnd)
+                            )
+                        )
+                    }
                 }
-            }
-            .store(in: &cancellables)
+                .store(in: &cancellables)
+        }
         
-        viewModel.sideATitleValidation
-            .receive(on: DispatchQueue.main)
-            .sink{ [weak self] (isValid, message) in
-                if isValid {
-                    self?.aSideView.titleSection.contentView.complete()
+        func bindSideA() {
+            
+            viewModel.sideATitleValidation
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] (isValid, message) in
+                    if isValid {
+                        self?.aSideView.titleSection.contentView.complete()
+                    }
+                    else {
+                        self?.aSideView.titleSection.contentView.error(message: message)
+                    }
                 }
-                else {
-                    self?.aSideView.titleSection.contentView.error(message: message)
+                .store(in: &cancellables)
+            
+            viewModel.sideAOptionAValidation
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] (isValid, message) in
+                    if isValid {
+                        self?.aSideView.optionsSection.contentView.aTextField.complete()
+                    }
+                    else {
+                        self?.aSideView.optionsSection.contentView.aTextField.error(message: message)
+                        self?.aSideView.optionsSection.contentView.bTextField.errorLabel.text = message
+                    }
+                }
+                .store(in: &cancellables)
+            
+            viewModel.sideAOptionBValidation
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] (isValid, message) in
+                    if isValid {
+                        self?.aSideView.optionsSection.contentView.bTextField.complete()
+                    }
+                    else {
+                        self?.aSideView.optionsSection.contentView.bTextField.error(message: message)
+                    }
+                }
+                .store(in: &cancellables)
+            
+            viewModel.sideACanSwitchOption
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] isValid in
+                    self?.aSideView.optionSwitch.isEnabled = isValid
+                }
+                .store(in: &cancellables)
+            
+            viewModel.canSideARegister
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] canRegister in
+                    self?.aSideView.ctaButton.isEnabled = canRegister
+                }
+                .store(in: &cancellables)
+            
+            viewModel.successRegister = {
+                DispatchQueue.main.async {
+                    self.dismiss(animated: true)
                 }
             }
-            .store(in: &cancellables)
+        }
         
-        viewModel.sideAOptionAValidation
-            .receive(on: DispatchQueue.main)
-            .sink{ [weak self] (isValid, message) in
-                if isValid {
-                    self?.aSideView.optionsSection.contentView.aTextField.complete()
-                }
-                else {
-                    self?.aSideView.optionsSection.contentView.aTextField.error(message: message)
-                    self?.aSideView.optionsSection.contentView.bTextField.errorLabel.text = message
-                }
-            }
-            .store(in: &cancellables)
-        
-        viewModel.sideAOptionBValidation
-            .receive(on: DispatchQueue.main)
-            .sink{ [weak self] (isValid, message) in
-                if isValid {
-                    self?.aSideView.optionsSection.contentView.bTextField.complete()
-                }
-                else {
-                    self?.aSideView.optionsSection.contentView.bTextField.error(message: message)
-                }
-            }
-            .store(in: &cancellables)
-        
-        viewModel.sideACanSwitchOption
-            .receive(on: DispatchQueue.main)
-            .sink{ [weak self] isValid in
-                self?.aSideView.optionSwitch.isEnabled = isValid
-            }
-            .store(in: &cancellables)
-        
-        viewModel.canSideARegister
-            .receive(on: DispatchQueue.main)
-            .sink{ [weak self] canRegister in
-                self?.aSideView.ctaButton.isEnabled = canRegister
-            }
-            .store(in: &cancellables)
-        
-        viewModel.successRegister = {
-            DispatchQueue.main.async {
-                self.dismiss(animated: true)
-            }
+        func bindSideB() {
+            
         }
 
     }
