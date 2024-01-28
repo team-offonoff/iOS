@@ -76,6 +76,9 @@ final class TopicGenerateViewControllerTest: BaseViewController<TopicGenerateHea
             aSideView.titleSection.contentView.limitCount = viewModel.limitCount.title
             aSideView.optionsSection.contentView.aTextField.limitCount = viewModel.limitCount.textOption
             aSideView.optionsSection.contentView.bTextField.limitCount = viewModel.limitCount.textOption
+            
+            bSideView.titleSection.contentView.limitCount = viewModel.limitCount.title
+            bSideView.keywordSection.contentView.limitCount = viewModel.limitCount.keyword
         }
         
         func setHeaderViewTopicSide() {
