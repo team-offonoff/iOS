@@ -47,6 +47,7 @@ final class TopicGenerateViewControllerTest: BaseViewController<TopicGenerateHea
         setLimitCount()
         setHeaderViewTopicSide()
         addSideChangeTarget()
+        collectionViewDelegate()
         
         mainView.addSubviews([aSideView, bSideView])
         [aSideView, bSideView].forEach{ view in
@@ -127,6 +128,11 @@ final class TopicGenerateViewControllerTest: BaseViewController<TopicGenerateHea
                 sideChangeButton?.removeFromSuperview()
                 sideChangeButton = nil
             }
+        }
+        
+        func collectionViewDelegate() {
+            bSideView.recommendKeyword.collectionView.delegate = self
+            bSideView.recommendKeyword.collectionView.dataSource = self
         }
     }
     
@@ -236,5 +242,26 @@ final class TopicGenerateViewControllerTest: BaseViewController<TopicGenerateHea
             
         }
 
+    }
+}
+
+extension TopicGenerateViewControllerTest: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        viewModel.recommendKeywords.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(for: indexPath, cellType: RecommendKeywordCollectionViewCell.self)
+        cell.fill(viewModel.recommendKeywords[indexPath.row])
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        RecommendKeywordCollectionViewCell.size(viewModel.recommendKeywords[indexPath.row])
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        bSideView.keywordSection.contentView.update(text: viewModel.recommendKeywords[indexPath.row])
     }
 }
