@@ -84,7 +84,7 @@ open class ABTextFieldView: BaseStackView {
         }
         if isErrorNeed {
             errorLabel.snp.makeConstraints{
-                $0.leading.equalToSuperview().offset(16)
+                $0.leading.equalToSuperview()
             }
         }
         countLabel.snp.makeConstraints{
