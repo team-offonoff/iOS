@@ -34,7 +34,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         super.init()
     }
 
-    var topics: [TopicDetailItemViewModel] = [.init(topic: TestData.topicData1), .init(topic: TestData.topicData2), .init(topic: TestData.topicData3), .init(topic: TestData.topicData4)]
+    var topics: [TopicDetailItemViewModel] = []
     
     var currentTopic: TopicDetailItemViewModel {
         topics[currentIndexPath.row]
