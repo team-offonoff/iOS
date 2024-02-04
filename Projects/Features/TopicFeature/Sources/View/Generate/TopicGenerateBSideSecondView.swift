@@ -12,6 +12,13 @@ import ABKit
 import Domain
 import Combine
 
+protocol ContentPublisher: UIView {
+    var contentA: AnyPublisher<Any?, Never> { get }
+    var contentB: AnyPublisher<Any?, Never> { get }
+    func content(option: Choice.Option) -> Any?
+    func switchOption()
+}
+
 final class TopicGenerateBSideSecondView: BaseView {
     
     let previousInformation: PreviousInformation = PreviousInformation()
@@ -26,11 +33,12 @@ final class TopicGenerateBSideSecondView: BaseView {
         view.cells[1].highlight()
         return view
     }()
+    let ctaButton: CTAButton = CTAButton(title: "토픽 던지기")
     
     private var contentViewBottomConstraints: [NSLayoutConstraint] = [] //content view의 하단 레이아웃 조정을 위한 배열
     
     override func hierarchy() {
-        addSubviews([previousInformation.stackView, previousInformation.separatorLine, contentTypeChips, contentSection, deadlineSection, pageIndicator])
+        addSubviews([previousInformation.stackView, previousInformation.separatorLine, contentTypeChips, contentSection, deadlineSection, pageIndicator, ctaButton])
         previousInformation.stackView.addArrangedSubviews([previousInformation.titleLabel, previousInformation.keywordLabel])
         contentSection.addSubview(optionSwitch)
         contentSection.contentView.addSubviews([textContentView, imageContentView])
@@ -42,7 +50,7 @@ final class TopicGenerateBSideSecondView: BaseView {
             $0.leading.equalToSuperview().offset(20)
         }
         previousInformation.separatorLine.snp.makeConstraints{
-            $0.top.equalTo(previousInformation.stackView).offset(10)
+            $0.top.equalTo(previousInformation.stackView.snp.bottom).offset(10)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
         contentTypeChips.snp.makeConstraints{
@@ -63,7 +71,6 @@ final class TopicGenerateBSideSecondView: BaseView {
         imageContentView.snp.makeConstraints{
             $0.top.leading.trailing.equalToSuperview()
         }
-//        update(to: .text)
         deadlineSection.snp.makeConstraints{
             $0.top.equalTo(contentSection.snp.bottom).offset(30)
             $0.leading.equalToSuperview().offset(20)
@@ -72,23 +79,27 @@ final class TopicGenerateBSideSecondView: BaseView {
             $0.centerX.equalToSuperview()
             $0.bottom.equalToSuperview().inset(66)
         }
+        ctaButton.snp.makeConstraints{
+            $0.leading.trailing.equalToSuperview().inset(ctaButton.defaultOffset.side)
+            $0.bottom.equalToSuperview().inset(ctaButton.defaultOffset.bottom)
+        }
     }
     
+    func view(of contentType: Topic.ContentType) -> ContentPublisher {
+        switch contentType {
+        case .text:     return textContentView
+        case .image:    return imageContentView
+        }
+    }
     
     func update(to contentType: Topic.ContentType) {
         
-        guard let superview = currentContentView().superview else { return }
+        guard let superview = view(of: contentType).superview else { return }
         
+        reset()
         deactiveExistingConstraints()
         newConstraints()
         changeVisibility()
-        
-        func currentContentView() -> UIView {
-            switch contentType {
-            case .text:     return textContentView
-            case .image:    return imageContentView
-            }
-        }
         
         func reset() {
             switch contentType {
@@ -103,20 +114,20 @@ final class TopicGenerateBSideSecondView: BaseView {
         }
         
         func newConstraints() {
-            contentViewBottomConstraints = [currentContentView().bottomAnchor.constraint(equalTo: superview.bottomAnchor)]
+            contentViewBottomConstraints = [view(of: contentType).bottomAnchor.constraint(equalTo: superview.bottomAnchor)]
             NSLayoutConstraint.activate(contentViewBottomConstraints)
             contentSection.contentView.layoutIfNeeded()
         }
         
         func changeVisibility() {
-            currentContentView().isHidden = false
+            view(of: contentType).isHidden = false
             unselectedContentView().forEach{
                 $0.isHidden = true
             }
         }
         
         func unselectedContentView() -> [UIView] {
-            [textContentView, imageContentView].filter{ $0 != currentContentView() }
+            [textContentView, imageContentView].filter{ $0 != view(of: contentType) }
         }
     }
     
@@ -186,16 +197,8 @@ extension TopicGenerateBSideSecondView {
 
 extension TopicGenerateBSideSecondView {
     
-    class TextContentView: BaseStackView, ImageTextIncludeContentView {
-        
-//        private let switchButton: UIButton = {
-//            let button = UIButton()
-//            button.setImage(Image.topicGenerateSwitch, for: .normal)
-//            button.snp.makeConstraints{
-//                $0.width.height.equalTo(30)
-//            }
-//            return button
-//        }()
+    class TextContentView: BaseStackView, ContentPublisher {
+
         private let optionA: OptionTextFieldView = {
             let view = OptionTextFieldView(option: .A)
             view.errorLabel.isHidden = true
@@ -213,17 +216,6 @@ extension TopicGenerateBSideSecondView {
             addArrangedSubviews([optionA, optionB])
         }
         
-        override func initialize() {
-//            switchButton.tapPublisher
-//                .sink{ [weak self] _ in
-//                    guard let self = self else { return }
-//                    let temp = self.optionA.textField.text ?? ""
-//                    self.optionA.update(text: self.optionB.textField.text ?? "")
-//                    self.optionB.update(text: temp)
-//                }
-//                .store(in: &cancellable)
-        }
-        
         //MARK: Input
         
         func reset() {
@@ -236,30 +228,26 @@ extension TopicGenerateBSideSecondView {
             optionB.limitCount = count
         }
         
+        func switchOption() {
+            let temp = optionA.textField.text ?? ""
+            optionA.update(text: optionB.textField.text ?? "")
+            optionB.update(text: temp)
+        }
+        
         //MARK: Output
         
-        func text(option: Choice.Option) -> String? {
+        var contentA: AnyPublisher<Any?, Never> {
+            optionA.textField.anyPublisher(for: .editingDidEnd)
+        }
+        var contentB: AnyPublisher<Any?, Never> {
+            optionB.textField.anyPublisher(for: .editingDidEnd)
+        }
+        
+        func content(option: Choice.Option) -> Any? {
             switch option {
             case .A:    return optionA.textField.text ?? ""
             case .B:    return optionB.textField.text ?? ""
             }
-        }
-        func image(option: Choice.Option) -> UIImage? {
-            nil
-        }
-        
-        var aTextPublisher: AnyPublisher<String, Never>? {
-            optionA.textField.publisher(for: .editingDidEnd)
-        }
-        var bTextPublisher: AnyPublisher<String, Never>? {
-            optionB.textField.publisher(for: .editingDidEnd)
-        }
-        
-        var aImagePublisher: AnyPublisher<UIImage?, Never>? {
-            nil
-        }
-        var bImagePublisher: AnyPublisher<UIImage?, Never>? {
-            nil
         }
     }
 }
@@ -268,6 +256,12 @@ extension TopicGenerateBSideSecondView {
     
     final class DeadlineSection: BaseStackView {
         
+        var menu: UIMenu? {
+            didSet {
+                deadlineMenu.menu = menu
+            }
+        }
+ 
         let arrow: UIImageView = {
             let view = UIImageView(image: Image.down.withTintColor(Color.subPurple))
             view.snp.makeConstraints{
@@ -290,6 +284,12 @@ extension TopicGenerateBSideSecondView {
             label.font = Pretendard.regular15.font
             return label
         }()
+        private lazy var deadlineMenu: UIButton = {
+            let button = UIButton()
+            button.isUserInteractionEnabled = true
+            button.showsMenuAsPrimaryAction = true
+            return button
+        }()
         
         override func style() {
             axis = .horizontal
@@ -299,6 +299,10 @@ extension TopicGenerateBSideSecondView {
         override func hierarchy() {
             addArrangedSubviews([arrow, commentStackView])
             commentStackView.addArrangedSubviews([deadlineLabel, explainLabel])
+            addSubview(deadlineMenu)
+            deadlineMenu.snp.makeConstraints{
+                $0.top.leading.trailing.bottom.equalToSuperview()
+            }
         }
     }
 }

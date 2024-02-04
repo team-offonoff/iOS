@@ -14,7 +14,7 @@ import Domain
 
 extension TopicGenerateBSideSecondView {
     
-    class ImageContentView: BaseView, ImageTextIncludeContentView {
+    class ImageContentView: BaseView, ContentPublisher {
         
         private let commentLabel: PaddingLabel = {
             let label = PaddingLabel(topBottom: 16, leftRight: 16)
@@ -51,25 +51,7 @@ extension TopicGenerateBSideSecondView {
         
         override func initialize() {
             
-            addTarget()
             addGestureRecognizer()
-            
-            func addTarget() {
-//                switchButton.tapPublisher
-//                    .sink{ [weak self] _ in
-//
-//                        guard let self = self else { return }
-//
-//                        switchInput()
-//
-//                        func switchInput() {
-//                            let temp: UIImage? = self.image(option: .A)
-//                            self.aImageView.imageSubject.send(self.image(option: .B))
-//                            self.bImageView.imageSubject.send(temp)
-//                        }
-//                    }
-//                    .store(in: &cancellable)
-            }
             
             func addGestureRecognizer() {
                 [aImageView, bImageView].forEach{
@@ -83,7 +65,7 @@ extension TopicGenerateBSideSecondView {
         @objc private func imageTap(_ recognizer: UITapGestureRecognizer) {
             
             guard let view = recognizer.view as? CustomImageView else { return }
-            
+
             NotificationCenter.default
                 .post(
                     name: Notification.Name(Topic.Action.showImagePicker.identifier),
@@ -93,9 +75,6 @@ extension TopicGenerateBSideSecondView {
         }
         
         //MARK: Input
-        
-        func setLimitCount(_ count: Int?) {
-        }
         
         func setImage(_ image: UIImage, option: Choice.Option) {
             switch option {
@@ -114,26 +93,21 @@ extension TopicGenerateBSideSecondView {
             }
         }
         
+        func switchOption() {
+            let temp = aImageView.imageSubject.value
+            aImageView.imageSubject.send(bImageView.imageSubject.value)
+            bImageView.imageSubject.send(temp)
+        }
+        
         //MARK: Output
         
-        var aTextPublisher: AnyPublisher<String, Never>? {
-           nil
-        }
-        var bTextPublisher: AnyPublisher<String, Never>? {
-           nil
-        }
-        var aImagePublisher: AnyPublisher<UIImage?, Never>? {
+        var contentA: AnyPublisher<Any?, Never> {
             aImageView.imageSubject.eraseToAnyPublisher()
         }
-        var bImagePublisher: AnyPublisher<UIImage?, Never>? {
+        var contentB: AnyPublisher<Any?, Never> {
             bImageView.imageSubject.eraseToAnyPublisher()
         }
-        
-        func text(option: Choice.Option) -> String? {
-            nil
-        }
-        
-        func image(option: Choice.Option) -> UIImage? {
+        func content(option: Choice.Option) -> Any? {
             switch option {
             case .A:    return aImageView.imageSubject.value
             case .B:    return bImageView.imageSubject.value
@@ -158,7 +132,7 @@ extension TopicGenerateBSideSecondView {
         //MARK: Output
         
         let option: Choice.Option
-        let imageSubject: CurrentValueSubject<UIImage?, Never> = CurrentValueSubject(nil)
+        let imageSubject: CurrentValueSubject<Any?, Never> = CurrentValueSubject(nil)
         
         private let imageView: UIImageView = {
             let imageView = UIImageView()
@@ -169,6 +143,7 @@ extension TopicGenerateBSideSecondView {
                 $0.height.equalTo(124)
             }
             imageView.backgroundColor = Color.subNavy2.withAlphaComponent(0.8)
+            imageView.isUserInteractionEnabled = true
             return imageView
         }()
         private let bringImageLabel: UILabel = {
@@ -185,7 +160,7 @@ extension TopicGenerateBSideSecondView {
             label.setTypo(Pretendard.black180)
             return label
         }()
-        private let cancelButton: UIButton = {
+        private lazy var cancelButton: UIButton = {
             let button = UIButton()
             button.setImage(Image.topicGenerateImageCancel, for: .normal)
             button.snp.makeConstraints{
@@ -264,7 +239,7 @@ extension TopicGenerateBSideSecondView {
                 imageSubject
                     .receive(on: DispatchQueue.main)
                     .sink{ [weak self] image in
-                        self?.imageView.image = image
+                        self?.imageView.image = image as? UIImage
                         self?.setComponentVisibility()
                     }
                     .store(in: &cancellable)

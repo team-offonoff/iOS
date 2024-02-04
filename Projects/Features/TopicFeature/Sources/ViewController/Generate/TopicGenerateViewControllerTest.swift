@@ -239,7 +239,42 @@ final class TopicGenerateViewControllerTest: BaseViewController<TopicGenerateHea
         }
         
         func bindSideB() {
+            viewModel.sideBTitleValidation
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] (isValid, message) in
+                    if isValid {
+                        self?.bSideView.titleSection.contentView.complete()
+                    }
+                    else {
+                        self?.bSideView.titleSection.contentView.error(message: message)
+                    }
+                }
+                .store(in: &cancellables)
             
+            viewModel.sideBKeywordValidation
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] (isValid, message) in
+                    if isValid {
+                        self?.bSideView.keywordSection.contentView.complete()
+                    }
+                    else {
+                        self?.bSideView.keywordSection.contentView.error(message: message)
+                    }
+                }
+                .store(in: &cancellables)
+            
+            viewModel.moveNextInput
+                .throttle(for: .seconds(1), scheduler: DispatchQueue.main, latest: true)
+                .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
+                .sink{ [weak self] _ in
+                    guard let self = self else { return }
+                    self.viewModel.tempStorage = (
+                        title: self.bSideView.titleSection.contentView.textField.text ?? "",
+                        keyword: self.bSideView.keywordSection.contentView.textField.text ?? ""
+                    )
+                    self.coordinator?.startBsideTopicGenerate()
+                }
+                .store(in: &cancellables)
         }
 
     }
