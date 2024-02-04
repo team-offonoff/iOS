@@ -47,12 +47,24 @@ public final class ImagePopUpView: BaseView {
         label.setTypo(Pretendard.black200, setLineSpacing: true)
         return label
     }()
+    let previewLabel: PaddingLabel = {
+       let label = PaddingLabel(topBottom: 2, leftRight: 13)
+        label.setTypo(Pretendard.regular14)
+        label.backgroundColor = Color.black20
+        label.textColor = Color.white60
+        label.layer.cornerRadius = 24/2
+        label.layer.masksToBounds = true
+        label.snp.makeConstraints{
+            $0.height.equalTo(24)
+        }
+        return label
+    }()
     
     public override func hierarchy() {
         addSubview(contentStackView)
         contentStackView.addArrangedSubviews([imageView, optionBackgroundView])
         contentStackView.addSubview(closeButton)
-        optionBackgroundView.addSubview(optionLabel)
+        optionBackgroundView.addSubviews([optionLabel, previewLabel])
     }
     
     public override func layout() {
@@ -68,11 +80,23 @@ public final class ImagePopUpView: BaseView {
             $0.centerY.equalToSuperview().offset(10)
             $0.centerX.equalToSuperview()
         }
+        previewLabel.snp.makeConstraints{
+            $0.center.equalToSuperview()
+        }
     }
     
-    func fill(_ choice: Choice) {
+    func fill(_ choice: Choice, isPreview: Bool = false) {
+        previewLabel.isHidden = !isPreview
+        previewLabel.text = "\(choice.option.content.title) 선택지 미리보기"
         optionBackgroundView.backgroundColor = choice.option.content.color
         optionLabel.text = choice.option.content.title
-        imageView.backgroundColor = .black
+    }
+    
+    func fill(option: Choice.Option, image: UIImage, isPreview: Bool = false) {
+        previewLabel.isHidden = !isPreview
+        previewLabel.text = "\(option.content.title) 선택지 미리보기"
+        optionBackgroundView.backgroundColor = option.content.color
+        optionLabel.text = option.content.title
+        imageView.image = image
     }
 }
