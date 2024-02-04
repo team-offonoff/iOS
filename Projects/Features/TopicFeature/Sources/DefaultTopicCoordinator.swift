@@ -41,7 +41,7 @@ public class DefaultTopicGenerateCoordinator: TopicGenerateCoordinator {
     }
     
     public func startTopicGenerate() {
-        let viewController = TopicGenerateViewControllerTest(viewModel: topicGenerateViewModel)
+        let viewController = TopicGenerateViewController(viewModel: topicGenerateViewModel)
         viewController.coordinator = self
         navigationController.pushViewController(viewController, animated: true)
     }
