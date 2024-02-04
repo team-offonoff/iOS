@@ -1,23 +1,21 @@
 //
-//  TopicInputTableViewCell.swift
+//  TopicGenerateBSideFirstView.swift
 //  TopicFeature
 //
-//  Created by 박소윤 on 2023/12/26.
-//  Copyright © 2023 AB. All rights reserved.
+//  Created by 박소윤 on 2024/01/20.
+//  Copyright © 2024 AB. All rights reserved.
 //
 
 import Foundation
 import UIKit
 import ABKit
 
-final class TopicInputTableViewCell: BaseTableViewCell {
+final class TopicGenerateBSideFirstView: BaseView {
     
-    lazy var title: SubtitleView<ABTextFieldView> = {
-        let subview = SemiboldSubtitleView(subtitle: "토픽 제목", content: ABTextFieldView(placeholder: "어떤 주제로 올리시나요?", insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 40), isErrorNeed: false))
-        subview.contentView.textField.customPlaceholder(font: Pretendard.medium16.font)
-        subview.contentView.textField.font = Pretendard.medium16.font
-        return subview
-    }()
+    let titleSection: SubtitleView<TopicTitleTextFieldView> = RegularSubtitleView(
+        subtitle: "어떤 주제로 물어볼까요?",
+        content: TopicTitleTextFieldView()
+    )
     private let hashtagLabel: UILabel = {
         let label = UILabel()
         label.textColor = Color.subPurple
@@ -25,66 +23,64 @@ final class TopicInputTableViewCell: BaseTableViewCell {
         label.setTypo(Pretendard.semibold14)
         return label
     }()
-    lazy var keyword: SubtitleView<ABTextFieldView> = {
-        let subview = SemiboldSubtitleView(subtitle: "토픽 키워드", content: ABTextFieldView(placeholder: "한글, 영문, 숫자만 가능", insets: UIEdgeInsets(top: 16, left: 35, bottom: 16, right: 40), isErrorNeed: false))
+    let keywordSection: SubtitleView<ABTextFieldView> = {
+        let subview = RegularSubtitleView(subtitle: "토픽 키워드", content: ABTextFieldView(placeholder: "한글, 영문, 숫자만 가능", insets: UIEdgeInsets(top: 16, left: 35, bottom: 16, right: 40), isErrorNeed: true))
         subview.contentView.textField.customPlaceholder(font: Pretendard.medium16.font)
         subview.contentView.textField.font = Pretendard.medium16.font
         return subview
     }()
     let recommendKeyword: RecommendKeyword = RecommendKeyword()
+    let pageIndicator: PageNumberIndicator = {
+       let view =  PageNumberIndicator()
+        view.cells[0].highlight()
+        return view
+    }()
     
     override func hierarchy() {
-        baseView.addSubviews([
-            title, keyword,
-            recommendKeyword.titleLabel, recommendKeyword.collectionView, recommendKeyword.commentLabel
-        ])
-        keyword.contentView.addSubview(hashtagLabel)
+        addSubviews([titleSection, keywordSection, recommendKeyword.titleLabel, recommendKeyword.collectionView, recommendKeyword.commentLabel, pageIndicator])
+        keywordSection.contentView.addSubview(hashtagLabel)
     }
     
     override func layout() {
-        
-        baseView.snp.makeConstraints{
-            $0.height.equalTo(Device.height - (Device.safeAreaInsets?.top ?? 0) - 48)
-        }
-        
-        title.snp.makeConstraints{
-            $0.top.equalToSuperview().offset(51)
+        titleSection.snp.makeConstraints{
+            $0.top.equalToSuperview().offset(54)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
-        
-        keyword.snp.makeConstraints{
-            $0.top.equalTo(title.snp.bottom).offset(48)
+        keywordSection.snp.makeConstraints{
+            $0.top.equalTo(titleSection.snp.bottom).offset(39)
             $0.leading.trailing.equalToSuperview().inset(20)
         }
         hashtagLabel.snp.makeConstraints{
-            $0.centerY.equalTo(keyword.contentView.textField)
+            $0.centerY.equalTo(keywordSection.contentView.textField)
             $0.leading.equalToSuperview().offset(16)
         }
-        
         recommendKeyword.titleLabel.snp.makeConstraints{
-            $0.top.equalTo(keyword.snp.bottom).offset(15)
+            $0.top.equalTo(keywordSection.snp.bottom).offset(6)
             $0.leading.equalToSuperview().offset(20)
         }
-        
         recommendKeyword.collectionView.snp.makeConstraints{
-            $0.top.equalTo(recommendKeyword.titleLabel.snp.bottom).offset(13)
+            $0.top.equalTo(recommendKeyword.titleLabel.snp.bottom).offset(12)
             $0.height.equalTo(30)
             $0.leading.trailing.equalToSuperview()
         }
-        
         recommendKeyword.commentLabel.snp.makeConstraints{
-            $0.top.equalTo(recommendKeyword.collectionView.snp.bottom).offset(10)
+            $0.top.equalTo(recommendKeyword.collectionView.snp.bottom).offset(12)
             $0.leading.equalToSuperview().offset(20)
             $0.bottom.lessThanOrEqualToSuperview()
         }
+        pageIndicator.snp.makeConstraints{
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(66)
+        }
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        endEditing(true)
+    func clear() {
+        titleSection.contentView.update(text: "")
+        keywordSection.contentView.update(text: "")
     }
 }
 
-extension TopicInputTableViewCell {
+extension TopicGenerateBSideFirstView {
     
     class RecommendKeyword {
         

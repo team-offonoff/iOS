@@ -12,6 +12,7 @@ import ABKit
 import Combine
 import Domain
 
+/*
 extension TopicContentInputTableViewCell {
     
     class TextContentView: BaseStackView, ImageTextIncludeContentView {
@@ -225,3 +226,4 @@ extension TopicContentInputTableViewCell {
         //MARK: Output
     }
 }
+*/

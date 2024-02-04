@@ -13,13 +13,13 @@ public struct Choice {
     
     public struct Content {
         
-        public init(text: String, imageURL: URL?, type: String = "IMAGE_TEXT") {
+        public init(text: String?, imageURL: URL?, type: String = "IMAGE_TEXT") {
             self.text = text
             self.imageURL = imageURL
             self.type = type
         }
         
-        public let text: String
+        public let text: String?
         public let imageURL: URL?
         public let type: String
     }

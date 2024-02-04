@@ -12,6 +12,7 @@ import ABKit
 import Combine
 import Domain
 
+/*
 extension TopicContentInputTableViewCell {
     
     class ContentTypeGroup {
@@ -100,3 +101,4 @@ extension TopicContentInputTableViewCell {
         }
     }
 }
+*/

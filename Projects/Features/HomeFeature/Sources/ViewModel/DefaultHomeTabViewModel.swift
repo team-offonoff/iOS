@@ -34,7 +34,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         super.init()
     }
 
-    var topics: [TopicDetailItemViewModel] = [.init(topic: TestData.topicData1), .init(topic: TestData.topicData2), .init(topic: TestData.topicData3), .init(topic: TestData.topicData4)]
+    var topics: [TopicDetailItemViewModel] = []
     
     var currentTopic: TopicDetailItemViewModel {
         topics[currentIndexPath.row]
@@ -127,7 +127,10 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         //MARK: helper method
         
         func remainTime() -> Int {
-            topics[currentIndexPath.row].deadline - Int(Date.now.timeIntervalSince1970)
+            guard let deadline = topics[currentIndexPath.row].deadline else {
+                return 0
+            }
+            return deadline - UTCTime.current
         }
         
         func publishTimer() {

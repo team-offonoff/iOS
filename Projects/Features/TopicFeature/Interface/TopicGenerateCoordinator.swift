@@ -8,8 +8,12 @@
 
 import Foundation
 import FeatureDependency
+import UIKit
+import Domain
 
 public protocol TopicGenerateCoordinator: Coordinator {
     func startTopicGenerate()
+    func startBsideTopicGenerate()
+    func startPopUp(option: Choice.Option,image: UIImage)
 }
 

@@ -31,7 +31,6 @@ public final class DropDownView: ABTextFieldView {
         button.showsMenuAsPrimaryAction = true
         return button
     }()
-    private var cancellable: Set<AnyCancellable> = []
     
     public override func initialize() {
         

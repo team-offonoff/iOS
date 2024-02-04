@@ -41,6 +41,20 @@ public class DefaultTopicGenerateCoordinator: TopicGenerateCoordinator {
     }
     
     public func startTopicGenerate() {
-        navigationController.pushViewController(TopicGenerateViewController(viewModel: topicGenerateViewModel), animated: true)
+        let viewController = TopicGenerateViewController(viewModel: topicGenerateViewModel)
+        viewController.coordinator = self
+        navigationController.pushViewController(viewController, animated: true)
+    }
+    
+    public func startBsideTopicGenerate() {
+        let viewController = BsideTopicGenerateViewController(viewModel: topicGenerateViewModel)
+        viewController.coordinator = self
+        navigationController.pushViewController(viewController, animated: true)
+    }
+    
+    public func startPopUp(option: Choice.Option, image: UIImage) {
+        let popUpViewController = TopicImagePopUpViewController(option: option, image: image)
+        popUpViewController.modalPresentationStyle = .overFullScreen
+        navigationController.present(popUpViewController, animated: false)
     }
 }

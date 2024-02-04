@@ -15,12 +15,13 @@ struct TopicResponseDTO: Decodable {
     let topicId: Int
     let topicSide: String
     let topicTitle: String
-    let deadline: Int
+    let deadline: Int?
     let voteCount: Int
+    let commentCount: Int
     let topicContent: String?
     let keyword: KeywordResponseDTO
     let choices: [ChoiceResponseDTO]
-    let author: AuthorResponseDTO
+    let author: AuthorResponseDTO?
     let selectedOption: String?
     
     struct KeywordResponseDTO: Decodable {
@@ -35,8 +36,8 @@ struct TopicResponseDTO: Decodable {
         let choiceOption: String
         
         struct ContentResponseDTO: Decodable {
-            let text: String
-            let imageUrl: String
+            let text: String?
+            let imageUrl: String?
             let type: String
         }
     }
@@ -59,9 +60,10 @@ extension TopicResponseDTO: Domainable {
             title: topicTitle,
             deadline: deadline,
             voteCount: voteCount,
+            commentCount: commentCount,
             keyword: keyword.toDomain(),
             choices: choices.map{ $0.toDomain() },
-            author: author.toDomain(),
+            author: author?.toDomain(),
             selectedOption: Choice.Option.toDomain(selectedOption)
         )
     }
@@ -92,7 +94,7 @@ extension TopicResponseDTO.ChoiceResponseDTO.ContentResponseDTO: Domainable {
     func toDomain() -> Choice.Content {
         .init(
             text: text,
-            imageURL: URL(string: imageUrl),
+            imageURL: URL(string: imageUrl ?? ""),
             type: type
         )
     }

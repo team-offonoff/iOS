@@ -14,11 +14,14 @@ import Domain
 
 public final class TopicImagePopUpViewController: BaseViewController<BaseHeaderView, ImagePopUpView, NullCoordinator> {
     
-    private let choice: Choice
-    
     public init(choice: Choice) {
-        self.choice = choice
         super.init(headerView: nil, mainView: ImagePopUpView())
+        mainView.fill(choice)
+    }
+    
+    public init(option: Choice.Option, image: UIImage) {
+        super.init(headerView: nil, mainView: ImagePopUpView())
+        mainView.fill(option: option, image: image, isPreview: true)
     }
     
     required init?(coder: NSCoder) {
@@ -52,7 +55,6 @@ public final class TopicImagePopUpViewController: BaseViewController<BaseHeaderV
         
         modifyViewLayout()
         addCloseTarget()
-        mainView.fill(choice)
         
         func modifyViewLayout() {
             mainView.snp.remakeConstraints{

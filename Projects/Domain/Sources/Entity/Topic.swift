@@ -13,8 +13,9 @@ public struct Topic {
     public let id: Int?
     public let side: Side
     public let title: String
-    public let deadline: Int
+    public let deadline: Int?
     public let voteCount: Int?
+    public let commentCount: Int
     public let content: Any?
     public let keyword: Keyword
     public let choices: [Choice]
@@ -25,8 +26,9 @@ public struct Topic {
         id: Int?,
         side: Topic.Side,
         title: String,
-        deadline: Int,
+        deadline: Int?,
         voteCount: Int?,
+        commentCount: Int,
         content: Any? = nil,
         keyword: Keyword,
         choices: [Choice],
@@ -38,6 +40,7 @@ public struct Topic {
         self.title = title
         self.deadline = deadline
         self.voteCount = voteCount
+        self.commentCount = commentCount
         self.content = content
         self.keyword = keyword
         self.choices = choices

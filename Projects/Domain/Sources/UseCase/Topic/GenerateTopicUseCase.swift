@@ -31,10 +31,10 @@ public struct GenerateTopicUseCaseRequestValue {
     
     public init(
         side: Topic.Side,
-        keyword: String,
+        keyword: String?,
         title: String,
         choices: [GenerateChoiceOptionUseCaseRequestValue],
-        deadline: Int
+        deadline: Int?
     ) {
         self.side = side
         self.keyword = keyword
@@ -44,21 +44,21 @@ public struct GenerateTopicUseCaseRequestValue {
     }
 
     public let side: Topic.Side
-    public let keyword: String
+    public let keyword: String?
     public let title: String
     public let choices: [GenerateChoiceOptionUseCaseRequestValue]
-    public let deadline: Int
+    public let deadline: Int?
 }
 
 public struct GenerateChoiceOptionUseCaseRequestValue {
     
-    public init(text: String, image: UIImage?, option: Choice.Option) {
+    public init(text: String?, image: UIImage?, option: Choice.Option) {
         self.text = text
         self.image = image
         self.option = option
     }
     
-    public let text: String
+    public let text: String?
     public let image: UIImage?
     public let option: Choice.Option
     public let type: String = "IMAGE_TEXT"

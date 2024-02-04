@@ -15,14 +15,16 @@ import Domain
 import Combine
 
 protocol ImageTextIncludeContentView: UIView {
-    var aTextPublisher: AnyPublisher<String, Never> { get }
-    var bTextPublisher: AnyPublisher<String, Never> { get }
+    //타입 상관없는 publisher로 사용하는 건 어떤지
+    var aTextPublisher: AnyPublisher<String, Never>? { get }
+    var bTextPublisher: AnyPublisher<String, Never>? { get }
     var aImagePublisher: AnyPublisher<UIImage?, Never>? { get }
     var bImagePublisher: AnyPublisher<UIImage?, Never>? { get }
-    func text(option: Choice.Option) -> String
+    func text(option: Choice.Option) -> String?
     func image(option: Choice.Option) -> UIImage?
 }
 
+/*
 final class TopicContentInputTableViewCell: BaseTableViewCell {
     
     private var selectedContentTypeChip: ContentTypeChip? {
@@ -35,10 +37,10 @@ final class TopicContentInputTableViewCell: BaseTableViewCell {
     }
 
     private let contentTypeChips: ContentTypeGroup = ContentTypeGroup()
-    private let contentSubView: SubtitleView = SubtitleView(subtitle: "토픽 내용", content: UIView())
+    private let contentSubView: SubtitleView = SemiboldSubtitleView(subtitle: "토픽 내용", content: UIView())
     private let textContentView: TextContentView = TextContentView()
     private let imageContentView: ImageContentView = ImageContentView()
-    private let deadlineSubView: SubtitleView = SubtitleView(subtitle: "마감 시간", content: DropDownView(placeholder: "1시간 뒤"))
+    private let deadlineSubView: SubtitleView = SemiboldSubtitleView(subtitle: "마감 시간", content: DropDownView(placeholder: "1시간 뒤"))
     let ctaButton: CTAButton = {
         let button = CTAButton(title: "토픽 올리기")
         button.isEnabled = false
@@ -229,3 +231,5 @@ extension TopicContentInputTableViewCell {
         currentContentView().image(option: option)
     }
 }
+
+*/
