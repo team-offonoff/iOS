@@ -127,7 +127,10 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         //MARK: helper method
         
         func remainTime() -> Int {
-            topics[currentIndexPath.row].deadline - Int(Date.now.timeIntervalSince1970)
+            guard let deadline = topics[currentIndexPath.row].deadline else {
+                return 0
+            }
+            return deadline - UTCTime.current
         }
         
         func publishTimer() {
