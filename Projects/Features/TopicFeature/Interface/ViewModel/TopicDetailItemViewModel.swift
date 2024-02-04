@@ -17,7 +17,7 @@ public struct TopicDetailItemViewModel {
     public let profileUrl: URL?
     public let side: String
     public let keyword: String
-    public let deadline: Int
+    public let deadline: Int?
     public let chatCount: String
     public let likeCount: String
     public var votedOption: Choice.Option?
