@@ -15,11 +15,10 @@ import UIKit
 
 fileprivate struct ChoiceContentPublisherStorage {
     
-    var textType: AnyCancellable?
-    var imageType: AnyCancellable?
+    var contents: AnyCancellable?
     
-    func cancelAll(){
-        [textType, imageType].forEach{
+    func cancel(){
+        [contents].forEach{
             $0?.cancel()
         }
     }
@@ -33,11 +32,11 @@ final class DefaultTopicGenerateViewModel: BaseViewModel, TopicGenerateViewModel
     }
     
     deinit {
-        choiceContentPublisherStorage?.cancelAll()
+        publisherStorage.cancel()
     }
     
     private let topicGenerateUseCase: any GenerateTopicUseCase
-    private var choiceContentPublisherStorage: ChoiceContentPublisherStorage? = ChoiceContentPublisherStorage()
+    private var publisherStorage: ChoiceContentPublisherStorage = ChoiceContentPublisherStorage()
     @Published private var choiceContentValidation: Bool = false
     
     //MARK: Input & Output
@@ -55,6 +54,15 @@ final class DefaultTopicGenerateViewModel: BaseViewModel, TopicGenerateViewModel
     let sideAOptionBValidation: CurrentValueSubject<Validation, Never> = CurrentValueSubject((false, nil))
     let sideACanSwitchOption: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     let canSideARegister: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    
+    //side b
+    var tempStorage: (title: String, keyword: String)?
+    let deadlinePublisher: CurrentValueSubject<Int, Never> = CurrentValueSubject(0)
+    let sideBTitleValidation: CurrentValueSubject<Validation, Never> = CurrentValueSubject((false, nil))
+    let sideBKeywordValidation: CurrentValueSubject<Validation, Never> = CurrentValueSubject((false, nil))
+    let sideBCanSwitchOption: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let moveNextInput: PassthroughSubject<Void, Never> = PassthroughSubject()
+    let cansideBRegister: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     
     let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     let canRegister: PassthroughSubject<Bool, Never> = PassthroughSubject()
@@ -119,76 +127,80 @@ final class DefaultTopicGenerateViewModel: BaseViewModel, TopicGenerateViewModel
     
     func sideBInput(content: TopicGenerateContentViewModelInputValue) {
         
+        content.titleDidEnd
+            .sink{ [weak self] title in
+                guard let self = self else { return }
+                self.sideBTitleValidation.send(self.validation(title: title))
+            }
+            .store(in: &cancellable)
+        
+        content.keywordDidEnd?
+            .sink{ [weak self] keyword in
+                guard let self = self else { return }
+                self.sideBKeywordValidation.send(keywordValidation())
+                
+                func keywordValidation() -> (Bool, String?) {
+                    if keyword.count > 0 && keyword.count <= self.limitCount.keyword {
+                        return (true, nil)
+                    }
+                    return (false, "* 한글, 영문, 숫자만 사용하실 수 있습니다.")
+                }
+                
+            }
+            .store(in: &cancellable)
+        
+        sideBTitleValidation.combineLatest(sideBKeywordValidation)
+            .sink{ [weak self] title, keyword in
+                guard let self = self else { return }
+                if title.0 && keyword.0 {
+                    self.moveNextInput.send(())
+                }
+            }
+            .store(in: &cancellable)
+        
     }
     
-    
-    func input(content: TopicGenerateContentViewModelInputValue) {
+    func sideBChoiceInput(content: TopicGenerateChoiceContentViewModelInputValueTest) {
         
-//        content.titleDidEnd
-//            .combineLatest(content.keywordDidEnd)
-//            .sink{ [weak self] title , keyword in
-//
-//                guard let self = self else { return }
-//
-//                self.contentValidation.send(isValid())
-//
-//                func isValid() -> Bool {
-//
-//                    return titleValidation() && keywordValidation()
-//
-//                    func titleValidation() -> Bool {
-//                        title.count > 0 && title.count <= self.limitCount.title
-//                    }
-//
-//                    func keywordValidation() -> Bool {
-//                        keyword.count > 0 && keyword.count <= self.limitCount.keyword
-//                    }
-//                }
-//
-//            }
-//            .store(in: &cancellable)
-    }
-    
-    func input(choiceContent: TopicGenerateChoiceContentViewModelInputValue) {
-        
-        choiceContentPublisherStorage?.cancelAll()
+        publisherStorage.cancel()
         
         if contentType.value == .text {
-            choiceContentPublisherStorage?.textType = choiceContent.choiceAText
-                .combineLatest(choiceContent.choiceBText)
-                .sink{ [weak self] aText, bText in
+            publisherStorage.contents = content.choiceA.combineLatest(content.choiceB)
+                .sink{ [weak self] contentA, contentB in
+                    guard let self = self , let contentA = contentA as? String,  let contentB = contentB as? String else { return }
                     
-                    guard let self = self else { return }
-
-                    self.choiceContentValidation = isTextValid(aText) && isTextValid(bText)
-                    
-                    func isTextValid(_ text: String) -> Bool {
-                        text.count > 0 && text.count <= self.limitCount.textOption
-                    }
+                    self.sideBCanSwitchOption.send(self.validation(option: contentA).0 && self.validation(option: contentB).0)
+                    self.cansideBRegister.send(self.validation(option: contentA).0 && self.validation(option: contentB).0)
                 }
+            
         }
         else if contentType.value == .image {
-            
-            guard let choiceAImage = choiceContent.choiceAImage, let choiceBImage = choiceContent.choiceBImage else { return }
-            
-            choiceContentPublisherStorage?.imageType = choiceContent.choiceAText
-                .combineLatest(choiceContent.choiceBText, choiceAImage, choiceBImage)
-                .sink{ [weak self] aText, bText, aImage, bImage in
+            publisherStorage.contents = content.choiceA.combineLatest(content.choiceB)
+                .sink{ [weak self] contentA, contentB in
                     
                     guard let self = self else { return }
                     
-                    self.choiceContentValidation = isTextValid(aText) && isTextValid(bText) && isImageValid()
+                    let contentA = contentA as? UIImage
+                    let contentB = contentB as? UIImage
                     
-                    func isTextValid(_ text: String) -> Bool {
-                        text.count > 0 && text.count <= self.limitCount.imageComment
-                    }
+                    self.sideBCanSwitchOption.send(validation(of: contentA) || validation(of: contentB))
+                    self.cansideBRegister.send(validation(of: contentA) && validation(of: contentB))
                     
-                    func isImageValid() -> Bool {
-                        aImage != nil && bImage != nil
+                    func validation(of image: UIImage?) -> Bool {
+                        image != nil
                     }
                 }
         }
-        
+    }
+    
+
+    func generateChoice(option: Choice.Option, content: Any) -> GenerateChoiceOptionUseCaseRequestValue {
+        if contentType.value == .text {
+            return .init(text: content as? String, image: nil, option: option)
+        }
+        else {
+            return .init(text: nil, image: content as? UIImage, option: option)
+        }
     }
     
     func register(_ request: GenerateTopicUseCaseRequestValue) {

@@ -18,7 +18,7 @@ public extension UITextField {
             .eraseToAnyPublisher()
     }
     
-    func anyPublisher(for event: UIControl.Event) -> AnyPublisher<Any, Never> {
+    func anyPublisher(for event: UIControl.Event) -> AnyPublisher<Any?, Never> {
         controlPublisher(for: event)
             .map{ $0 as! UITextField }
             .map { $0.text ?? "" }
