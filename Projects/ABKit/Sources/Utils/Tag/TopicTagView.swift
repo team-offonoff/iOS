@@ -26,13 +26,18 @@ public final class TopicTagView: BaseStackView {
     }()
     
     public override func style() {
+        
         layer.cornerRadius = 22/2
         axis = .horizontal
         spacing = 10
         alignment = .center
+        padding()
         
-        layoutMargins = UIEdgeInsets(top: 2, left: 10, bottom: 2, right: 10)
-        isLayoutMarginsRelativeArrangement = true
+        
+        func padding() {
+            layoutMargins = UIEdgeInsets(top: 2, left: 10, bottom: 2, right: 10)
+            isLayoutMarginsRelativeArrangement = true
+        }
     }
     
     public override func hierarchy() {
@@ -42,11 +47,11 @@ public final class TopicTagView: BaseStackView {
         }
     }
     
-    public func fill(type: TopicTag) {
-        backgroundColor = type.configuration.color.withAlphaComponent(0.2)
-        roundView.backgroundColor = type.configuration.color
-        titleLabel.textColor = type.configuration.color
-        titleLabel.text = type.configuration.title
+    public func fill(_ configuration: TopicTagConfiguration) {
+        backgroundColor = configuration.color.withAlphaComponent(0.2)
+        roundView.backgroundColor = configuration.color
+        titleLabel.textColor = configuration.color
+        titleLabel.text = configuration.title
     }
     
 }

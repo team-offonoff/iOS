@@ -10,15 +10,12 @@ import Foundation
 import UIKit
 
 public struct TopicTagConfiguration {
+    
+    public init(color: UIColor, title: String) {
+        self.color = color
+        self.title = title
+    }
+    
     let color: UIColor
     let title: String
-}
-
-extension TopicTag {
-    var configuration: TopicTagConfiguration {
-        switch self {
-        case .competition:
-            return .init(color: UIColor(r: 255, g: 82, b: 186), title: "치열한 경쟁 중")
-        }
-    }
 }

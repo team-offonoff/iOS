@@ -87,7 +87,7 @@ final class SideATopicTableViewCell: BaseTableViewCell {
     }
     
     func fill() {
-        topicTag.fill(type: .competition)
+        topicTag.fill(Topic.Tag.competition.configuration)
         titleLabel.text = "10년 전 또는 후로 갈 수 있다면?"
         voteSection.optionA.fill("10년 전 과거로 가기")
         voteSection.optionB.fill("10년 후 과거로 가기")

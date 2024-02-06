@@ -53,4 +53,8 @@ extension Topic {
             Topic.identifier + Action.identifier + String(describing: self)
         }
     }
+    
+    public enum Tag {
+        case competition
+    }
 }
