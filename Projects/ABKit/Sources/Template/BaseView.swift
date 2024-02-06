@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 open class BaseView: UIView {
     
@@ -22,6 +23,8 @@ open class BaseView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    public lazy var cancellable: Set<AnyCancellable> = []
+    
     open func style() { }
     
     open func hierarchy() { }
@@ -29,5 +32,7 @@ open class BaseView: UIView {
     open func layout() { }
     
     open func initialize() { }
+    
+    open func bind() { }
     
 }

@@ -23,7 +23,6 @@ protocol TopicSideChoiceViewConfiguration {
 final class TopicSideChoiceView: BaseView {
     
     @Published var state: Topic.Side?
-    private var cancellable: Set<AnyCancellable> = []
     
     //MARK: UI
     
