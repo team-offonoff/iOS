@@ -11,10 +11,10 @@ import UIKit
 import ABKit
 import FeatureDependency
 
-final class SideAViewController: BaseViewController<BaseHeaderView, SideAView, DefaultSideACoordinator> {
+final class SideAViewController: BaseViewController<SideTabHeaderView, SideAView, DefaultSideACoordinator> {
     
     init(){
-        super.init(headerView: BaseHeaderView(), mainView: SideAView())
+        super.init(headerView: SideTabHeaderView(icon: Image.sideAHeader), mainView: SideAView())
     }
     
     required init?(coder: NSCoder) {

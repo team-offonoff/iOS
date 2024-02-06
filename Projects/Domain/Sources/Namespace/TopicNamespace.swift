@@ -57,4 +57,9 @@ extension Topic {
     public enum Tag {
         case competition
     }
+    
+    public enum Progress: CaseIterable {
+        case ongoing
+        case termination
+    }
 }
