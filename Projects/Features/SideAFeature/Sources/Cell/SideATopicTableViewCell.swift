@@ -9,10 +9,13 @@
 import Foundation
 import UIKit
 import ABKit
+import SideAFeatureInterface
 import FeatureDependency
 import Domain
 
 final class SideATopicTableViewCell: BaseTableViewCell {
+    
+    weak var delegate: VoteDelegate?
     
     private let tagStackView: UIStackView = {
         let stackView = UIStackView(axis: .vertical, spacing: 12)
@@ -64,6 +67,7 @@ final class SideATopicTableViewCell: BaseTableViewCell {
         }
         titleLabel.snp.makeConstraints{
             $0.top.leading.equalToSuperview()
+            $0.trailing.lessThanOrEqualTo(etcButton).inset(10)
         }
         etcButton.snp.makeConstraints{
             $0.trailing.equalToSuperview()
@@ -87,13 +91,40 @@ final class SideATopicTableViewCell: BaseTableViewCell {
         }
     }
     
-    func fill() {
-        topicTag.fill(Topic.Tag.competition.configuration)
-        titleLabel.text = "10년 전 또는 후로 갈 수 있다면?"
-        voteSection.optionA.fill("10년 전 과거로 가기")
-        voteSection.optionB.fill("10년 후 과거로 가기")
-        timeLabel.text = "방금"
-        commentSection.fill("482")
+    override func initialize() {
+        voteSection.options.forEach{
+            $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapOption)))
+        }
+    }
+    
+    @objc private func tapOption(_ recognizer: UITapGestureRecognizer) {
+        guard let view = recognizer.view as? ChoiceView else { return }
+        delegate?.vote(view.option)
+    }
+    
+    func fill(topic: SideATopicItemViewModel) {
+        
+        setTag()
+        isVoteEnable()
+        titleLabel.text = topic.title
+        timeLabel.text = topic.time
+        voteSection.optionA.fill(topic: topic)
+        voteSection.optionB.fill(topic: topic)
+        commentSection.fill(topic.commentCount)
+        
+        
+        func setTag() {
+            if let tag = topic.tag() {
+                topicTag.fill(tag.configuration)
+            }
+            else {
+                topicTag.isHidden = true
+            }
+        }
+        
+        func isVoteEnable() {
+            voteSection.isUserInteractionEnabled = !topic.isVoted
+        }
     }
 }
 
@@ -103,6 +134,10 @@ extension SideATopicTableViewCell {
         
         let optionA: ChoiceView = ChoiceView(option: .A, leadingOffset: 16)
         let optionB: ChoiceView = ChoiceView(option: .B, leadingOffset: 17)
+        
+        var options: [ChoiceView] {
+            [optionA, optionB]
+        }
         
         override func style() {
             axis = .vertical
@@ -115,6 +150,7 @@ extension SideATopicTableViewCell {
     }
     
     final class CommentSection: BaseView {
+        
         private let stackView: UIStackView = UIStackView(axis: .horizontal, spacing: 5)
         private let iconImageView: UIImageView = UIImageView(image: Image.comment)
         private let titleLabel: UILabel = {
