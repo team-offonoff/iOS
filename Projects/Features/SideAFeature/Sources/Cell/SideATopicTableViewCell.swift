@@ -49,9 +49,9 @@ final class SideATopicTableViewCell: BaseTableViewCell {
     private let separatorLine: SeparatorLine = SeparatorLine(color: Color.white20, height: 1)
     
     override func hierarchy() {
-        baseView.addSubviews([tagStackView])
+        baseView.addSubviews([tagStackView, separatorLine])
         tagStackView.addArrangedSubviews([topicTag, contentStackView])
-        contentStackView.addSubviews([titleLabel, etcButton, voteSection, timeLabel, commentSection, separatorLine])
+        contentStackView.addSubviews([titleLabel, etcButton, voteSection, timeLabel, commentSection])
     }
     
     override func layout() {
