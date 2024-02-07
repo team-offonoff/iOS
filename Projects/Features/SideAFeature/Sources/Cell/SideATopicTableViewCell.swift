@@ -112,62 +112,6 @@ extension SideATopicTableViewCell {
         override func hierarchy() {
             addArrangedSubviews([optionA, optionB])
         }
-        
-        final class ChoiceView: BaseView {
-            
-            init(option: Choice.Option, leadingOffset: CGFloat) {
-                self.option = option
-                self.leadingOffset = leadingOffset
-                super.init()
-            }
-            
-            required init?(coder: NSCoder) {
-                fatalError("init(coder:) has not been implemented")
-            }
-            
-            private let option: Choice.Option
-            private let leadingOffset: CGFloat
-            
-            private lazy var optionLabel: UILabel = {
-                let label = UILabel()
-                label.text = option.content.title
-                label.textColor = option.content.color
-                label.setTypo(Pretendard.black24)
-                return label
-            }()
-            private let choiceLabel: UILabel = {
-                let label = UILabel()
-                label.textColor = Color.white
-                label.setTypo(Pretendard.regular14)
-                return label
-            }()
-            
-            override func style() {
-                backgroundColor = Color.subNavy2
-                layer.cornerRadius = 10
-            }
-            
-            override func hierarchy() {
-                addSubviews([optionLabel, choiceLabel])
-            }
-            
-            override func layout() {
-                optionLabel.snp.makeConstraints{
-                    $0.centerY.equalToSuperview()
-                    $0.leading.equalToSuperview().offset(leadingOffset)
-                }
-                choiceLabel.snp.makeConstraints{
-                    $0.top.equalToSuperview().offset(10)
-                    $0.centerY.equalToSuperview()
-                    $0.leading.equalTo(optionLabel.snp.trailing).offset(10)
-                    $0.trailing.lessThanOrEqualToSuperview().inset(10)
-                }
-            }
-            
-            func fill(_ content: String) {
-                choiceLabel.text = content
-            }
-        }
     }
     
     final class CommentSection: BaseView {
