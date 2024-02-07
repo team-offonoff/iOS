@@ -31,8 +31,6 @@ extension TopicGenerateBSideSecondView {
         private let aImageView: CustomImageView = CustomImageView(option: .A)
         private let bImageView: CustomImageView = CustomImageView(option: .B)
         
-        private var cancellable: Set<AnyCancellable> = []
-        
         override func hierarchy() {
             addSubviews([commentLabel, imageStackView])
             imageStackView.addArrangedSubviews([aImageView, bImageView])

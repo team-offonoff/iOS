@@ -60,7 +60,6 @@ final class CommentInputView: BaseView {
         button.setTitleColor(Color.black40, for: .disabled)
         return button
     }()
-    private var cancellable: Set<AnyCancellable> = []
     
     override func style() {
         backgroundColor = Color.white

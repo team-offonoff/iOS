@@ -53,4 +53,13 @@ extension Topic {
             Topic.identifier + Action.identifier + String(describing: self)
         }
     }
+    
+    public enum Tag {
+        case competition
+    }
+    
+    public enum Progress: CaseIterable {
+        case ongoing
+        case termination
+    }
 }

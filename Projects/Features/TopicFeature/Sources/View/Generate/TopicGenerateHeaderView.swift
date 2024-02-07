@@ -27,7 +27,6 @@ final class TopicGenerateHeaderView: BaseHeaderView, Navigatable {
     }
 
     @Published var sideChangeViewState: SideChangeViewState = .close
-    private var cancellable: Set<AnyCancellable> = []
     
     lazy var popButton: UIButton = {
         let button = UIButton()

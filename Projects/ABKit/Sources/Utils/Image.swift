@@ -28,6 +28,9 @@ public struct Image{
     public static let takePicture = UIImage.load(name: "take_picture")
     public static let gallery = UIImage.load(name: "gallery")
     
+    public static let sideAHeader = UIImage.load(name: "side_a_header")
+    public static let sideBHeader = UIImage.load(name: "side_b_header")
+    
     //MARK: Alarm
     public static let alarmChat = UIImage.load(name: "alarm_chat")
     public static let alarmCount = UIImage.load(name: "alarm_count")
@@ -60,7 +63,7 @@ public struct Image{
     public static let resetDisable = UIImage.load(name: "reset_disable")
     
     //MARK: Comment
-    
+    public static let comment = UIImage.load(name: "comment")
     public static let chatLike = UIImage.load(name: "chat_like")
     public static let chatDislike = UIImage.load(name: "chat_dislike")
     public static let chatLikeActivate = UIImage.load(name: "chat_like_activate")
