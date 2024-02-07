@@ -35,6 +35,7 @@ final class SideATopicTableViewCell: BaseTableViewCell {
         button.snp.makeConstraints{
             $0.width.height.equalTo(24)
         }
+        button.isHidden = true //1차 스펙 아웃
         return button
     }()
     private let voteSection: VoteSection = VoteSection()
