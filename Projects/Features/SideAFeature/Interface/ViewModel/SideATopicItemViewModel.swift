@@ -38,12 +38,16 @@ public struct SideATopicItemViewModel {
     public let id: Int
     public let title: String
     public let commentCount: String
-    public let votedOption: Choice.Option?
+    private let votedOption: Choice.Option?
     public let choices: [Choice.Option: SideAChoiceItemViewModel]
     private let createdTime: Int
     
     public var time: String {
         "방금"
+    }
+    
+    public var isVoted: Bool {
+        votedOption != nil
     }
     
     public func tag() -> Topic.Tag? {
