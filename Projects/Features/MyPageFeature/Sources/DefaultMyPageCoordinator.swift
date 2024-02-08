@@ -36,7 +36,7 @@ public final class DefaultMyPageCoordinator: MyPageCoordinator {
     }
     
     public func startModifyInformation() {
-        let viewController = ModifyUserInformationViewController(viewModel: DefaultModifyUserInformationViewModel())
+        let viewController = ModifyUserInformationViewController(viewModel: DefaultModifyUserInformationViewModel(modifyInformationUseCase: DefaultModifyMemberInformationUseCase(repository: DefaultMemberRepository())))
         viewController.coordinator = self
         navigationController.pushViewController(viewController, animated: true)
     }
