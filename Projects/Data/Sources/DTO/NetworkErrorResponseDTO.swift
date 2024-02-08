@@ -33,7 +33,7 @@ extension NetworkErrorResponeDTO: Domainable {
 
     public func toDomain() -> ErrorContent {
         .init(
-            code: NetworkServiceError(rawValue: code)!,
+            code: code,
             message: content.message,
             payload: content.payload
         )
