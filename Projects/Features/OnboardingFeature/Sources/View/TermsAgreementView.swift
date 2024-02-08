@@ -42,7 +42,6 @@ final class TermsAgreementView: BaseView {
         button.isEnabled = false
         return button
     }()
-    private var cancellable: Set<AnyCancellable> = []
     
     override func hierarchy() {
         addSubviews([allAgreement, separatorLine, agreementStackView, ctaButton])
@@ -119,7 +118,6 @@ extension TermsAgreementView {
             }
             return button
         }()
-        private var cancellable: Set<AnyCancellable> = []
         
         override func hierarchy() {
             addSubviews([agreementButton, titleLabel, moveButton])
