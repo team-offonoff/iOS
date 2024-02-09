@@ -45,6 +45,7 @@ final class ProfileImageDeleteBottomSheetViewController: BaseBottomSheetViewCont
     
     override func bind() {
         viewModel.successDelete
+            .receive(on: DispatchQueue.main)
             .sink{ [weak self] _ in
                 self?.dismiss(animated: true)
             }

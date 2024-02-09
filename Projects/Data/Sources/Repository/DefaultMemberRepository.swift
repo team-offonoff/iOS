@@ -67,8 +67,16 @@ public final class DefaultMemberRepository: MemberRepository {
             .init(imageUrl: try await presignedImageRepository.upload(bucket: .profile, request: image))
         }
     }
-//
-//    public func deleteProfileImage() -> NetworkResultPublisher<Any?> {
-//
-//    }
+
+    public func deleteProfileImage() -> NetworkResultPublisher<Any?> {
+        
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = path(basePath) + path("profile") + path("image")
+        
+        guard let urlRequest = urlComponents?.toURLRequest(method: .delete) else {
+            fatalError("url parsing error")
+        }
+        
+        return dataTask(request: urlRequest)
+    }
 }

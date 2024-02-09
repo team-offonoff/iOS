@@ -15,11 +15,16 @@ import Domain
 
 final class DefaultMyPageViewModel: BaseViewModel, MyPageViewModel {
     
-    init(modifyProfileImageUseCase: any ModifyProfileImageUseCase) {
+    init(
+        modifyProfileImageUseCase: any ModifyProfileImageUseCase,
+        deleteProfileImageUseCase: any DeleteProfileImageUseCase
+    ) {
         self.modifyProfileImageUseCase = modifyProfileImageUseCase
+        self.deleteProfileImageUseCase = deleteProfileImageUseCase
     }
     
     private let modifyProfileImageUseCase: any ModifyProfileImageUseCase
+    private let deleteProfileImageUseCase: any DeleteProfileImageUseCase
     
     //MARK: Output
     
@@ -30,8 +35,17 @@ final class DefaultMyPageViewModel: BaseViewModel, MyPageViewModel {
     //MARK: Input
     
     func deleteImage() {
-        successDelete.send(())
-        profileImage.send(nil)
+        deleteProfileImageUseCase.execute()
+            .sink{ [weak self] result in
+                if result.isSuccess {
+                    self?.profileImage.send(nil)
+                    self?.successDelete.send(())
+                }
+                else if let error = result.error {
+                    self?.errorHandler.send(error)
+                }
+            }
+            .store(in: &cancellable)
     }
     
     func modifyImage(_ image: UIImage) {
