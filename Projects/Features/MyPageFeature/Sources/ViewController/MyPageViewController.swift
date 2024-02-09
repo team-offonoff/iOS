@@ -84,8 +84,16 @@ final class MyPageViewController: BaseViewController<HeaderView, MyPageView, Def
     override func bind() {
         viewModel.profileImage
             .receive(on: DispatchQueue.main)
-            .sink{ [weak self] url in
-                self?.mainView.profileImageView.image = nil
+            .sink{ [weak self] data in
+                if let image = data as? UIImage {
+                    self?.mainView.profileImageView.image = image
+                }
+                else if let imageUrl = data as? String {
+                    //TODO: URL에서 데이터 다운로드
+                }
+                else {
+                    self?.mainView.profileImageView.image = Image.profilePlaceholder
+                }
             }
             .store(in: &cancellables)
     }

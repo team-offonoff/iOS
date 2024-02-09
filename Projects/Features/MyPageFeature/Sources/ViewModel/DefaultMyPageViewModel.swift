@@ -23,8 +23,9 @@ final class DefaultMyPageViewModel: BaseViewModel, MyPageViewModel {
     
     //MARK: Output
     
-    let profileImage: PassthroughSubject<URL?, Never> = PassthroughSubject()
+    let profileImage: CurrentValueSubject<Any?, Never> = CurrentValueSubject(nil)
     let successDelete: PassthroughSubject<Void, Never> = PassthroughSubject()
+    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     //MARK: Input
     
@@ -35,12 +36,17 @@ final class DefaultMyPageViewModel: BaseViewModel, MyPageViewModel {
     
     func modifyImage(_ image: UIImage) {
         Task {
-            if let url = try await modifyProfileImageUseCase.execute(request: image) {
-                profileImage.send(URL(string: url))
-            }
-            else {
-                
-            }
+            await modifyProfileImageUseCase.execute(request: image)
+                .sink{ [weak self] result in
+                    if result.isSuccess { //, let urlString = result.data, let url = URL(string: urlString) {
+//                        self?.profileImage.send(url)
+                        self?.profileImage.send(image)
+                    }
+                    else if let error = result.error {
+                        self?.errorHandler.send(error)
+                    }
+                }
+                .store(in: &cancellable)
         }
     }
     

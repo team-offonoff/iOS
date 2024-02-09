@@ -27,7 +27,7 @@ public final class DefaultMyPageCoordinator: MyPageCoordinator {
     private var window: UIWindow?
     private let navigationController: UINavigationController
     private let myPageViewModel: MyPageViewModel = DefaultMyPageViewModel(
-            modifyProfileImageUseCase: DefaultModifyProfileImageUseCase(repository: DefaultPresignedImageRepository())
+            modifyProfileImageUseCase: DefaultModifyProfileImageUseCase(repository: DefaultMemberRepository())
         )
     public func start() {
         let viewController = MyPageViewController(viewModel: myPageViewModel)

@@ -11,18 +11,18 @@ import UIKit
 import Combine
 
 public protocol ModifyProfileImageUseCase: UseCase {
-    func execute(request image: UIImage) async throws -> String?
+    func execute(request image: UIImage) async -> NetworkResultPublisher<Any?>
 }
 
 public final class DefaultModifyProfileImageUseCase: ModifyProfileImageUseCase {
     
-    private let repository: PresignedImageRepository
+    private let repository: MemberRepository
     
-    public init(repository: PresignedImageRepository) {
+    public init(repository: MemberRepository) {
         self.repository = repository
     }
     
-    public func execute(request image: UIImage) async throws -> String? {
-        try await repository.upload(bucket: .profile, request: image)
+    public func execute(request image: UIImage) async -> NetworkResultPublisher<Any?> {
+        await repository.modifyProfile(image: image)
     }
 }
