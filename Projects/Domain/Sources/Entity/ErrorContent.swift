@@ -11,7 +11,7 @@ import Foundation
 public struct ErrorContent {
     
     public init(
-        code: NetworkServiceError,
+        code: String,
         message: String,
         payload: Int?
     ) {
@@ -20,7 +20,7 @@ public struct ErrorContent {
         self.payload = payload
     }
     
-    public let code: NetworkServiceError
+    public let code: String
     public let message: String
     public let payload: Int?
 }

@@ -9,8 +9,9 @@
 import Foundation
 import Combine
 import UIKit
+import FeatureDependency
 
-public typealias MyPageViewModel = MyPageViewModelInput & MyPageViewModelOutput & DeleteProfileImageViewModel
+public typealias MyPageViewModel = MyPageViewModelInput & MyPageViewModelOutput & DeleteProfileImageViewModel & ErrorHandleable
 
 public protocol MyPageViewModelInput {
     func modifyImage(_ image: UIImage)
@@ -18,7 +19,7 @@ public protocol MyPageViewModelInput {
 }
 
 public protocol MyPageViewModelOutput {
-    var profileImage: PassthroughSubject<URL?, Never> { get }
+    var profileImage: CurrentValueSubject<Any?, Never> { get }
 }
 
 public protocol DeleteProfileImageViewModel {

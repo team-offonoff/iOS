@@ -26,9 +26,11 @@ public final class DefaultMyPageCoordinator: MyPageCoordinator {
     
     private var window: UIWindow?
     private let navigationController: UINavigationController
-    private let myPageViewModel: MyPageViewModel = DefaultMyPageViewModel(
-            modifyProfileImageUseCase: DefaultModifyProfileImageUseCase(repository: DefaultPresignedImageRepository())
-        )
+    private let memberRepository: any MemberRepository = DefaultMemberRepository()
+    private lazy var myPageViewModel: MyPageViewModel = DefaultMyPageViewModel(
+        modifyProfileImageUseCase: DefaultModifyProfileImageUseCase(repository: memberRepository),
+        deleteProfileImageUseCase: DefaultDeleteProfileImageUseCase(repository: memberRepository)
+    )
     public func start() {
         let viewController = MyPageViewController(viewModel: myPageViewModel)
         viewController.coordinator = self
@@ -36,7 +38,7 @@ public final class DefaultMyPageCoordinator: MyPageCoordinator {
     }
     
     public func startModifyInformation() {
-        let viewController = ModifyUserInformationViewController(viewModel: DefaultModifyUserInformationViewModel())
+        let viewController = ModifyUserInformationViewController(viewModel: DefaultModifyUserInformationViewModel(modifyInformationUseCase: DefaultModifyMemberInformationUseCase(repository: DefaultMemberRepository())))
         viewController.coordinator = self
         navigationController.pushViewController(viewController, animated: true)
     }

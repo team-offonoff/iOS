@@ -15,32 +15,52 @@ import Domain
 
 final class DefaultMyPageViewModel: BaseViewModel, MyPageViewModel {
     
-    init(modifyProfileImageUseCase: any ModifyProfileImageUseCase) {
+    init(
+        modifyProfileImageUseCase: any ModifyProfileImageUseCase,
+        deleteProfileImageUseCase: any DeleteProfileImageUseCase
+    ) {
         self.modifyProfileImageUseCase = modifyProfileImageUseCase
+        self.deleteProfileImageUseCase = deleteProfileImageUseCase
     }
     
     private let modifyProfileImageUseCase: any ModifyProfileImageUseCase
+    private let deleteProfileImageUseCase: any DeleteProfileImageUseCase
     
     //MARK: Output
     
-    let profileImage: PassthroughSubject<URL?, Never> = PassthroughSubject()
+    let profileImage: CurrentValueSubject<Any?, Never> = CurrentValueSubject(nil)
     let successDelete: PassthroughSubject<Void, Never> = PassthroughSubject()
+    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     //MARK: Input
     
     func deleteImage() {
-        successDelete.send(())
-        profileImage.send(nil)
+        deleteProfileImageUseCase.execute()
+            .sink{ [weak self] result in
+                if result.isSuccess {
+                    self?.profileImage.send(nil)
+                    self?.successDelete.send(())
+                }
+                else if let error = result.error {
+                    self?.errorHandler.send(error)
+                }
+            }
+            .store(in: &cancellable)
     }
     
     func modifyImage(_ image: UIImage) {
         Task {
-            if let url = try await modifyProfileImageUseCase.execute(request: image) {
-                profileImage.send(URL(string: url))
-            }
-            else {
-                
-            }
+            await modifyProfileImageUseCase.execute(request: image)
+                .sink{ [weak self] result in
+                    if result.isSuccess { //, let urlString = result.data, let url = URL(string: urlString) {
+//                        self?.profileImage.send(url)
+                        self?.profileImage.send(image)
+                    }
+                    else if let error = result.error {
+                        self?.errorHandler.send(error)
+                    }
+                }
+                .store(in: &cancellable)
         }
     }
     

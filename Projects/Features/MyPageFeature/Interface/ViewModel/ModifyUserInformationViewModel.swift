@@ -9,9 +9,23 @@
 import Foundation
 import Combine
 import UIKit
+import FeatureDependency
 import Domain
 
-public typealias ModifyUserInformationViewModel = ModifyUserInformationViewModelInput & ModifyUserInformationViewModelOutput
+public struct Verification {
+    
+    public init(data: Any, isValid: Bool, errorMessage: String? ) {
+        self.data = data
+        self.isValid = isValid
+        self.errorMessage = errorMessage
+    }
+    
+    public let data: Any
+    public let isValid: Bool
+    public let errorMessage: String?
+}
+
+public typealias ModifyUserInformationViewModel = ModifyUserInformationViewModelInput & ModifyUserInformationViewModelOutput & ErrorHandleable
 
 public struct ModifyUserInformationViewModelInputValue {
     
@@ -34,7 +48,7 @@ public protocol ModifyUserInformationViewModelInput {
 
 public protocol ModifyUserInformationViewModelOutput {
     var nicknameLimitCount: Int { get }
-    var nicknameValidation: PassthroughSubject<(Bool, String?), Never> { get }
+    var nicknameVerification: PassthroughSubject<Verification, Never> { get }
     var jobSubject: PassthroughSubject<Job, Never> { get }
     var canMove: CurrentValueSubject<Bool, Never> { get }
     var successRegister: (() -> Void)? { get set }

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public final class PaddingLabel: UILabel {
+open class PaddingLabel: UILabel {
     
     public convenience init(topBottom: CGFloat, leftRight: CGFloat) {
         self.init(top: topBottom, bottom: topBottom, left: leftRight, right: leftRight)
@@ -23,7 +23,7 @@ public final class PaddingLabel: UILabel {
         super.init(frame: .zero)
     }
     
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     

@@ -55,6 +55,7 @@ final class ModifyUserInformationViewController: BaseViewController<NavigateHead
     override func bind() {
         
         input()
+        bindError()
         bindNicknameValidation()
         bindJobSelection()
         bindCanMove()
@@ -69,11 +70,24 @@ final class ModifyUserInformationViewController: BaseViewController<NavigateHead
             )
         }
         
+        func bindError() {
+            viewModel.errorHandler
+                .receive(on: DispatchQueue.main)
+                .sink{ error in
+                    ToastMessage.shared.register(message: error.message)
+                }
+                .store(in: &cancellables)
+        }
+        
         func bindNicknameValidation() {
-            viewModel.nicknameValidation
-                .sink{ [weak self] (isValid, message) in
+            viewModel.nicknameVerification
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] verification in
                     guard let self = self else { return }
-                    if let message = message {
+                    if verification.isValid {
+                        self.mainView.nicknameView.contentView.complete()
+                    }
+                    else if let message = verification.errorMessage {
                         self.mainView.nicknameView.contentView.error(message: message)
                     }
                 }
@@ -100,7 +114,7 @@ final class ModifyUserInformationViewController: BaseViewController<NavigateHead
         func bindSuccessRegister() {
             viewModel.successRegister = {
                 DispatchQueue.main.async{
-                   
+                    self.popViewController()
                 }
             }
         }

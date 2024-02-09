@@ -15,14 +15,24 @@ import Domain
 import Core
 
 final class DefaultModifyUserInformationViewModel: BaseViewModel, ModifyUserInformationViewModel {
+
+    init(modifyInformationUseCase: any ModifyMemberInformationUseCase) {
+        self.modifyInformationUseCase = modifyInformationUseCase
+        super.init()
+    }
     
-    let nicknameValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
+    private let modifyInformationUseCase: any ModifyMemberInformationUseCase
+    
+    let nicknameVerification: PassthroughSubject<Verification, Never> = PassthroughSubject()
     let jobSubject: PassthroughSubject<Job, Never> = PassthroughSubject()
     let canMove: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
+    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     let nicknameLimitCount: Int = 8
     
     var successRegister: (() -> Void)?
+    
+    private var requestValue: ModifyMemberInformationUseCaseRequestValue?
     
     func input(_ input: ModifyUserInformationViewModelInputValue) {
         
@@ -31,44 +41,54 @@ final class DefaultModifyUserInformationViewModel: BaseViewModel, ModifyUserInfo
                 
                 guard let self = self else { return }
                 
-                self.nicknameValidation.send(validation())
+                self.nicknameVerification.send(verification())
                 
-                func validation() -> (Bool, String?) {
+                func verification() -> Verification {
                     if nickname.count > self.nicknameLimitCount || nickname.count == 0 {
-                        return (false, "* 글자 수 초과")
+                        return .init(data: nickname, isValid: false, errorMessage: "* 글자 수 초과")
                     }
                     else if !Regex.validate(data: nickname, pattern: .nickname) {
-                        return (false, "* 한글, 영문, 숫자만 가능해요.")
+                        return .init(data: nickname, isValid: false, errorMessage: "* 한글, 영문, 숫자만 가능해요.")
                     }
                     else {
-                        return (true, nil)
+                        return .init(data: nickname, isValid: true, errorMessage: nil)
                     }
                 }
             }
             .store(in: &cancellable)
         
-        nicknameValidation
+        nicknameVerification
             .combineLatest(jobSubject)
-            .sink{ [weak self] nickname, job in
-                
-                guard let self = self else { return }
-                
+            .sink{ [weak self] nicknameVerification, job in
+
+                guard let self = self, let nickname = nicknameVerification.data as? String else { return }
+                self.requestValue = .init(nickname: nickname, job: job)
                 self.canMove.send(canMove())
-                
+
                 func canMove() -> Bool {
-                    nickname.0
+                    nicknameVerification.isValid
                 }
             }
             .store(in: &cancellable)
         
-//        input.registerTap
-//            .flatMap{
-//
-//            }
-//            .sink{
-//
-//            }
-//            .store(in: &cancellable)
+        input.registerTap
+            .compactMap{ [weak self] _ in
+                self?.requestValue
+            }
+            .flatMap{ requestValue in
+                self.modifyInformationUseCase.execute(request: requestValue)
+            }
+            .sink{ [weak self] result in
+                guard let self = self else { return }
+                if result.isSuccess {
+                    self.successRegister?()
+                }
+                else if let error = result.error {
+                    self.errorHandler.send(error)
+                }
+                
+            }
+            .store(in: &cancellable)
     }
     
 }

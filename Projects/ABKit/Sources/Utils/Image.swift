@@ -31,6 +31,8 @@ public struct Image{
     public static let sideAHeader = UIImage.load(name: "side_a_header")
     public static let sideBHeader = UIImage.load(name: "side_b_header")
     
+    public static let profilePlaceholder = UIImage.load(name: "profile_placeholder")
+    
     //MARK: Alarm
     public static let alarmChat = UIImage.load(name: "alarm_chat")
     public static let alarmCount = UIImage.load(name: "alarm_count")
