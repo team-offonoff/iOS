@@ -20,7 +20,7 @@ public final class DefaultMemberRepository: MemberRepository {
     
     private let basePath = "members"
     
-    public func modifyInformation(request: ModifyMemberInformationUseCaseRequestValue) -> NetworkResultPublisher<Any?> {
+    public func modifyProfile(request: ModifyMemberInformationUseCaseRequestValue) -> NetworkResultPublisher<Any?> {
         
         var urlComponents = networkService.baseUrlComponents
         urlComponents?.path = path(basePath) + path("profile") + path("information")

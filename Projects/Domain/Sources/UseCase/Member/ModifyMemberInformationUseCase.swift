@@ -21,7 +21,7 @@ public final class DefaultModifyMemberInformationUseCase: ModifyMemberInformatio
     private let repository: any MemberRepository
     
     public func execute(request: ModifyMemberInformationUseCaseRequestValue) -> NetworkResultPublisher<Any?> {
-        repository.modifyInformation(request: request)
+        repository.modifyProfile(request: request)
     }
 }
 
