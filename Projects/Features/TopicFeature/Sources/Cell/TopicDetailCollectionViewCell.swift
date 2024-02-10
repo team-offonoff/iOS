@@ -15,7 +15,7 @@ import FeatureDependency
 import Core
 import Combine
 
-public class TopicDetailCollectionViewCell: BaseCollectionViewCell, Binding{
+public class TopicDetailCollectionViewCell: BaseCollectionViewCell{
     
     public weak var delegate: (VoteDelegate & TopicBottomSheetDelegate & ChatBottomSheetDelegate)?
     private var cancellable: Set<AnyCancellable> = []

@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import TopicFeatureInterface
+import TopicFeature
+import TopicGenerateFeatureInterface
 import Domain
 import Data
 

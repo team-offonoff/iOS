@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 import ABKit
-import TopicFeatureInterface
+import TopicGenerateFeatureInterface
 import FeatureDependency
 
 final class TopicSideChoiceViewController: BaseViewController<ModalityHeaderView,TopicSideChoiceView,DefaultTopicGenerateCoordinator> {
