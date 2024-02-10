@@ -4,6 +4,8 @@ import DependencyPlugin
 
 let project = Project.makeModule(
     name: "TopicFeature",
-    targets: [.unitTest, .dynamicFramework, .demo, .interface],
-    interfaceDependencies: [.Features.Comment.Feature]
+    targets: [.unitTest, .staticFramework, .interface],
+    interfaceDependencies: [
+        .Features.Comment.Feature
+    ]
 )

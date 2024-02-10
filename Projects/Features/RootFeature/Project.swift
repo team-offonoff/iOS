@@ -9,6 +9,7 @@ let project = Project.makeModule(
         .Features.Home.Feature,
         .Features.SideA.Feature,
         .Features.SideB.Feature,
+        .Features.TopicGenerate.Feature,
         .Features.Onboarding.Feature,
         .Features.MyPage.Feature
     ]

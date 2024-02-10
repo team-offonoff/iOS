@@ -1,10 +1,3 @@
-//
-//  Dependency+Project.swift
-//  ProjectDescriptionHelpers
-//
-//  Created by sejin on 2022/10/02.
-//
-
 import ProjectDescription
 
 public extension Dep {
@@ -15,6 +8,7 @@ public extension Dep {
         public struct SideA {}
         public struct SideB {}
         public struct Topic {}
+        public struct TopicGenerate {}
         public struct Comment {}
         public struct MyPage {}
     }
@@ -61,6 +55,10 @@ public extension Dep.Features.Home {
 
 public extension Dep.Features.Topic {
     static let Feature = Dep.Features.project(name: Dep.Features.name, group: "Topic")
+}
+
+public extension Dep.Features.TopicGenerate {
+    static let Feature = Dep.Features.project(name: Dep.Features.name, group: "TopicGenerate")
 }
 
 public extension Dep.Features.SideA {
