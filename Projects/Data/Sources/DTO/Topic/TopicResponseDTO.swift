@@ -19,9 +19,10 @@ struct TopicResponseDTO: Decodable {
     let voteCount: Int
     let commentCount: Int
     let topicContent: String?
-    let keyword: KeywordResponseDTO
+    let keyword: KeywordResponseDTO?
     let choices: [ChoiceResponseDTO]
     let author: AuthorResponseDTO?
+    let createdAt: Int
     let selectedOption: String?
     
     struct KeywordResponseDTO: Decodable {
@@ -46,6 +47,7 @@ struct TopicResponseDTO: Decodable {
         let id: Int
         let nickname: String
         let profileImageUrl: String?
+        let active: Bool
     }
 }
 
@@ -61,9 +63,10 @@ extension TopicResponseDTO: Domainable {
             deadline: deadline,
             voteCount: voteCount,
             commentCount: commentCount,
-            keyword: keyword.toDomain(),
+            keyword: keyword?.toDomain(),
             choices: choices.map{ $0.toDomain() },
             author: author?.toDomain(),
+            createdAt: createdAt,
             selectedOption: Choice.Option.toDomain(selectedOption)
         )
     }
@@ -105,7 +108,8 @@ extension TopicResponseDTO.AuthorResponseDTO: Domainable {
         .init(
             id: id,
             nickname: nickname,
-            profileImageUrl: URL(string: profileImageUrl ?? "")
+            profileImageUrl: URL(string: profileImageUrl ?? ""),
+            isActive: active
         )
     }
 }
