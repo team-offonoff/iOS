@@ -33,6 +33,6 @@ extension PagingContentResponseDTO: Domainable {
 extension PagingContentResponseDTO.PageInformationResponseDTO: Domainable {
     
     func toDomain() -> Paging {
-        .init(page: page, size: size, isEmpty: empty, last: last)
+        .init(page: page, size: size, last: last)
     }
 }
