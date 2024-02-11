@@ -9,9 +9,10 @@
 import UIKit
 import FeatureDependency
 import HomeFeatureInterface
-import TopicFeatureInterface
+import TopicGenerateFeatureInterface
 import MyPageFeatureInterface
 import HomeFeature
+import TopicGenerateFeature
 import TopicFeature
 import MyPageFeature
 
