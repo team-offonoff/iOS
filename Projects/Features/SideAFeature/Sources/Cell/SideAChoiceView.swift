@@ -64,7 +64,7 @@ extension SideATopicTableViewCell {
         }
         
         override func hierarchy() {
-            addSubviews([optionLabel, percentageView, contentLabel, percentageLabel])
+            addSubviews([percentageView, optionLabel, contentLabel, percentageLabel])
         }
         
         override func layout() {
