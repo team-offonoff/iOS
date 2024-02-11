@@ -7,8 +7,10 @@
 //
 
 import Foundation
-import SideAFeatureInterface
 import UIKit
+import SideAFeatureInterface
+import Domain
+import Data
 
 public final class DefaultSideACoordinator: SideACoordinator {
 
@@ -24,9 +26,18 @@ public final class DefaultSideACoordinator: SideACoordinator {
     
     private var window: UIWindow?
     private let navigationController: UINavigationController
+    private let topicRepository: any TopicRepository = DefaultTopicRepository()
     
     public func start() {
-        navigationController.pushViewController(SideAViewController(), animated: true)
+        navigationController.pushViewController(
+            SideAViewController(
+                viewModel: DefaultSideAViewModel(
+                    fetchTopicUseCase: DefaultFetchTopicsUseCase(repository: topicRepository),
+                    voteTopicUseCase: DefaultGenerateVoteUseCase(repository: topicRepository)
+                )
+            )
+            , animated: true
+        )
     }
     
 }

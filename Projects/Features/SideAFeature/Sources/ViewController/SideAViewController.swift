@@ -9,12 +9,14 @@
 import Foundation
 import UIKit
 import ABKit
+import SideAFeatureInterface
 import FeatureDependency
 import Domain
 
 final class SideAViewController: BaseViewController<SideTabHeaderView, SideAView, DefaultSideACoordinator> {
     
-    init(){
+    init(viewModel: any SideAViewModel){
+        self.viewModel = viewModel
         super.init(headerView: SideTabHeaderView(icon: Image.sideAHeader), mainView: SideAView())
     }
     
@@ -22,41 +24,65 @@ final class SideAViewController: BaseViewController<SideTabHeaderView, SideAView
         fatalError("init(coder:) has not been implemented")
     }
     
+    private var viewModel: any SideAViewModel
+    
     override func initialize() {
-        mainView.tableView.delegate = self
-        mainView.tableView.dataSource = self
+
+        delegate()
+        
+        func delegate() {
+            mainView.tableView.delegate = self
+            mainView.tableView.dataSource = self
+        }
+        
+        headerView?.progressPublisher = viewModel.fetchTopicQuery.status
+    }
+    
+    override func bind() {
+        
+        reloadTopics()
+        
+        func reloadTopics() {
+            viewModel.reloadTopics = {
+                DispatchQueue.main.async {
+                    self.mainView.tableView.reloadData()
+                }
+            }
+        }
+        
+        viewModel.successVote
+            .receive(on: DispatchQueue.main)
+            .sink{ [weak self] (index, _) in
+                self?.mainView.tableView.reloadRows(at: [IndexPath(row: index)], with: .none)
+            }
+            .store(in: &cancellables)
+        
+        viewModel.errorHandler
+            .receive(on: DispatchQueue.main)
+            .sink{ error in
+                ToastMessage.shared.register(message: error.message)
+            }
+            .store(in: &cancellables)
+        
     }
 }
 
 extension SideAViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        viewModel.topics.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(for: indexPath, cellType: SideATopicTableViewCell.self)
         cell.delegate = self
-        cell.fill(topic: .init(
-            topic: .init(
-                id: 0,
-                side: .A,
-                title: "10년 전 또는 후로 갈 수 있다면?",
-                deadline: nil,
-                voteCount: 100,
-                commentCount: 100,
-                keyword: .init(id: 0, name: "", topicSide: .A),
-                choices: [.init(id: 0, content: .init(text: "10년 전 과거로 가기", imageURL: nil), option: .A),
-                          .init(id: 0, content: .init(text: "10년 후로 가기", imageURL: nil), option: .B)],
-                author: nil,
-                selectedOption: nil))
-        )
+        cell.fill(topic: viewModel.topics[indexPath.row])
         return cell
     }
 }
 
 extension SideAViewController: VoteDelegate {
-    func vote(_ option: Choice.Option) {
-        print(option)
+    func vote(_ option: Choice.Option, index: Int) {
+        viewModel.vote(option, index: index)
     }
 }

@@ -107,12 +107,11 @@ final class SideATopicTableViewCell: BaseTableViewCell {
         setTag()
         isVoteEnable()
         titleLabel.text = topic.title
-        timeLabel.text = topic.time
+        timeLabel.text = topic.elapsedTime
         voteSection.optionA.fill(topic: topic)
         voteSection.optionB.fill(topic: topic)
         commentSection.fill(topic.commentCount)
-        
-        
+
         func setTag() {
             if let tag = topic.tag() {
                 topicTag.fill(tag.configuration)
@@ -121,7 +120,7 @@ final class SideATopicTableViewCell: BaseTableViewCell {
                 topicTag.isHidden = true
             }
         }
-        
+
         func isVoteEnable() {
             voteSection.isUserInteractionEnabled = !topic.isVoted
         }
