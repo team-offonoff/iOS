@@ -12,15 +12,18 @@ public struct Author {
     public let id: Int
     public let nickname: String
     public let profileImageUrl: URL?
+    public let isActive: Bool
     
     public init(
         id: Int,
         nickname: String,
-        profileImageUrl: URL?
+        profileImageUrl: URL?,
+        isActive: Bool
     ) {
         self.id = id
         self.nickname = nickname
         self.profileImageUrl = profileImageUrl
+        self.isActive = isActive
     }
     
 }
