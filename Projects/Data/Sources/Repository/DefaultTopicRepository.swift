@@ -139,7 +139,7 @@ public final class DefaultTopicRepository: TopicRepository {
         return dataTask(request: urlRequest)
     }
     
-    public func vote(topicId: Int, request: GenerateVoteUseCaseRequestValue) -> NetworkResultPublisher<Comment?> {
+    public func vote(topicId: Int, request: GenerateVoteUseCaseRequestValue) -> NetworkResultPublisher<(Topic, Comment?)?> {
         
         var urlComponents = networkService.baseUrlComponents
         urlComponents?.path = basePath + path(topicId) + path("vote")
@@ -149,7 +149,7 @@ public final class DefaultTopicRepository: TopicRepository {
             fatalError("json encoding or url parsing error")
         }
     
-        return dataTask(request: urlRequest, responseType: LatestCommentResponseDTO.self)
+        return dataTask(request: urlRequest, responseType: VoteResponseDTO.self)
         
         func makeDTO() -> GenerateVoteRequestDTO {
             .init(
@@ -158,7 +158,7 @@ public final class DefaultTopicRepository: TopicRepository {
         }
     }
     
-    public func revote(topicId: Int, request: RevoteUseCaseRequestValue) -> NetworkResultPublisher<Comment?> {
+    public func revote(topicId: Int, request: RevoteUseCaseRequestValue) -> NetworkResultPublisher<(Topic, Comment?)?> {
         
         var urlComponents = networkService.baseUrlComponents
         urlComponents?.path = basePath + path(topicId) + path("vote")
@@ -168,7 +168,7 @@ public final class DefaultTopicRepository: TopicRepository {
             fatalError("json encoding or url parsing error")
         }
         
-        return dataTask(request: urlRequest, responseType: LatestCommentResponseDTO.self)
+        return dataTask(request: urlRequest, responseType: VoteResponseDTO.self)
         
         func makeDTO() -> RevoteRequestDTO {
             .init(modifiedOption: request.modifiedOption.toDTO(), modifiedAt: request.modifiedAt)

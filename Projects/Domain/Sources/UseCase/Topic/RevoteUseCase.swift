@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol RevoteUseCase: UseCase {
-    func execute(topicId: Int, request: RevoteUseCaseRequestValue) -> NetworkResultPublisher<Comment?>
+    func execute(topicId: Int, request: RevoteUseCaseRequestValue) -> NetworkResultPublisher<(Topic, Comment?)?>
 }
 
 public final class DefaultRevoteUseCase: RevoteUseCase {
@@ -22,7 +22,7 @@ public final class DefaultRevoteUseCase: RevoteUseCase {
         self.repository = repository
     }
     
-    public func execute(topicId: Int, request: RevoteUseCaseRequestValue) -> NetworkResultPublisher<Comment?> {
+    public func execute(topicId: Int, request: RevoteUseCaseRequestValue) -> NetworkResultPublisher<(Topic, Comment?)?> {
         repository.revote(topicId: topicId, request: request)
     }
 }
