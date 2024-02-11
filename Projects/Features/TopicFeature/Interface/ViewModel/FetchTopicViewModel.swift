@@ -35,8 +35,7 @@ public struct FetchTopicQuery {
 }
 
 public protocol FetchTopicViewModel: BaseViewModel, ErrorHandleable {
-    associatedtype ItemViewModel: TopicItemViewModel
-    var topics: [ItemViewModel] { get set }
+    var topics: [TopicItemViewModel] { get set}
     var fetchTopicQuery: FetchTopicQuery { get set }
     var fetchTopicUseCase: any FetchTopicsUseCase { get }
     var reloadTopics: (() -> Void)? { get set }
@@ -47,7 +46,15 @@ public protocol FetchTopicViewModel: BaseViewModel, ErrorHandleable {
 extension FetchTopicViewModel {
     
     public func fetchTopics() {
-        fetchTopicUseCase.execute(keywordId: fetchTopicQuery.keyword, paging: fetchTopicQuery.pageInfo, sort: fetchTopicQuery.sort)
+        fetchTopicUseCase
+            .execute(
+                requestQuery: .init(
+                    side: fetchTopicQuery.side,
+                    status: fetchTopicQuery.status?.value,
+                    keyword: fetchTopicQuery.keyword,
+                    paging: fetchTopicQuery.pageInfo,
+                    sort: fetchTopicQuery.sort)
+            )
             .sink{ [weak self] result in
                 guard let self = self, let (paging, topics) = result.data else { return }
                 if result.isSuccess {
@@ -55,7 +62,7 @@ extension FetchTopicViewModel {
                         self.reloadTopics?()
                     }
                     self.fetchTopicQuery.pageInfo = paging
-                    self.topics.append(contentsOf: topics.map{ ItemViewModel.init($0) })
+                    self.topics.append(contentsOf: topics.map{ .init($0) })
                 }
                 else if let error = result.error {
                     self.errorHandler.send(error)

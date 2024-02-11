@@ -9,6 +9,16 @@
 import Foundation
 import Domain
 
-public protocol TopicItemViewModel {
-    init(_ topic: Topic)
+public struct TopicItemViewModel {
+    
+    public init(_ topic: Topic){
+        self.topic = topic
+    }
+    
+    public let topic: Topic
+    
+    public var commentPreview: Comment?
+    public var id: Int {
+        topic.id!
+    }
 }
