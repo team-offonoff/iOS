@@ -98,8 +98,8 @@ final class SideATopicTableViewCell: BaseTableViewCell {
     }
     
     @objc private func tapOption(_ recognizer: UITapGestureRecognizer) {
-        guard let view = recognizer.view as? ChoiceView else { return }
-        delegate?.vote(view.option)
+        guard let view = recognizer.view as? ChoiceView, let indexPath = indexPath else { return }
+        delegate?.vote(view.option, index: indexPath.row)
     }
     
     func fill(topic: SideATopicItemViewModel) {
