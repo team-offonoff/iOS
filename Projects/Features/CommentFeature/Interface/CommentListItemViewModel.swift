@@ -45,24 +45,7 @@ public struct CommentListItemViewModel {
         String(likeCount)
     }
     public var elapsedTime: String {
-
-        if UTCTime.day(diff: diff()) > 0 {
-            return "\(UTCTime.day(diff: diff()))일 전"
-        }
-        else if UTCTime.hour(diff: diff()) > 0 {
-            return "\(UTCTime.hour(diff: diff()))시간 전"
-        }
-        else if UTCTime.minute(diff: diff()) > 0 {
-            return "\(UTCTime.minute(diff: diff()))분 전"
-        }
-        else {
-            return "방금 전"
-        }
-        
-        func diff() -> Int {
-            UTCTime.current - createdAt
-        }
-        
+        UTCTime.elapsedTime(createdAt: createdAt)
     }
 }
 
