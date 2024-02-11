@@ -11,6 +11,11 @@ import Domain
 
 public extension Repository {
     
+    func toString(_ data: Any?) -> String? {
+        guard let data = data else { return nil }
+        return "\(data)"
+    }
+    
     func path(_ path: Any) -> String {
         "/\(path)"
     }

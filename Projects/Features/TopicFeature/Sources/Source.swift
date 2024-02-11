@@ -1,8 +1,0 @@
-//
-//  Source.swift
-//  ProjectDescriptionHelpers
-//
-//  Created by 박소윤 on 2024/02/10.
-//
-
-import Foundation

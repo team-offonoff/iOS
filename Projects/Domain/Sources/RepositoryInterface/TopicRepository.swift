@@ -11,7 +11,7 @@ import Core
 
 public protocol TopicRepository: Repository{
     func generateTopic(request: GenerateTopicUseCaseRequestValue) async -> NetworkResultPublisher<Topic?>
-    func fetchTopic(keywordId: Int?, paging: Paging?, sort: String?) -> NetworkResultPublisher<(Paging, [Topic])?>
+    func fetchTopic(requestQuery: FetchTopicsUseCaseRequestQueryValue) -> NetworkResultPublisher<(Paging, [Topic])?>
     func report(topicId: Int) -> NetworkResultPublisher<Any?>
     func vote(topicId: Int, request: GenerateVoteUseCaseRequestValue) -> NetworkResultPublisher<(Topic, Comment?)?>
     func revote(topicId: Int, request: RevoteUseCaseRequestValue) -> NetworkResultPublisher<(Topic, Comment?)?>
