@@ -14,7 +14,7 @@ import Domain
 
 public final class SideTabHeaderView: BaseHeaderView {
     
-    public let progressPublisher: CurrentValueSubject<Topic.Progress, Never> = CurrentValueSubject(.ongoing)
+    public var progressPublisher: CurrentValueSubject<Topic.Progress, Never>?
     
     public init(icon: UIImage) {
         super.init()
@@ -32,7 +32,7 @@ public final class SideTabHeaderView: BaseHeaderView {
         willSet {
             guard let newValue = newValue else { return }
             newValue.isSelected = true
-            progressPublisher.send(newValue.progress)
+            progressPublisher?.send(newValue.progress)
         }
     }
     
