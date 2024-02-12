@@ -8,7 +8,9 @@
 
 import Foundation
 import FeatureDependency
+import Domain
 
 public protocol SideACoordinator: Coordinator {
-    
+    func startCommentBottomSheet(topicId: Int, choices: [Choice.Option: Choice])
 }
+

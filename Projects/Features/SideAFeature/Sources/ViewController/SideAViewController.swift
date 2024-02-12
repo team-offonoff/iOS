@@ -64,6 +64,18 @@ final class SideAViewController: BaseViewController<SideTabHeaderView, SideAView
             }
             .store(in: &cancellables)
         
+        NotificationCenter
+            .default
+            .publisher(for: Notification.Name(Comment.Action.showBottomSheet.identifier), object: mainView.tableView)
+            .sink{ [weak self] object in
+                guard let self = self, let index = object.userInfo?["Index"] as? Int else { return }
+                self.coordinator?.startCommentBottomSheet(
+                    topicId: self.viewModel.topics[index].id,
+                    choices: self.viewModel.topics[index].choices
+                )
+            }
+            .store(in: &cancellables)
+        
     }
 }
 

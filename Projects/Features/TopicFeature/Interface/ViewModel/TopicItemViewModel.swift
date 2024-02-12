@@ -21,4 +21,7 @@ public struct TopicItemViewModel {
     public var id: Int {
         topic.id!
     }
+    public var choices: [Choice.Option: Choice] {
+        topic.choices
+    }
 }
