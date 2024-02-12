@@ -24,8 +24,8 @@ public final class CommentBottomSheetViewController: UIViewController {
     /// - Parameters:
     ///     - standard: 댓글 바텀시트의 기준으로 삼는 뷰의 maxY 값
     ///
-    public init(standard: CGFloat, viewModel: CommentBottomSheetViewModel){
-        self.normalStateY = standard + 42
+    public init(viewModel: CommentBottomSheetViewModel){
+        self.normalStateY = 248 * Device.height / 812
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

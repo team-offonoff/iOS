@@ -13,7 +13,7 @@ import Core
 public struct CommentListItemViewModel {
 
     public init(
-        _ comment: Comment, _ options: [Choice]
+        _ comment: Comment, _ options: [Choice.Option: Choice]
     ) {
         self.id = comment.commentId
         self.writer = .init(id: comment.writer.id, nickname: comment.writer.nickname, profileImageUrl: comment.writer.profileImageURl)
@@ -25,10 +25,10 @@ public struct CommentListItemViewModel {
         self.likeCount = comment.likeCount
         
         func selectedOption() -> (Choice.Option?, String) {
-            guard let option = comment.votedOption else {
+            guard let votedOption = comment.votedOption else {
                 return (nil, "작성자")
             }
-            return (option, "\(option.content.title).\(options.filter{ $0.option == comment.votedOption }.first!.content.text)")
+            return (votedOption, "\(votedOption.content.title).\(options[votedOption]!.content.text)")
         }
     }
     

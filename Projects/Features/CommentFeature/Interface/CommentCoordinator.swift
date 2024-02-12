@@ -11,7 +11,7 @@ import FeatureDependency
 import Domain
 
 public protocol CommentCoordinator: Coordinator {
-    func startCommentBottomSheet(standard: CGFloat, topicId: Int, choices: [Choice])
+    func startCommentBottomSheet(topicId: Int, choices: [Choice.Option: Choice])
     func startWritersBottomSheet(index: Int)
     func startOthersBottomSheet(index: Int)
 }

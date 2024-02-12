@@ -12,7 +12,7 @@ import Domain
 
 public protocol HomeCoordinator: Coordinator {
     func startTopicBottomSheet()
-    func startCommentBottomSheet(standard: CGFloat, topicId: Int, choices: [Choice])
+    func startCommentBottomSheet(topicId: Int, choices: [Choice.Option: Choice])
     func startImagePopUp(choice: Choice)
     func startAlarm()
 }
