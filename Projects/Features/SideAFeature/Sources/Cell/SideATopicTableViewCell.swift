@@ -95,24 +95,30 @@ final class SideATopicTableViewCell: BaseTableViewCell {
         voteSection.options.forEach{
             $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapOption)))
         }
+        commentSection.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapComment)))
     }
     
     @objc private func tapOption(_ recognizer: UITapGestureRecognizer) {
-        guard let view = recognizer.view as? ChoiceView else { return }
-        delegate?.vote(view.option)
+        guard let view = recognizer.view as? ChoiceView, let indexPath = indexPath else { return }
+        delegate?.vote(view.option, index: indexPath.row)
+    }
+    
+    @objc private func tapComment(_ recognizer: UITapGestureRecognizer) {
+        guard let indexPath = indexPath, let superview = superview as? UITableView else { return }
+        NotificationCenter.default.post(name: Notification.Name(Comment.Action.showBottomSheet.identifier), object: superview, userInfo: ["Index": indexPath.row])
     }
     
     func fill(topic: SideATopicItemViewModel) {
         
         setTag()
         isVoteEnable()
+        isCommentEnable()
         titleLabel.text = topic.title
-        timeLabel.text = topic.time
+        timeLabel.text = topic.elapsedTime
         voteSection.optionA.fill(topic: topic)
         voteSection.optionB.fill(topic: topic)
         commentSection.fill(topic.commentCount)
-        
-        
+
         func setTag() {
             if let tag = topic.tag() {
                 topicTag.fill(tag.configuration)
@@ -121,9 +127,13 @@ final class SideATopicTableViewCell: BaseTableViewCell {
                 topicTag.isHidden = true
             }
         }
-        
+
         func isVoteEnable() {
             voteSection.isUserInteractionEnabled = !topic.isVoted
+        }
+        
+        func isCommentEnable() {
+            commentSection.isUserInteractionEnabled = topic.isVoted
         }
     }
 }

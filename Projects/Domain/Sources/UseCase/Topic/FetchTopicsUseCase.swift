@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol FetchTopicsUseCase: UseCase {
-    func execute(keywordId: Int?, paging: Paging?, sort: String?) -> NetworkResultPublisher<(Paging, [Topic])?>
+    func execute(requestQuery: FetchTopicsUseCaseRequestQueryValue) -> NetworkResultPublisher<(Paging, [Topic])?>
 }
 
 public final class DefaultFetchTopicsUseCase: FetchTopicsUseCase {
@@ -22,8 +22,30 @@ public final class DefaultFetchTopicsUseCase: FetchTopicsUseCase {
         self.repository = repository
     }
     
-    public func execute(keywordId: Int? = nil, paging: Paging?, sort: String? = nil) -> NetworkResultPublisher<(Paging, [Topic])?> {
-        repository.fetchTopic(keywordId: keywordId, paging: paging, sort: sort)
+    public func execute(requestQuery: FetchTopicsUseCaseRequestQueryValue) -> NetworkResultPublisher<(Paging, [Topic])?> {
+        repository.fetchTopic(requestQuery: requestQuery)
+    }
+}
+
+public struct FetchTopicsUseCaseRequestQueryValue {
+    
+    public init(
+        side: Topic.Side?,
+        status: Topic.Progress?,
+        keyword: Int?,
+        paging: Paging?,
+        sort: String?
+    ) {
+        self.side = side
+        self.status = status
+        self.keyword = keyword
+        self.paging = paging
+        self.sort = sort
     }
     
+    public let side: Topic.Side?
+    public let status: Topic.Progress?
+    public let keyword: Int?
+    public let paging: Paging?
+    public let sort: String?
 }

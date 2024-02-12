@@ -7,13 +7,9 @@
 //
 
 import Foundation
+import Domain
+import Combine
+import TopicFeatureInterface
+import FeatureDependency
 
-public typealias SideAViewModel = SideAViewModelInput & SideAViewModelOutput
-
-public protocol SideAViewModelInput {
-    
-}
-
-public protocol SideAViewModelOutput {
-    
-}
+public typealias SideAViewModel = FetchTopicViewModel & VoteTopicViewModel

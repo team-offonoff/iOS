@@ -41,6 +41,12 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         }
     }
     
+    /* 댓글 바텀시트 기준 Y 값 구하기
+    private func standardOfCommentBottomSheet() -> CGFloat {
+        view.convert((currentTopicCell?.standardOfCommentBottomSheetNormalState().frame)!, from: currentTopicCell).maxY
+    }
+     */
+    
     override func viewDidDisappear(_ animated: Bool) {
         viewModel.stopTimer()
     }
@@ -213,22 +219,17 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
         case Comment.Action.showBottomSheet.identifier:
             coordinator?
                 .startCommentBottomSheet(
-                    standard: standardOfCommentBottomSheet(),
                     topicId: viewModel.currentTopic.id,
-                    choices: viewModel.currentTopic.choices.map{ $0.value }
+                    choices: viewModel.currentTopic.choices
                 )
         default:
             return
         }
     }
-    
-    private func standardOfCommentBottomSheet() -> CGFloat {
-        view.convert((currentTopicCell?.standardOfCommentBottomSheetNormalState().frame)!, from: currentTopicCell).maxY
-    }
 }
 
 extension HomeTabViewController: VoteDelegate {
-    func vote(_ option: Choice.Option) {
+    func vote(_ option: Choice.Option, index: Int) {
         print(option)
         if viewModel.currentTopic.isVoted {
             viewModel.revote(option)

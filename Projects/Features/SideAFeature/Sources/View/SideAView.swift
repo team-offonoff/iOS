@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import ABKit
+import FeatureDependency
 
 final class SideAView: BaseView {
     
@@ -16,7 +17,7 @@ final class SideAView: BaseView {
         let tableView = UITableView()
         tableView.backgroundColor = Color.transparent
         tableView.separatorStyle = .none
-        tableView.register(cellType: SideATopicTableViewCell.self)
+        tableView.registers(cellTypes: [SideATopicTableViewCell.self, LoadingTableViewCell.self])
         return tableView
     }()
     

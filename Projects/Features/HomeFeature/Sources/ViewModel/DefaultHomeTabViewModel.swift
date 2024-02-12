@@ -69,7 +69,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     
     private func bindTopics() {
         fetchTopicsUseCase
-            .execute(keywordId: nil, paging: nil, sort: nil)
+            .execute(requestQuery: .init(side: nil, status: nil, keyword: nil, paging: nil, sort: nil))
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess, let (_, topics) = result.data {

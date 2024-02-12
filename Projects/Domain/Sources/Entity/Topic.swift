@@ -10,29 +10,19 @@ import Foundation
 import Core
 
 public struct Topic {
-    public let id: Int?
-    public let side: Side
-    public let title: String
-    public let deadline: Int?
-    public let voteCount: Int?
-    public let commentCount: Int
-    public let content: Any?
-    public let keyword: Keyword
-    public let choices: [Choice]
-    public let author: Author?
-    public let selectedOption: Choice.Option?
     
     public init(
         id: Int?,
         side: Topic.Side,
         title: String,
         deadline: Int?,
-        voteCount: Int?,
+        voteCount: Int,
         commentCount: Int,
         content: Any? = nil,
-        keyword: Keyword,
+        keyword: Keyword?,
         choices: [Choice],
         author: Author?,
+        createdAt: Int,
         selectedOption: Choice.Option?
     ) {
         self.id = id
@@ -43,8 +33,25 @@ public struct Topic {
         self.commentCount = commentCount
         self.content = content
         self.keyword = keyword
-        self.choices = choices
+        self.choices = [
+            .A: choices.first(where: { $0.option == .A })!,
+            .B: choices.first(where: { $0.option == .B })!
+        ]
         self.author = author
+        self.createdAt = createdAt
         self.selectedOption = selectedOption
     }
+    
+    public let id: Int?
+    public let side: Side
+    public let title: String
+    public let deadline: Int?
+    public let voteCount: Int
+    public let commentCount: Int
+    public let content: Any?
+    public let keyword: Keyword?
+    public let choices: [Choice.Option: Choice]
+    public let author: Author?
+    public let createdAt: Int
+    public let selectedOption: Choice.Option?
 }

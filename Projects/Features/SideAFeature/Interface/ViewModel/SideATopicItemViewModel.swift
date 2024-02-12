@@ -7,47 +7,40 @@
 //
 
 import Foundation
+import TopicFeatureInterface
 import FeatureDependency
 import Domain
+import Core
 
-public struct SideATopicItemViewModel {
-    
-    public enum OptionState {
-        case none
-        case select
-        case unselect
+public protocol SideATopicItemViewModel {
+    var title: String { get }
+    var commentCount: String { get }
+    var isVoted: Bool { get }
+    var elapsedTime: String { get }
+    func tag() -> Topic.Tag?
+    func state(of option: Choice.Option) -> OptionState
+    func percentage(of option: Choice.Option) -> Int
+    func content(of option: Choice.Option) -> String
+}
+
+extension TopicItemViewModel: SideATopicItemViewModel {
+
+    public var title: String {
+        topic.title
     }
-    
-    public init(topic: Topic) {
-        
-        self.id = topic.id!
-        self.title = topic.title
-        self.commentCount = "\(topic.commentCount)"
-        self.votedOption = topic.selectedOption
-        self.choices = [
-            .A: convert(choice: topic.choices.first(where: { $0.option == .A })!),
-            .B: convert(choice: topic.choices.first(where: { $0.option == .B })!)
-        ]
-        self.createdTime = 0
-        
-        func convert(choice: Choice) -> SideAChoiceItemViewModel {
-            .init(id: choice.id, content: choice.content.text ?? "", voteCount: 0)
-        }
+    public var id: Int {
+        topic.id!
     }
-    
-    public let id: Int
-    public let title: String
-    public let commentCount: String
-    private let votedOption: Choice.Option?
-    public let choices: [Choice.Option: SideAChoiceItemViewModel]
-    private let createdTime: Int
-    
-    public var time: String {
-        "방금"
+    public var commentCount: String {
+        "\(topic.commentCount)"
     }
     
     public var isVoted: Bool {
-        votedOption != nil
+        topic.selectedOption != nil
+    }
+    
+    public var elapsedTime: String {
+        UTCTime.elapsedTime(createdAt: topic.createdAt)
     }
     
     public func tag() -> Topic.Tag? {
@@ -58,7 +51,7 @@ public struct SideATopicItemViewModel {
     }
     
     public func state(of option: Choice.Option) -> OptionState {
-        guard let votedOption = votedOption else {
+        guard let votedOption = topic.selectedOption else {
             return .none
         }
         return votedOption == option ? .select : .unselect
@@ -79,27 +72,16 @@ public struct SideATopicItemViewModel {
     public func content(of option: Choice.Option) -> String {
         switch state(of: option) {
         case .none:
-            return choices[option]!.content
+            return topic.choices[option]!.content.text ?? ""
         case .select, .unselect:
-            return choices[option]!.content + " (\(choices[option]!.voteCount)명)"
+            return topic.choices[option]!.content.text ?? "" //+ " (\(choices[option]!.voteCount)명)"
         }
     }
     
 }
 
-public struct SideAChoiceItemViewModel {
-    
-    public init(
-        id: Int,
-        content: String,
-        voteCount: Int
-    ) {
-        self.id = id
-        self.content = content
-        self.voteCount = voteCount
-    }
-    
-    public let id: Int
-    public let content: String
-    public let voteCount: Int
+public enum OptionState {
+    case none
+    case select
+    case unselect
 }

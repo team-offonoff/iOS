@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import TopicFeatureInterface
+import TopicGenerateFeatureInterface
 import FeatureDependency
 import Combine
 import Domain

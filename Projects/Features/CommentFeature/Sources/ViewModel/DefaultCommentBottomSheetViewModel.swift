@@ -17,7 +17,7 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
 
     private var pageInfo: Paging?
     private let topicId: Int
-    private let choices: [Choice]
+    private let choices: [Choice.Option: Choice]
     private let generateCommentUseCase: any GenerateCommentUseCase
     private let fetchCommentsUseCase: any FetchCommentsUseCase
     private let patchCommentUseCase: any PatchCommentUseCase
@@ -27,7 +27,7 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
     
     public init(
         topicId: Int,
-        choices: [Choice],
+        choices: [Choice.Option: Choice],
         generateCommentUseCase: any GenerateCommentUseCase,
         fetchCommentsUseCase: any FetchCommentsUseCase,
         patchCommentUseCase: any PatchCommentUseCase,

@@ -29,9 +29,9 @@ public class DefaultCommentCoordinator: CommentCoordinator {
     private var commentBottomSheet: CommentBottomSheetViewController?
     private var commentViewModel: CommentBottomSheetViewModel?
     
-    public func startCommentBottomSheet(standard: CGFloat, topicId: Int, choices: [Choice]) {
+    public func startCommentBottomSheet(topicId: Int, choices: [Choice.Option: Choice]) {
         
-        commentBottomSheet = CommentBottomSheetViewController(standard: standard, viewModel: viewModel())
+        commentBottomSheet = CommentBottomSheetViewController(viewModel: viewModel())
         start()
         
         func viewModel() -> CommentBottomSheetViewModel {

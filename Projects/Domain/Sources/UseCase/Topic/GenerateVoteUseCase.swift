@@ -10,7 +10,7 @@ import Foundation
 import Core
 
 public protocol GenerateVoteUseCase: UseCase {
-    func execute(topicId: Int, request: GenerateVoteUseCaseRequestValue) -> NetworkResultPublisher<Comment?>
+    func execute(topicId: Int, request: GenerateVoteUseCaseRequestValue) -> NetworkResultPublisher<(Topic, Comment?)?>
 }
 
 public final class DefaultGenerateVoteUseCase: GenerateVoteUseCase {
@@ -23,7 +23,7 @@ public final class DefaultGenerateVoteUseCase: GenerateVoteUseCase {
         self.repository = repository
     }
     
-    public func execute(topicId: Int, request choice: GenerateVoteUseCaseRequestValue) -> NetworkResultPublisher<Comment?> {
+    public func execute(topicId: Int, request choice: GenerateVoteUseCaseRequestValue) -> NetworkResultPublisher<(Topic, Comment?)?> {
         repository.vote(topicId: topicId, request: choice)
     }
 }

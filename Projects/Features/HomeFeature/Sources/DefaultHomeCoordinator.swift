@@ -70,8 +70,8 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         navigationController.present(TopicBottomSheetViewController(viewModel: homeViewModel), animated: true)
     }
     
-    public func startCommentBottomSheet(standard: CGFloat, topicId: Int, choices: [Choice]) {
-        commentCoordinator.startCommentBottomSheet(standard: standard, topicId: topicId, choices: choices)
+    public func startCommentBottomSheet(topicId: Int, choices: [Choice.Option: Choice]) {
+        commentCoordinator.startCommentBottomSheet(topicId: topicId, choices: choices)
     }
     
     public func startImagePopUp(choice: Choice) {

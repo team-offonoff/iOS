@@ -12,18 +12,15 @@ public struct Paging{
     
     public init(
         page: Int,
-        size: Int,
-        isEmpty: Bool,
+        size: Int = 10,
         last: Bool
     ) {
         self.page = page
         self.size = size
-        self.isEmpty = isEmpty
         self.last = last
     }
     
     public var page: Int
     public let size: Int
-    public let isEmpty: Bool
     public let last: Bool
 }
