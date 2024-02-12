@@ -62,7 +62,12 @@ extension FetchTopicViewModel {
                         self.reloadTopics?()
                     }
                     self.fetchTopicQuery.pageInfo = paging
-                    self.topics.append(contentsOf: topics.map{ .init($0) })
+                    if paging.page == 0 {
+                        self.topics = topics.map{ .init($0) }
+                    }
+                    else {
+                        self.topics.append(contentsOf: topics.map{ .init($0) })
+                    }
                 }
                 else if let error = result.error {
                     self.errorHandler.send(error)

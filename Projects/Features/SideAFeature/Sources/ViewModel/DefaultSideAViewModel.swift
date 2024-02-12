@@ -44,7 +44,10 @@ final class DefaultSideAViewModel: BaseViewModel, SideAViewModel {
     override func bind() {
         fetchTopicQuery.status?
             .sink{ [weak self] _ in
-                self?.fetchTopics()
+                defer {
+                    self?.fetchTopics()
+                }
+                self?.fetchTopicQuery.pageInfo = .init(page: 0, last: false)
             }
             .store(in: &cancellable)
     }
