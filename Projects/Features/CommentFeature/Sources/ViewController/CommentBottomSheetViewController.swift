@@ -321,7 +321,7 @@ public final class CommentBottomSheetViewController: UIViewController {
             
             startLoading()
             
-            DispatchQueue.main.async { [self] in
+            DispatchQueue.main.async {
                 self.tableView.reloadSections(IndexSet(integer: 1), with: .none)
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {

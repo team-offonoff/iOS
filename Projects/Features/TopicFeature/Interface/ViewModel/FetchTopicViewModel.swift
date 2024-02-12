@@ -41,6 +41,7 @@ public protocol FetchTopicViewModel: BaseViewModel, ErrorHandleable {
     var reloadTopics: (() -> Void)? { get set }
     func fetchTopics()
     func fetchNextPage()
+    func hasNextPage() -> Bool
 }
 
 extension FetchTopicViewModel {
@@ -84,5 +85,10 @@ extension FetchTopicViewModel {
         func updateNextPage() {
             fetchTopicQuery.pageInfo?.page += 1
         }
+    }
+    
+    public func hasNextPage() -> Bool {
+        guard let pageInfo = fetchTopicQuery.pageInfo else { return false }
+        return !pageInfo.last
     }
 }

@@ -75,21 +75,84 @@ final class SideAViewController: BaseViewController<SideTabHeaderView, SideAView
                 )
             }
             .store(in: &cancellables)
+    }
+    
+    //MARK: 페이징
+    
+    private var isLoading: Bool = false
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.height
+        
+        if offsetY > (contentHeight - height) {
+            if !isLoading && viewModel.hasNextPage() {
+                beginPaging()
+            }
+        }
+        
+        func startLoading() {
+            isLoading = true
+        }
+        
+        func beginPaging(){
+            
+            startLoading()
+            
+            DispatchQueue.main.async {
+                self.mainView.tableView.reloadSections(IndexSet(integer: 1), with: .none)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.viewModel.fetchNextPage()
+            }
+        }
+    }
+    
+    private func stopLoading() {
+        isLoading = false
     }
 }
 
 extension SideAViewController: UITableViewDelegate, UITableViewDataSource {
     
+    public func numberOfSections(in tableView: UITableView) -> Int {
+        2
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.topics.count
+        if section == 0 {
+            return viewModel.topics.count
+        }
+        else if section == 1 && isLoading && viewModel.hasNextPage() {
+            return 1
+        }
+        else {
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(for: indexPath, cellType: SideATopicTableViewCell.self)
-        cell.delegate = self
-        cell.fill(topic: viewModel.topics[indexPath.row])
-        return cell
+        
+        switch indexPath.section {
+        case 0:     return topicCell()
+        case 1:     return loadingCell()
+        default:    fatalError()
+        }
+        
+        func topicCell() -> UITableViewCell {
+            let cell = tableView.dequeueReusableCell(for: indexPath, cellType: SideATopicTableViewCell.self)
+            cell.delegate = self
+            cell.fill(topic: viewModel.topics[indexPath.row])
+            return cell
+        }
+        
+        func loadingCell() -> UITableViewCell {
+            let cell = tableView.dequeueReusableCell(for: indexPath, cellType: LoadingTableViewCell.self)
+            cell.startLoading()
+            return cell
+        }
     }
 }
 
