@@ -45,6 +45,7 @@ public final class DefaultSideBCoordinator: SideBCoordinator {
     }
     
     public func startTopicDetail(index: Int) {
+        sideBViewModel.detailIdx = index
         let viewController = SideBTopicDetailViewController(viewModel: sideBViewModel)
         viewController.coordinator = self
         navigationController.pushViewController(viewController, animated: true)

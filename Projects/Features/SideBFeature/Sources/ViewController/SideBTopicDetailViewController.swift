@@ -24,8 +24,29 @@ final class SideBTopicDetailViewController: BaseViewController<NavigateHeaderVie
     
     private let viewModel: any SideBViewModel
     
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.startTimer()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        viewModel.stopTimer()
+    }
+    
     override func initialize() {
         mainView.topicCell.binding(data: .init(topic: viewModel.topics[0].topic))
     }
     
+    override func bind() {
+        
+        bindTimer()
+        
+        func bindTimer(){
+            viewModel.timerSubject
+                .receive(on: RunLoop.main)
+                .sink{ [weak self] time in
+                    self?.mainView.topicCell.binding(timer: time)
+                }
+                .store(in: &cancellables)
+        }
+    }
 }

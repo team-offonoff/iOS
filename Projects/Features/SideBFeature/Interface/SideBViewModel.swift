@@ -10,6 +10,11 @@ import Foundation
 import TopicFeatureInterface
 import Combine
 
-public protocol SideBViewModel: FetchTopicViewModel {
+public protocol SideBViewModel: SideBDetailViewModel, FetchTopicViewModel, TopicTimerViewModel {
     var keywords: [String] { get }
+}
+
+
+public protocol SideBDetailViewModel {
+    var detailIdx: Int? { get set }
 }
