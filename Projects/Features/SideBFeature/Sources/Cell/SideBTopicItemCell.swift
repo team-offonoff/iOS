@@ -125,6 +125,15 @@ final class SideBTopicItemCell: BaseTableViewCell {
         }
     }
     
+    override func initialize() {
+        commentSection.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapComment)))
+    }
+    
+    @objc private func tapComment(_ recognizer: UITapGestureRecognizer) {
+        guard let indexPath = indexPath, let superview = superview as? UITableView else { return }
+        NotificationCenter.default.post(name: Notification.Name(Comment.Action.showBottomSheet.identifier), object: superview, userInfo: ["Index": indexPath.row])
+    }
+    
     func fill(topic: SideBTopicItemViewModel) {
         keywordLabel.text = topic.keyword
         createdTimeLabel.text = topic.elapsedTime
@@ -134,6 +143,7 @@ final class SideBTopicItemCell: BaseTableViewCell {
         choiceOptionSection.optionB.fill(topic.content(of: .B))
         voteCountLabel.text = topic.voteCount
         commentSection.fill(topic.commentCount)
+        commentSection.isUserInteractionEnabled = topic.isVoted
     }
 }
 
