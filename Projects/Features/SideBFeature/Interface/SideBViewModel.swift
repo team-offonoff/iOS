@@ -10,7 +10,7 @@ import Foundation
 import TopicFeatureInterface
 import Combine
 
-public protocol SideBViewModel: SideBDetailViewModel, FetchTopicViewModel, TopicTimerViewModel {
+public protocol SideBViewModel: SideBDetailViewModel, FetchTopicViewModel, TopicTimerViewModel, VoteTopicViewModel {
     var keywords: [String] { get }
 }
 

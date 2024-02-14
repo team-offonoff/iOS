@@ -52,6 +52,7 @@ final class SideBViewController: BaseViewController<SideTabHeaderView, SideBView
     override func bind() {
         
         reloadTopics()
+        bindVoteSuccess()
 
         func reloadTopics() {
             viewModel.reloadTopics = {
@@ -79,6 +80,16 @@ final class SideBViewController: BaseViewController<SideTabHeaderView, SideBView
                 )
             }
             .store(in: &cancellables)
+        
+        func bindVoteSuccess() {
+            viewModel.successVote
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] index, choice in
+                    guard let self = self else { return }
+                    self.mainView.tableView.reloadRows(at: [.init(row: index)], with: .none)
+                }
+                .store(in: &cancellables)
+        }
     }
     
     //MARK: 페이징
