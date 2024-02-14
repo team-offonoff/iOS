@@ -10,26 +10,27 @@ import Foundation
 import Domain
 import Combine
 import FeatureDependency
+import Core
 
 public struct FetchTopicQuery {
     
     public init(
         side: Topic.Side?,
         status: CurrentValueSubject<Topic.Progress, Never>?,
-        keyword: Int?,
+        keywordIdx: CurrentValueSubject<Index, Never>?,
         pageInfo: Paging?,
         sort: String?
     ) {
         self.side = side
         self.status = status
-        self.keyword = keyword
+        self.keywordIdx = keywordIdx
         self.pageInfo = pageInfo
         self.sort = sort
     }
     
     public let side: Topic.Side?
     public let status: CurrentValueSubject<Topic.Progress, Never>?
-    public let keyword: Int?
+    public let keywordIdx: CurrentValueSubject<Index, Never>?
     public var pageInfo: Paging?
     public let sort: String?
 }
@@ -52,7 +53,7 @@ extension FetchTopicViewModel {
                 requestQuery: .init(
                     side: fetchTopicQuery.side,
                     status: fetchTopicQuery.status?.value,
-                    keyword: fetchTopicQuery.keyword,
+                    keyword: nil,//fetchTopicQuery.keywordIdx,
                     paging: fetchTopicQuery.pageInfo,
                     sort: fetchTopicQuery.sort)
             )
