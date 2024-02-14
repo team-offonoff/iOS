@@ -33,14 +33,19 @@ public final class DefaultSideBCoordinator: SideBCoordinator {
     private let commentCoordinator: CommentCoordinator
     private let topicRepository: any TopicRepository = DefaultTopicRepository()
     private let commentRepository: any CommentRepository = DefaultCommentRepository()
+    private lazy var sideBViewModel: any SideBViewModel = DefaultSideBViewModel(
+        fetchTopicUseCase: DefaultFetchTopicsUseCase(repository: topicRepository),
+        voteTopicUseCase: DefaultGenerateVoteUseCase(repository: topicRepository)
+    )
     
     public func start() {
-        let viewController = SideBViewController(
-            viewModel: DefaultSideBViewModel(
-                fetchTopicUseCase: DefaultFetchTopicsUseCase(repository: topicRepository)
-//                voteTopicUseCase: DefaultGenerateVoteUseCase(repository: topicRepository)
-            )
-        )
+        let viewController = SideBViewController(viewModel: sideBViewModel)
+        viewController.coordinator = self
+        navigationController.pushViewController(viewController, animated: true)
+    }
+    
+    public func startTopicDetail(index: Int) {
+        let viewController = SideBTopicDetailViewController(viewModel: sideBViewModel)
         viewController.coordinator = self
         navigationController.pushViewController(viewController, animated: true)
     }

@@ -164,7 +164,7 @@ extension SideBViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //move detail
+        coordinator?.startTopicDetail(index: indexPath.row)
     }
 }
 
