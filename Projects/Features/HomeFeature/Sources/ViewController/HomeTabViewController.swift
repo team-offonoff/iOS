@@ -229,7 +229,7 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
 }
 
 extension HomeTabViewController: VoteDelegate {
-    func vote(_ option: Choice.Option, index: Int) {
+    func vote(_ option: Choice.Option, index: Int?) {
         print(option)
         if viewModel.currentTopic.isVoted {
             viewModel.revote(option)

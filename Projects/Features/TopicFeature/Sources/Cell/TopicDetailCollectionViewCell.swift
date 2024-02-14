@@ -215,8 +215,7 @@ public class TopicDetailCollectionViewCell: BaseCollectionViewCell{
             
             func startFadeAnimation() {
                 // option 값이 nil인 경우(normal 상태), fade 애니메이션을 진행하지 않는다
-                guard let option = option, let indexPath = cellIndexPath else { return }
-                
+                guard let option = option else { return }
                 UIView.animate(
                     withDuration: 0.6,
                     delay: 0.3,
@@ -226,7 +225,7 @@ public class TopicDetailCollectionViewCell: BaseCollectionViewCell{
                     completion: { [weak self] _ in
                         guard let self = self else { return }
                         initializeChoiceView()
-                        self.delegate?.vote(option, index: indexPath.row)
+                        self.delegate?.vote(option, index: self.cellIndexPath?.row)
                     }
                 )
                 
