@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import ABKit
 import Domain
+import SideBFeatureInterface
 
 final class SideBTopicItemCell: BaseTableViewCell {
     
@@ -124,15 +125,15 @@ final class SideBTopicItemCell: BaseTableViewCell {
         }
     }
     
-    func fill(_ topic: Any) {
-        keywordLabel.text = "디자인"
-        createdTimeLabel.text = "방금"
-        voteCompleteChip.isHidden = false
-        titleLabel.text = "나나난나ㅏ나나나나나나나나나나sksksksk"
-        choiceOptionSection.optionA.fill("")
-        choiceOptionSection.optionB.fill("")
-        voteCountLabel.text = "1.2천명"
-        commentSection.fill("100")
+    func fill(topic: SideBTopicItemViewModel) {
+        keywordLabel.text = topic.keyword
+        createdTimeLabel.text = topic.elapsedTime
+        voteCompleteChip.isHidden = !topic.isVoted
+        titleLabel.text = topic.title
+        choiceOptionSection.optionA.fill(topic.content(of: .A))
+        choiceOptionSection.optionB.fill(topic.content(of: .B))
+        voteCountLabel.text = topic.voteCount
+        commentSection.fill(topic.commentCount)
     }
 }
 
@@ -216,18 +217,19 @@ extension SideBTopicItemCell {
             }
         }
         
-        func fill(_ choice: Any) {
-            //이미지
-            backgroundColor = Color.transparent
-            contentLabel.isHidden = true
-            imageView.isHidden = false
-//            imageView.image =
-            
-            //텍스트
-//            backgroundColor = Color.subNavy2
-//            contentLabel.text = "나나나나나나나나나나나나나나나나..."
-//            contentLabel.isHidden = false
-//            imageView.isHidden = true
+        func fill(_ choice: (type: Topic.ContentType, data: Any)) {
+            if choice.type == .image, let data = choice.data as? URL {
+                backgroundColor = Color.transparent
+                contentLabel.isHidden = true
+                imageView.isHidden = false
+                //            imageView.image =
+            }
+            else if choice.type == .text, let data = choice.data as? String {
+                backgroundColor = Color.subNavy2
+                contentLabel.text = data
+                contentLabel.isHidden = false
+                imageView.isHidden = true
+            }
         }
     }
     
