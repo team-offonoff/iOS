@@ -23,7 +23,6 @@ public protocol SideBTopicItemViewModel {
 
 extension TopicItemViewModel: SideBTopicItemViewModel {
 
-    
     public var keyword: String {
         topic.keyword?.name ?? ""
     }

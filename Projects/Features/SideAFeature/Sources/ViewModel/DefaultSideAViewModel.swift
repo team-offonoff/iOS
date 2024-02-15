@@ -34,7 +34,7 @@ final class DefaultSideAViewModel: BaseViewModel, SideAViewModel {
         status: CurrentValueSubject(.ongoing),
         keywordIdx: nil,
         pageInfo: Paging(page: 0, last: false),
-        sort: nil
+        sort: "createdAt,desc"
     )
     
     let successVote: PassthroughSubject<(Index, Choice.Option), Never> = PassthroughSubject()

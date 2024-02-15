@@ -36,7 +36,7 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
     let revoteTopicUseCase: any RevoteUseCase
     private let reportTopicUseCase: any ReportTopicUseCase
     
-    var fetchTopicQuery: FetchTopicQuery = .init(side: .B, status: CurrentValueSubject(.ongoing), keywordIdx: CurrentValueSubject(0), pageInfo: .init(page: 0, last: false), sort: nil)
+    var fetchTopicQuery: FetchTopicQuery = .init(side: .B, status: CurrentValueSubject(.ongoing), keywordIdx: CurrentValueSubject(0), pageInfo: .init(page: 0, last: false), sort: "createdAt,desc")
     var reloadTopics: (() -> Void)?
     var topicIndex: Int?
     
