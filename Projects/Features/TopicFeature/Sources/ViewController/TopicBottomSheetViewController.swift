@@ -60,12 +60,12 @@ public final class TopicBottomSheetViewController: ActionBottomSheetViewControll
     }
     
     public override func tap(action: BottomSheetAction) {
-        guard let action = action as? Topic.Action else { return }
+        guard let action = action as? Topic.Action, let index = viewModel.topicIndex else { return }
         switch action {
         case .hide:
-            viewModel.hideTopic()
+            viewModel.hideTopic(index: index)
         case .report:
-            viewModel.reportTopic()
+            viewModel.reportTopic(index: index)
         case .revote:
             NotificationCenter.default.post(name: Notification.Name(Topic.Action.revote.identifier), object: viewModel)
             self.dismiss(animated: true)

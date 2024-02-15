@@ -53,6 +53,14 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     
     private let hourUnit = 60*60
     
+    var topicIndex: Int? {
+        get {
+            currentIndexPath.row
+        }
+        set {
+            
+        }
+    }
     @Published private var currentIndexPath: IndexPath = IndexPath(row: 0, section: 0)
     
     override func bind(){
@@ -203,11 +211,11 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         topics[currentIndexPath.row].isVoted
     }
     
-    func hideTopic() {
+    func hideTopic(index: Int) {
         print("hide topic")
     }
     
-    func reportTopic() {
+    func reportTopic(index: Int) {
         reportTopicUseCase
             .execute(topicId: topics[currentIndexPath.row].id)
             .sink{ [weak self] result in
