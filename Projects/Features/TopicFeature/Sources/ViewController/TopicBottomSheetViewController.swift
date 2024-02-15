@@ -43,8 +43,10 @@ public final class TopicBottomSheetViewController: ActionBottomSheetViewControll
             .sink{ action in
                 switch action {
                 case .hide:
+                    ToastMessage.shared.register(message: "관련 카테고리의 토픽을 더이상 추천하지 않아요")
                     dismiss()
                 case .report:
+                    ToastMessage.shared.register(message: "해당 토픽을 신고하였어요.")
                     dismiss()
                 default:
                     fatalError()
