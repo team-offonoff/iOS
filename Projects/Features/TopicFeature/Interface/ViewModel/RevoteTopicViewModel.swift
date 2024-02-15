@@ -23,6 +23,13 @@ public protocol RevoteTopicViewModel: BaseViewModel, ErrorHandleable {
 extension RevoteTopicViewModel {
     
     public func revote(_ option: Choice.Option, index: Int) {
+        
+        //이전과 동일한 선택지로 재투표할 경우, API를 요청하지 않는다.
+        if topics[index].topic.selectedOption == option {
+            successVote.send((index, option))
+            return
+        }
+        
         revoteTopicUseCase
             .execute(topicId: topics[index].id, request: .init(modifiedOption: option, modifiedAt: UTCTime.current))
             .sink{ [weak self] result in
