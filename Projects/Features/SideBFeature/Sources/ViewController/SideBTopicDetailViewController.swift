@@ -34,8 +34,9 @@ final class SideBTopicDetailViewController: BaseViewController<NavigateHeaderVie
     }
     
     override func initialize() {
+        guard let index = viewModel.topicIndex else { return }
         mainView.topicCell.delegate = self
-        mainView.topicCell.binding(data: .init(topic: viewModel.topics[0].topic))
+        mainView.topicCell.binding(data: .init(topic: viewModel.topics[index].topic))
     }
     
     override func bind() {

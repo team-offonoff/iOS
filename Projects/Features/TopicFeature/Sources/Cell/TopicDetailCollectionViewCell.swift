@@ -265,8 +265,8 @@ extension TopicDetailCollectionViewCell {
         topicGroup.sideLabel.text = data.side
         topicGroup.keywordLabel.text = data.keyword
         userGroup.nicknameLabel.text = data.nickname
-        chat.chatCountFrame.binding(data.chatCount)
-        chat.likeCountFrame.binding(data.likeCount)
+        chat.chatCountFrame.binding(data.commentCount)
+        chat.likeCountFrame.binding(data.voteCount)
     }
     
     public func select(choice: Choice){
