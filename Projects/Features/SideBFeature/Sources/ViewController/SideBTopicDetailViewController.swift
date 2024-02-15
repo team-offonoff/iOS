@@ -110,6 +110,11 @@ extension SideBTopicDetailViewController: VoteDelegate, ChatBottomSheetDelegate,
     
     func vote(_ option: Choice.Option, index: Int?) {
         guard let index = viewModel.topicIndex else { return }
-        viewModel.vote(option, index: index)
+        if viewModel.topics[index].isVoted {
+            viewModel.revote(option, index: index)
+        }
+        else {
+            viewModel.vote(option, index: index)
+        }
     }
 }

@@ -10,6 +10,6 @@ import Foundation
 import TopicFeatureInterface
 import Combine
 
-public protocol SideBViewModel: TopicBottomSheetViewModel, FetchTopicViewModel, TopicTimerViewModel, VoteTopicViewModel {
+public protocol SideBViewModel: TopicBottomSheetViewModel, FetchTopicViewModel, TopicTimerViewModel, VoteTopicViewModel, RevoteTopicViewModel {
     var keywords: [String] { get }
 }

@@ -19,10 +19,12 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
     init(
         fetchTopicUseCase: any FetchTopicsUseCase,
         voteTopicUseCase: any GenerateVoteUseCase,
+        revoteTopicUseCase: any RevoteUseCase,
         reportTopicUseCase: any ReportTopicUseCase
     ) {
         self.fetchTopicUseCase = fetchTopicUseCase
         self.voteTopicUseCase = voteTopicUseCase
+        self.revoteTopicUseCase = revoteTopicUseCase
         self.reportTopicUseCase = reportTopicUseCase
     }
     
@@ -31,6 +33,7 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
     
     let fetchTopicUseCase: any FetchTopicsUseCase
     let voteTopicUseCase: any GenerateVoteUseCase
+    let revoteTopicUseCase: any RevoteUseCase
     private let reportTopicUseCase: any ReportTopicUseCase
     
     var fetchTopicQuery: FetchTopicQuery = .init(side: .B, status: CurrentValueSubject(.ongoing), keywordIdx: CurrentValueSubject(0), pageInfo: .init(page: 0, last: false), sort: nil)
