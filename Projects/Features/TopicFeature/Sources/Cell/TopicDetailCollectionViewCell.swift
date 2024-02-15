@@ -256,11 +256,11 @@ extension TopicDetailCollectionViewCell {
             select(choice: votedChoice)
         }
         else {
-            choiceGroup.aChoiceView.fill(data.choices[.A]!)
-            choiceGroup.bChoiceView.fill(data.choices[.B]!)
             toggle(isVoted: false)
         }
         
+        choiceGroup.aChoiceView.fill(data.choices[.A]!)
+        choiceGroup.bChoiceView.fill(data.choices[.B]!)
         topicGroup.titleLabel.text = data.title
         topicGroup.sideLabel.text = data.side
         topicGroup.keywordLabel.text = data.keyword
