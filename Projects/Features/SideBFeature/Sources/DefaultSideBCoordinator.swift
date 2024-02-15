@@ -11,6 +11,7 @@ import UIKit
 import SideBFeatureInterface
 import CommentFeatureInterface
 import CommentFeature
+import TopicFeature
 import Domain
 import Data
 
@@ -35,7 +36,8 @@ public final class DefaultSideBCoordinator: SideBCoordinator {
     private let commentRepository: any CommentRepository = DefaultCommentRepository()
     private lazy var sideBViewModel: any SideBViewModel = DefaultSideBViewModel(
         fetchTopicUseCase: DefaultFetchTopicsUseCase(repository: topicRepository),
-        voteTopicUseCase: DefaultGenerateVoteUseCase(repository: topicRepository)
+        voteTopicUseCase: DefaultGenerateVoteUseCase(repository: topicRepository),
+        reportTopicUseCase: DefaultReportTopicUseCase(repository: topicRepository)
     )
     
     public func start() {
@@ -45,10 +47,14 @@ public final class DefaultSideBCoordinator: SideBCoordinator {
     }
     
     public func startTopicDetail(index: Int) {
-        sideBViewModel.detailIdx = index
+        sideBViewModel.topicIndex = index
         let viewController = SideBTopicDetailViewController(viewModel: sideBViewModel)
         viewController.coordinator = self
         navigationController.pushViewController(viewController, animated: true)
+    }
+    
+    public func startTopicBottomSheet() {
+        navigationController.present(TopicBottomSheetViewController(viewModel: sideBViewModel), animated: true)
     }
     
     public func startCommentBottomSheet(topicId: Int, choices: [Choice.Option : Choice]) {

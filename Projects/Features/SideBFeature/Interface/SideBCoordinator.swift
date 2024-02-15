@@ -11,6 +11,7 @@ import FeatureDependency
 import Domain
 
 public protocol SideBCoordinator: Coordinator {
+    func startTopicBottomSheet()
     func startTopicDetail(index: Int)
     func startCommentBottomSheet(topicId: Int, choices: [Choice.Option : Choice]) 
 }

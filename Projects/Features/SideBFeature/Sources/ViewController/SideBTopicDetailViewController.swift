@@ -43,6 +43,7 @@ final class SideBTopicDetailViewController: BaseViewController<NavigateHeaderVie
         bindTimer()
         bindVoteSuccess()
         bindFailVote()
+        addRevoteNotification()
         
         func bindTimer(){
             viewModel.timerSubject
@@ -72,18 +73,43 @@ final class SideBTopicDetailViewController: BaseViewController<NavigateHeaderVie
                 }
                 .store(in: &cancellables)
         }
+        
+        func addRevoteNotification() {
+            NotificationCenter.default.publisher(for: Notification.Name(Topic.Action.revote.identifier), object: viewModel)
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] _ in
+                    guard let self = self else { return }
+                    // 1. 토스트 메시지 보여주기
+                    ToastMessage.shared.register(message: "다시 선택하면, 해당 토픽에 작성한 댓글이 삭제돼요")
+                    // 2. 선택지 다시 보여주기
+                    self.mainView.topicCell.clearVote()
+                    
+                }
+                .store(in: &cancellables)
+        }
     }
 }
-
 
 extension SideBTopicDetailViewController: VoteDelegate, ChatBottomSheetDelegate, TopicBottomSheetDelegate {
     
     func show(_ sender: DelegateSender) {
-        
+        guard let index = viewModel.topicIndex else { return }
+        switch sender.identifier {
+        case Topic.Action.showBottomSheet.identifier:
+            coordinator?.startTopicBottomSheet()
+        case Comment.Action.showBottomSheet.identifier:
+            coordinator?
+                .startCommentBottomSheet(
+                    topicId: viewModel.topics[index].id,
+                    choices: viewModel.topics[index].choices
+                )
+        default:
+            return
+        }
     }
     
     func vote(_ option: Choice.Option, index: Int?) {
-        guard let index = viewModel.detailIdx else { return }
+        guard let index = viewModel.topicIndex else { return }
         viewModel.vote(option, index: index)
     }
 }

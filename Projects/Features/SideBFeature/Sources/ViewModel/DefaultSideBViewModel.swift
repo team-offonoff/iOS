@@ -15,10 +15,15 @@ import Combine
 import Core
 
 final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
-    
-    init(fetchTopicUseCase: any FetchTopicsUseCase, voteTopicUseCase: any GenerateVoteUseCase) {
+
+    init(
+        fetchTopicUseCase: any FetchTopicsUseCase,
+        voteTopicUseCase: any GenerateVoteUseCase,
+        reportTopicUseCase: any ReportTopicUseCase
+    ) {
         self.fetchTopicUseCase = fetchTopicUseCase
         self.voteTopicUseCase = voteTopicUseCase
+        self.reportTopicUseCase = reportTopicUseCase
     }
     
     var topics: [TopicItemViewModel] = []
@@ -26,14 +31,16 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
     
     let fetchTopicUseCase: any FetchTopicsUseCase
     let voteTopicUseCase: any GenerateVoteUseCase
+    private let reportTopicUseCase: any ReportTopicUseCase
     
     var fetchTopicQuery: FetchTopicQuery = .init(side: .B, status: CurrentValueSubject(.ongoing), keywordIdx: CurrentValueSubject(0), pageInfo: .init(page: 0, last: false), sort: nil)
     var reloadTopics: (() -> Void)?
-    var detailIdx: Int?
+    var topicIndex: Int?
     
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
     let successVote: PassthroughSubject<(Index, Choice.Option), Never> = PassthroughSubject()
     let failVote: PassthroughSubject<Index, Never> = PassthroughSubject()
+    let successTopicAction: PassthroughSubject<Topic.Action, Never> = PassthroughSubject()
     let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     private var timer: Timer?
@@ -84,7 +91,7 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
         //MARK: helper method
         
         func remainTime() -> Int {
-            guard let detailIdx = detailIdx, let deadline = topics[detailIdx].topic.deadline else {
+            guard let detailIdx = topicIndex, let deadline = topics[detailIdx].topic.deadline else {
                 return 0
             }
             return deadline - UTCTime.current
@@ -110,4 +117,28 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
         }
     }
     
+    var canRevote: Bool {
+        guard let index = topicIndex else { return false }
+        return topics[index].isVoted
+    }
+    
+    func hideTopic(index: Int) {
+        print("hide")
+    }
+    
+    func reportTopic(index: Int) {
+        reportTopicUseCase
+            .execute(topicId: topics[index].topic.id!)
+            .sink{ [weak self] result in
+                guard let self = self else { return }
+                if result.isSuccess {
+                    self.successTopicAction.send(Topic.Action.report)
+                }
+                else if let error = result.error {
+                    print(error)
+                    self.errorHandler.send(error)
+                }
+            }
+            .store(in: &cancellable)
+    }
 }
