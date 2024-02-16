@@ -13,7 +13,7 @@ import Domain
 
 extension TopicDetailCollectionViewCell {
     
-    final class ChoiceCompleteView: BaseView {
+    public final class ChoiceCompleteView: BaseView {
         
         private let completeTagLabel: PaddingLabel = {
             let label = PaddingLabel(topBottom: 3, leftRight: 13)
@@ -43,17 +43,17 @@ extension TopicDetailCollectionViewCell {
             return label
         }()
 
-        override func style() {
+        public override func style() {
             contentView.layer.cornerRadius = 10
             contentView.layer.masksToBounds = true
         }
         
-        override func hierarchy() {
+        public override func hierarchy() {
             addSubviews([contentView, completeTagLabel])
             contentView.addSubviews([choiceLabel, contentLabel])
         }
         
-        override func layout() {
+        public override func layout() {
             completeTagLabel.snp.makeConstraints{
                 $0.top.equalToSuperview()
                 $0.centerX.equalToSuperview()

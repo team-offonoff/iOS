@@ -11,8 +11,9 @@ import Domain
 import Combine
 
 public protocol TopicBottomSheetViewModel {
+    var topicIndex: Int? { get set }
     var successTopicAction: PassthroughSubject<Topic.Action, Never> { get }
     var canRevote: Bool { get }
-    func hideTopic()
-    func reportTopic()
+    func hideTopic(index: Int)
+    func reportTopic(index: Int)
 }

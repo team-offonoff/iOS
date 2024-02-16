@@ -13,7 +13,7 @@ import FeatureDependency
 
 extension TopicDetailCollectionViewCell {
     
-    class TimerView: BaseView {
+    public class TimerView: BaseView {
         
         private var highlightFlag: Bool = false
         
@@ -28,7 +28,7 @@ extension TopicDetailCollectionViewCell {
         
         private lazy var textLabels: [UILabel] = [hourLabel, colon1Label, minuteLabel,  colon2Label, secondLabel]
         
-        override func style() {
+        public override func style() {
             layer.cornerRadius = height/2
             setColorDefault()
             setText()
@@ -57,12 +57,12 @@ extension TopicDetailCollectionViewCell {
             }
         }
         
-        override func hierarchy() {
+        public override func hierarchy() {
             addSubview(stackView)
             stackView.addArrangedSubviews(textLabels)
         }
         
-        override func layout() {
+        public override func layout() {
             self.snp.makeConstraints{
                 $0.height.equalTo(height)
             }

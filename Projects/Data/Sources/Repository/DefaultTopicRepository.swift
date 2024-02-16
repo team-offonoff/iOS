@@ -113,6 +113,7 @@ public final class DefaultTopicRepository: TopicRepository {
         var urlComponents = networkService.baseUrlComponents
         urlComponents?.path = basePath + path("info")
         urlComponents?.queryItems = [
+            .init(name: "side", value: requestQuery.side?.toDTO()),
             .init(name: "status", value: requestQuery.status?.toDTO()),
             .init(name: "keywordId", value: toString(requestQuery.keyword)),
             .init(name: "page", value: toString(requestQuery.paging?.page)),

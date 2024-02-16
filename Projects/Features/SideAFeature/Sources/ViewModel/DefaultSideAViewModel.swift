@@ -32,9 +32,9 @@ final class DefaultSideAViewModel: BaseViewModel, SideAViewModel {
     var fetchTopicQuery: FetchTopicQuery = FetchTopicQuery(
         side: Topic.Side.A,
         status: CurrentValueSubject(.ongoing),
-        keyword: nil,
+        keywordIdx: nil,
         pageInfo: Paging(page: 0, last: false),
-        sort: nil
+        sort: "createdAt,desc"
     )
     
     let successVote: PassthroughSubject<(Index, Choice.Option), Never> = PassthroughSubject()

@@ -12,7 +12,7 @@ import Domain
 
 extension TopicDetailCollectionViewCell {
     
-    class ChoiceView: BaseView {
+    public class ChoiceView: BaseView {
         
         static let spacing: CGFloat = 15
         static let extraWidth: CGFloat = 100
@@ -47,17 +47,17 @@ extension TopicDetailCollectionViewCell {
             return label
         }()
         
-        override func style() {
+        public override func style() {
             layer.cornerRadius = 148/2
             layer.maskedCorners = option.content.corenrMask
             layer.masksToBounds = true
         }
         
-        override func hierarchy() {
+        public override func hierarchy() {
             addSubviews([optionLabel])
         }
         
-        override func layout() {
+        public override func layout() {
             
             self.snp.makeConstraints{
                 $0.width.equalTo(ChoiceView.width)
@@ -92,7 +92,7 @@ extension TopicDetailCollectionViewCell {
             }
         }
         
-        override func initialize() {
+        public override func initialize() {
             optionLabel.text = option.content.title
         }
         
