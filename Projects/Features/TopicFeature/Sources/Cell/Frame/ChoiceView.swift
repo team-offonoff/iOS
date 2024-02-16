@@ -97,11 +97,13 @@ extension TopicDetailCollectionViewCell {
         }
         
         func removeContent() {
+            content?.views.forEach{
+                $0.removeFromSuperview()
+            }
             content = nil
         }
         
         func fill(_ choice: Choice) {
-
             content = {
                 if choice.content.imageURL == nil {
                     return TextChoiceContent(choice: choice)
