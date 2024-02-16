@@ -40,7 +40,8 @@ public class DefaultHomeCoordinator: HomeCoordinator {
             fetchTopicsUseCase: getFetchTopicsUseCase(),
             reportTopicUseCase: getReportTopicUseCase(),
             voteTopicUseCase: getVoteTopicUseCase(),
-            revoteTopicUseCase: getRevoteTopicUseCase()
+            revoteTopicUseCase: getRevoteTopicUseCase(),
+            fetchCommentPreviewUseCase: getFetchCommentPreviewUseCase()
         )
         
         func getFetchTopicsUseCase() -> any FetchTopicsUseCase {
@@ -57,6 +58,10 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         
         func getRevoteTopicUseCase() -> any RevoteUseCase {
             DefaultRevoteUseCase(repository: topicRepository)
+        }
+        
+        func getFetchCommentPreviewUseCase() -> any FetchCommentPreviewUseCase {
+            DefaultFetchCommentPreviewUseCase(repository: topicRepository)
         }
     }
     

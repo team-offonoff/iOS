@@ -20,17 +20,20 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     private let reportTopicUseCase: any ReportTopicUseCase
     let voteTopicUseCase: any GenerateVoteUseCase
     let revoteTopicUseCase: any RevoteUseCase
+    let fetchCommentPreviewUseCase: any FetchCommentPreviewUseCase
     
     init(
         fetchTopicsUseCase: any FetchTopicsUseCase,
         reportTopicUseCase: any ReportTopicUseCase,
         voteTopicUseCase: any GenerateVoteUseCase,
-        revoteTopicUseCase: any RevoteUseCase
+        revoteTopicUseCase: any RevoteUseCase,
+        fetchCommentPreviewUseCase: any FetchCommentPreviewUseCase
     ) {
         self.fetchTopicsUseCase = fetchTopicsUseCase
         self.reportTopicUseCase = reportTopicUseCase
         self.voteTopicUseCase = voteTopicUseCase
         self.revoteTopicUseCase = revoteTopicUseCase
+        self.fetchCommentPreviewUseCase = fetchCommentPreviewUseCase
         super.init()
     }
 
@@ -48,6 +51,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
     let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     let successTopicAction: PassthroughSubject<Topic.Action, Never> = PassthroughSubject()
+    let reloadItem: PassthroughSubject<Index, Never> = PassthroughSubject()
     
     private var timer: Timer?
     

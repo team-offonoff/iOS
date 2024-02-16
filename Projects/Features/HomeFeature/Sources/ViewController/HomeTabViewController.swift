@@ -98,6 +98,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         bindImageExpandNotification()
         bindFailVote()
         bindRevoteNotification()
+        bindCommentReload()
         
         func bindError() {
             viewModel.errorHandler
@@ -187,6 +188,18 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
                 }
                 .store(in: &cancellables)
         }
+        
+        func bindCommentReload() {
+            viewModel.reloadItem
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] index in
+                    guard let self = self else { return }
+                    if index == self.viewModel.topicIndex {
+                        self.currentTopicCell?.binding(data: .init(topic: self.viewModel.topics[index].topic), comment: self.viewModel.topics[index].commentPreview)
+                    }
+                }
+                .store(in: &cancellables)
+        }
     }
 }
 
@@ -200,7 +213,7 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(for: indexPath, cellType: TopicDetailCollectionViewCell.self)
         cell.delegate = self
-        cell.binding(data: .init(topic: viewModel.topics[indexPath.row].topic))
+        cell.binding(data: .init(topic: viewModel.topics[indexPath.row].topic), comment: viewModel.topics[indexPath.row].commentPreview)
         return cell
     }
     
@@ -210,6 +223,10 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         currentTopicCell = cell as? TopicDetailCollectionViewCell
+        //댓글 프리뷰가 없는 경우, API 요청하기
+        if viewModel.topics[indexPath.row].topic.commentCount > 0 && viewModel.topics[indexPath.row].commentPreview == nil {
+            viewModel.fetchCommentPreview(index: indexPath.row)
+        }
     }
 }
 

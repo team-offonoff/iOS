@@ -12,7 +12,7 @@ import Domain
 import TopicFeatureInterface
 import FeatureDependency
 
-public protocol HomeTabViewModel: AnyObject, TopicPageControlViewModel, TimerControlViewModel, VoteTopicViewModel, RevoteTopicViewModel, TopicBottomSheetViewModel, ErrorHandleable {
+public protocol HomeTabViewModel: AnyObject, TopicPageControlViewModel, TimerControlViewModel, VoteTopicViewModel, RevoteTopicViewModel, TopicBottomSheetViewModel, FetchCommentPreviewViewModel, ErrorHandleable {
     var currentTopic: TopicDetailItemViewModel { get }
     func viewDidLoad()
 }

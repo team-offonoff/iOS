@@ -11,6 +11,7 @@ import Domain
 import Core
 
 public struct TopicDetailItemViewModel {
+    public let isCommentEmpty: Bool
     public let id: Int
     public let title: String
     public let nickname: String
@@ -38,6 +39,7 @@ extension TopicDetailItemViewModel {
         self.voteCount = ABFormat.count(topic.voteCount) + " 명"
         self.votedOption = topic.selectedOption
         self.choices = topic.choices
+        self.isCommentEmpty = topic.commentCount == 0
     }
     
     public var isVoted: Bool {

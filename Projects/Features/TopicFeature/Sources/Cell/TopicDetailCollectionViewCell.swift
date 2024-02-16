@@ -245,7 +245,7 @@ open class TopicDetailCollectionViewCell: BaseCollectionViewCell{
         topicGroup.timer.binding(data: timer)
     }
     
-    open func binding(data: TopicDetailItemViewModel) {
+    open func binding(data: TopicDetailItemViewModel, comment: Comment?) {
         if data.isVoted {
             guard let votedOption = data.votedOption, let votedChoice = data.choices[votedOption] else { return }
             select(choice: votedChoice)
@@ -262,6 +262,8 @@ open class TopicDetailCollectionViewCell: BaseCollectionViewCell{
         userGroup.nicknameLabel.text = data.nickname
         chat.chatCountFrame.binding(data.commentCount)
         chat.likeCountFrame.binding(data.voteCount)
+        
+        data.isCommentEmpty ? chat.empty() : chat.fill(comment: comment, isVoted: data.isVoted)
     }
 }
 
@@ -279,14 +281,10 @@ extension TopicDetailCollectionViewCell {
     }
     
     private func toggle(isVoted value: Bool) {
-        
         choiceGroup.completeView.isHidden = !value
-        
         [choiceGroup.slideExplainView, choiceStackView].forEach{
             $0.isHidden = value
         }
-        
-        chat.canUserInteraction = value
     }
     
     public func failVote() {
