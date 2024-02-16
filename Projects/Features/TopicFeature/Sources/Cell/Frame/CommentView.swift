@@ -109,17 +109,18 @@ extension TopicDetailCollectionViewCell {
         }
         
         ///댓글 개수가 0인 경우
-        public func empty() {
+        public func empty(isVoted: Bool) {
             induceWriteCommentLabel.isHidden = false
             chatCountFrame.isHidden = true
             contentCell.isHidden = true
             [blurView, induceSelectChip].forEach{
                 $0.isHidden = true
             }
-            isUserInteractionEnabled = false
+            isUserInteractionEnabled = isVoted
         }
         
         public func fill(comment: Comment?, isVoted: Bool) {
+            
             let (subviewHidden,isInteractionEnabled) = {
                 if comment == nil {
                     return (true, false)
@@ -158,7 +159,6 @@ extension TopicDetailCollectionViewCell.CommentView {
         }()
         let contentLabel: UILabel = {
             let label = UILabel()
-            label.text = "나는 10년 전 과거로 가서 주식..."
             label.setTypo(Pretendard.regular15)
             label.textColor = Color.white
             return label

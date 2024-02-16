@@ -263,7 +263,7 @@ open class TopicDetailCollectionViewCell: BaseCollectionViewCell{
         chat.chatCountFrame.binding(data.commentCount)
         chat.likeCountFrame.binding(data.voteCount)
         
-        data.isCommentEmpty ? chat.empty() : chat.fill(comment: comment, isVoted: data.isVoted)
+        data.isCommentEmpty ? chat.empty(isVoted: data.isVoted) : chat.fill(comment: comment, isVoted: data.isVoted)
     }
 }
 
