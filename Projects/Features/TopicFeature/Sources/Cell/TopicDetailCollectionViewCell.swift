@@ -35,9 +35,9 @@ open class TopicDetailCollectionViewCell: BaseCollectionViewCell{
     public let etcGroup: EtcGroup = EtcGroup()
     public let chat: CommentView = CommentView()
     
-    private let profileStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 8)
-    private let choiceStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 15)
-    private let informationStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 7)
+    public let profileStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 8)
+    public let choiceStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 15)
+    public let informationStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 7)
     
     public override func prepareForReuse() {
         choiceGroup.aChoiceView.removeContent()
@@ -61,7 +61,7 @@ open class TopicDetailCollectionViewCell: BaseCollectionViewCell{
         informationStackView.addArrangedSubviews([topicGroup.sideLabel, etcGroup.separatorLine, topicGroup.keywordLabel])
     }
     
-    public override func layout() {
+    open override func layout() {
         
         etcGroup.titleLabel.snp.makeConstraints{
             $0.top.centerX.equalToSuperview()
