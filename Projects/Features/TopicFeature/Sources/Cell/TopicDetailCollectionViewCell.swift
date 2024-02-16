@@ -15,7 +15,7 @@ import FeatureDependency
 import Core
 import Combine
 
-public class TopicDetailCollectionViewCell: BaseCollectionViewCell{
+open class TopicDetailCollectionViewCell: BaseCollectionViewCell{
     
     public weak var delegate: (VoteDelegate & TopicBottomSheetDelegate & ChatBottomSheetDelegate)?
     private var cancellable: Set<AnyCancellable> = []
@@ -29,11 +29,11 @@ public class TopicDetailCollectionViewCell: BaseCollectionViewCell{
     private var state: SwipeState = .normal
     private var originalPoint: CGPoint = CGPoint()
     
-    private let topicGroup: TopicGroup = TopicGroup()
-    private let userGroup: UserGroup = UserGroup()
-    private let choiceGroup: ChoiceGroup = ChoiceGroup()
-    private let etcGroup: EtcGroup = EtcGroup()
-    private let chat: CommentView = CommentView()
+    public let topicGroup: TopicGroup = TopicGroup()
+    public let userGroup: UserGroup = UserGroup()
+    public let choiceGroup: ChoiceGroup = ChoiceGroup()
+    public let etcGroup: EtcGroup = EtcGroup()
+    public let chat: CommentView = CommentView()
     
     private let profileStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 8)
     private let choiceStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 15)
@@ -50,7 +50,7 @@ public class TopicDetailCollectionViewCell: BaseCollectionViewCell{
     
     public override func hierarchy() {
 
-        baseView.addSubviews([etcGroup.realTimeTitleLabel, topicGroup.titleLabel, profileStackView, choiceGroup.swipeableView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.etcButton, chat])
+        baseView.addSubviews([etcGroup.titleLabel, topicGroup.titleLabel, profileStackView, choiceGroup.swipeableView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.etcButton, chat])
         
         choiceGroup.swipeableView.addSubviews([choiceStackView])
         
@@ -63,12 +63,12 @@ public class TopicDetailCollectionViewCell: BaseCollectionViewCell{
     
     public override func layout() {
         
-        etcGroup.realTimeTitleLabel.snp.makeConstraints{
+        etcGroup.titleLabel.snp.makeConstraints{
             $0.top.centerX.equalToSuperview()
         }
         
         topicGroup.titleLabel.snp.makeConstraints{
-            $0.top.equalTo(etcGroup.realTimeTitleLabel.snp.bottom).offset(20)
+            $0.top.equalTo(etcGroup.titleLabel.snp.bottom).offset(20)
             $0.centerX.equalToSuperview()
             $0.leading.equalToSuperview().offset(102)
         }
@@ -240,17 +240,12 @@ public class TopicDetailCollectionViewCell: BaseCollectionViewCell{
             return
         }
     }
-}
-
-//MARK: Input
-
-extension TopicDetailCollectionViewCell {
     
     public func binding(timer: TimerInfo) {
         topicGroup.timer.binding(data: timer)
     }
     
-    public func binding(data: TopicDetailItemViewModel) {
+    open func binding(data: TopicDetailItemViewModel) {
         if data.isVoted {
             guard let votedOption = data.votedOption, let votedChoice = data.choices[votedOption] else { return }
             select(choice: votedChoice)
@@ -268,6 +263,11 @@ extension TopicDetailCollectionViewCell {
         chat.chatCountFrame.binding(data.commentCount)
         chat.likeCountFrame.binding(data.voteCount)
     }
+}
+
+//MARK: Input
+
+extension TopicDetailCollectionViewCell {
     
     public func select(choice: Choice){
         choiceGroup.completeView.fill(choice: choice)
@@ -306,8 +306,8 @@ extension TopicDetailCollectionViewCell {
 
 extension TopicDetailCollectionViewCell {
     
-    final class TopicGroup {
-        let titleLabel: UILabel = {
+    public final class TopicGroup {
+        public let titleLabel: UILabel = {
             let label = UILabel()
             label.numberOfLines = 2
             label.textColor = Color.white
@@ -319,14 +319,14 @@ extension TopicDetailCollectionViewCell {
             }
             return label
         }()
-        let timer: TimerView = TimerView()
-        let sideLabel: UILabel = {
+        public let timer: TimerView = TimerView()
+        public let sideLabel: UILabel = {
             let label = UILabel()
             label.setTypo(Pretendard.regular13)
             label.textColor = Color.subPurple
             return label
         }()
-        let keywordLabel: UILabel = {
+        public let keywordLabel: UILabel = {
             let label = UILabel()
             label.setTypo(Pretendard.regular13)
             label.textColor = Color.white60
@@ -334,8 +334,8 @@ extension TopicDetailCollectionViewCell {
         }()
     }
     
-    final class UserGroup {
-        let profileImageView: UIImageView = {
+    public final class UserGroup {
+        public let profileImageView: UIImageView = {
             let imageView = UIImageView()
             imageView.backgroundColor = UIColor(85)
             imageView.layer.cornerRadius = 22/2
@@ -345,7 +345,7 @@ extension TopicDetailCollectionViewCell {
             }
             return imageView
         }()
-        let nicknameLabel: UILabel = {
+        public let nicknameLabel: UILabel = {
             let label = UILabel()
             label.textColor = Color.white60
             label.setTypo(Pretendard.regular14)
@@ -353,12 +353,12 @@ extension TopicDetailCollectionViewCell {
         }()
     }
     
-    final class ChoiceGroup {
-        let swipeableView: UIView = UIView()
-        let completeView: ChoiceCompleteView = ChoiceCompleteView()
-        let aChoiceView = ChoiceView(option: .A)
-        let bChoiceView = ChoiceView(option: .B)
-        lazy var slideExplainView: UIView = {
+    public final class ChoiceGroup {
+        public let swipeableView: UIView = UIView()
+        public let completeView: ChoiceCompleteView = ChoiceCompleteView()
+        public let aChoiceView = ChoiceView(option: .A)
+        public let bChoiceView = ChoiceView(option: .B)
+        public lazy var slideExplainView: UIView = {
             let view = UIView()
             view.addSubviews([leftSlideImageView, rightSlideImageView, slideExplainLabel])
             leftSlideImageView.snp.makeConstraints{
@@ -399,15 +399,15 @@ extension TopicDetailCollectionViewCell {
         }()
     }
     
-    final class EtcGroup {
-        let realTimeTitleLabel: UILabel = {
+    public final class EtcGroup {
+        public let titleLabel: UILabel = {
             let label = UILabel()
             label.text = "실시간 인기 토픽"
             label.setTypo(Pretendard.regular18)
             label.textColor = Color.subPurple
             return label
         }()
-        let separatorLine: UIView = {
+        public let separatorLine: UIView = {
             let view = UIView()
             view.backgroundColor = Color.white20
             view.snp.makeConstraints{
@@ -416,7 +416,7 @@ extension TopicDetailCollectionViewCell {
             }
             return view
         }()
-        let etcButton: UIButton = {
+        public let etcButton: UIButton = {
             let button = UIButton()
             button.setImage(Image.more, for: .normal)
             button.snp.makeConstraints{

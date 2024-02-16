@@ -12,7 +12,7 @@ import ABKit
 
 extension TopicDetailCollectionViewCell {
     
-    final class CommentView: BaseView {
+    public final class CommentView: BaseView {
         
         var canUserInteraction = false {
             didSet {
@@ -45,12 +45,12 @@ extension TopicDetailCollectionViewCell {
         let chatCountFrame: CountStackView = CountStackView(explain: "의 댓글")
         let likeCountFrame: CountStackView = CountStackView(explain: "이 선택했어요")
         
-        override func style() {
+        public override func style() {
             backgroundColor = Color.subNavy2
             layer.cornerRadius = 10
             layer.masksToBounds = true
         }
-        override func hierarchy() {
+        public override func hierarchy() {
             
             outline()
             header()
@@ -67,7 +67,7 @@ extension TopicDetailCollectionViewCell {
                 contentFrame.addSubviews([contentCell, blurView, induceSelectChip])
             }
         }
-        override func layout() {
+        public override func layout() {
             
             outline()
             header()
