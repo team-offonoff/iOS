@@ -56,7 +56,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         setDelegate()
         moveAlarm()
         addButtonFrameTarget()
-        addRevoteNotification()
+        previousVisibility()
         
         func setDelegate(){
             mainView.scrollFrame.setDelegate(to: self)
@@ -82,18 +82,8 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
                 }.store(in: &cancellables)
         }
         
-        func addRevoteNotification() {
-            NotificationCenter.default.publisher(for: Notification.Name(Topic.Action.revote.identifier), object: viewModel)
-                .receive(on: DispatchQueue.main)
-                .sink{ [weak self] _ in
-                    guard let self = self else { return }
-                    // 1. 토스트 메시지 보여주기
-                    ToastMessage.shared.register(message: "다시 선택하면, 해당 토픽에 작성한 댓글이 삭제돼요")
-                    // 2. 선택지 다시 보여주기
-                    self.currentTopicCell?.clearVote()
-                    
-                }
-                .store(in: &cancellables)
+        func previousVisibility() {
+            mainView.scrollFrame.buttonFrame.previousButton.isHidden = true
         }
     }
     
@@ -107,6 +97,8 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         bindVoteSuccess()
         bindImageExpandNotification()
         bindFailVote()
+        bindRevoteNotification()
+        bindCommentReload()
         
         func bindError() {
             viewModel.errorHandler
@@ -144,7 +136,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         func bindVoteSuccess() {
             viewModel.successVote
                 .receive(on: DispatchQueue.main)
-                .sink{ [weak self] choice in
+                .sink{ [weak self] index, choice in
                     guard let self = self else { return }
                     self.currentTopicCell?.select(choice: self.viewModel.currentTopic.choices[choice]!)
                 }
@@ -176,9 +168,35 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         func bindFailVote() {
             viewModel.failVote
                 .receive(on: DispatchQueue.main)
-                .sink{ [weak self] in
+                .sink{ [weak self] index in
                     guard let self = self else { return }
                     self.currentTopicCell?.failVote()
+                }
+                .store(in: &cancellables)
+        }
+        
+        func bindRevoteNotification() {
+            NotificationCenter.default.publisher(for: Notification.Name(Topic.Action.revote.identifier), object: viewModel)
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] _ in
+                    guard let self = self else { return }
+                    // 1. 토스트 메시지 보여주기
+                    ToastMessage.shared.register(message: "다시 선택하면, 해당 토픽에 작성한 댓글이 삭제돼요")
+                    // 2. 선택지 다시 보여주기
+                    self.currentTopicCell?.clearVote()
+                    
+                }
+                .store(in: &cancellables)
+        }
+        
+        func bindCommentReload() {
+            viewModel.reloadItem
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] index in
+                    guard let self = self else { return }
+                    if index == self.viewModel.topicIndex {
+                        self.currentTopicCell?.binding(data: .init(topic: self.viewModel.topics[index].topic), comment: self.viewModel.topics[index].commentPreview)
+                    }
                 }
                 .store(in: &cancellables)
         }
@@ -195,7 +213,7 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(for: indexPath, cellType: TopicDetailCollectionViewCell.self)
         cell.delegate = self
-        cell.binding(data: viewModel.topics[indexPath.row])
+        cell.binding(data: .init(topic: viewModel.topics[indexPath.row].topic), comment: viewModel.topics[indexPath.row].commentPreview)
         return cell
     }
     
@@ -205,8 +223,10 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         currentTopicCell = cell as? TopicDetailCollectionViewCell
-        //셀이 다시 보여질 때마다 재로드 시킨다
-        currentTopicCell?.binding(data: viewModel.topics[indexPath.row])
+        //댓글 프리뷰가 없는 경우, API 요청하기
+        if viewModel.topics[indexPath.row].topic.commentCount > 0 && viewModel.topics[indexPath.row].commentPreview == nil {
+            viewModel.fetchCommentPreview(index: indexPath.row)
+        }
     }
 }
 
@@ -231,11 +251,12 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
 extension HomeTabViewController: VoteDelegate {
     func vote(_ option: Choice.Option, index: Int?) {
         print(option)
+        guard let index = index else { return }
         if viewModel.currentTopic.isVoted {
-            viewModel.revote(option)
+            viewModel.revote(option, index: index)
         }
         else {
-            viewModel.vote(option)
+            viewModel.vote(option, index: index)
         }
     }
 }

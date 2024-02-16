@@ -9,19 +9,11 @@
 import Foundation
 import UIKit
 import ABKit
+import Domain
 
 extension TopicDetailCollectionViewCell {
     
     public final class CommentView: BaseView {
-        
-        var canUserInteraction = false {
-            didSet {
-                [blurView, induceSelectChip].forEach{
-                    $0.isHidden = canUserInteraction
-                }
-                isUserInteractionEnabled = canUserInteraction
-            }
-        }
         
         private let headerFrame: UIView = {
             let view = UIView()
@@ -39,6 +31,13 @@ extension TopicDetailCollectionViewCell {
             label.setTypo(Pretendard.bold15)
             label.layer.cornerRadius = 29/2
             label.layer.masksToBounds = true
+            return label
+        }()
+        private let induceWriteCommentLabel: UILabel = {
+           let label = UILabel()
+            label.text = "선택 후 가장 먼저 댓글을 작성해 보세요!"
+            label.setTypo(Pretendard.regular14)
+            label.textColor = Color.white60
             return label
         }()
         private let countStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 12)
@@ -64,7 +63,7 @@ extension TopicDetailCollectionViewCell {
                 countStackView.addArrangedSubviews([chatCountFrame, likeCountFrame])
             }
             func content() {
-                contentFrame.addSubviews([contentCell, blurView, induceSelectChip])
+                contentFrame.addSubviews([induceWriteCommentLabel, contentCell, blurView, induceSelectChip])
             }
         }
         public override func layout() {
@@ -103,7 +102,46 @@ extension TopicDetailCollectionViewCell {
                     $0.top.bottom.equalToSuperview().inset(14)
                     $0.leading.trailing.equalToSuperview()
                 }
+                induceWriteCommentLabel.snp.makeConstraints{
+                    $0.center.equalToSuperview()
+                }
             }
+        }
+        
+        ///댓글 개수가 0인 경우
+        public func empty(isVoted: Bool) {
+            induceWriteCommentLabel.isHidden = false
+            chatCountFrame.isHidden = true
+            contentCell.isHidden = true
+            [blurView, induceSelectChip].forEach{
+                $0.isHidden = true
+            }
+            isUserInteractionEnabled = isVoted
+        }
+        
+        public func fill(comment: Comment?, isVoted: Bool) {
+            
+            let (subviewHidden,isInteractionEnabled) = {
+                if comment == nil {
+                    return (true, false)
+                }
+                else if isVoted {
+                    return (true, true)
+                }
+                else {
+                    return (false, false)
+                }
+            }()
+
+            contentCell.isHidden = false
+            chatCountFrame.isHidden = false
+            induceWriteCommentLabel.isHidden = true
+            [blurView, induceSelectChip].forEach{
+                $0.isHidden = subviewHidden
+            }
+            isUserInteractionEnabled = isInteractionEnabled
+//            contentCell.profileImageView.image =
+            contentCell.contentLabel.text = comment?.content
         }
     }
 }
@@ -112,16 +150,15 @@ extension TopicDetailCollectionViewCell.CommentView {
     
     final class RepresentativeCommentView: BaseView {
         
-        private let profileImageView: UIImageView = {
+        let profileImageView: UIImageView = {
             let imageView = UIImageView()
             imageView.layer.cornerRadius = 22/2
             imageView.layer.masksToBounds = true
             imageView.backgroundColor = UIColor(217)
             return imageView
         }()
-        private let contentLabel: UILabel = {
+        let contentLabel: UILabel = {
             let label = UILabel()
-            label.text = "나는 10년 전 과거로 가서 주식..."
             label.setTypo(Pretendard.regular15)
             label.textColor = Color.white
             return label

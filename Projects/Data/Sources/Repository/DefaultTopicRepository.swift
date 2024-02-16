@@ -175,4 +175,16 @@ public final class DefaultTopicRepository: TopicRepository {
             .init(modifiedOption: request.modifiedOption.toDTO(), modifiedAt: request.modifiedAt)
         }
     }
+    
+    public func fetchCommentPreview(topicId: Int) -> NetworkResultPublisher<Comment?> {
+        
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = basePath + path(topicId) + path("comment")
+        
+        guard let urlRequest = urlComponents?.toURLRequest(method: .get) else {
+            fatalError("json encoding or url parsing error")
+        }
+        
+        return dataTask(request: urlRequest, responseType: CommentResponseDTO.self)
+    }
 }
