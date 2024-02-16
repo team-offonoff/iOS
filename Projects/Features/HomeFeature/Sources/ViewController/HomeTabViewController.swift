@@ -144,7 +144,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         func bindVoteSuccess() {
             viewModel.successVote
                 .receive(on: DispatchQueue.main)
-                .sink{ [weak self] choice in
+                .sink{ [weak self] index, choice in
                     guard let self = self else { return }
                     self.currentTopicCell?.select(choice: self.viewModel.currentTopic.choices[choice]!)
                 }
@@ -176,7 +176,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         func bindFailVote() {
             viewModel.failVote
                 .receive(on: DispatchQueue.main)
-                .sink{ [weak self] in
+                .sink{ [weak self] index in
                     guard let self = self else { return }
                     self.currentTopicCell?.failVote()
                 }
@@ -195,7 +195,7 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(for: indexPath, cellType: TopicDetailCollectionViewCell.self)
         cell.delegate = self
-        cell.binding(data: viewModel.topics[indexPath.row])
+        cell.binding(data: .init(topic: viewModel.topics[indexPath.row].topic))
         return cell
     }
     
@@ -205,8 +205,6 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         currentTopicCell = cell as? TopicDetailCollectionViewCell
-        //셀이 다시 보여질 때마다 재로드 시킨다
-        currentTopicCell?.binding(data: viewModel.topics[indexPath.row])
     }
 }
 
@@ -231,11 +229,12 @@ extension HomeTabViewController: ChatBottomSheetDelegate, TopicBottomSheetDelega
 extension HomeTabViewController: VoteDelegate {
     func vote(_ option: Choice.Option, index: Int?) {
         print(option)
+        guard let index = index else { return }
         if viewModel.currentTopic.isVoted {
-            viewModel.revote(option)
+            viewModel.revote(option, index: index)
         }
         else {
-            viewModel.vote(option)
+            viewModel.vote(option, index: index)
         }
     }
 }

@@ -15,11 +15,11 @@ import Core
 import FeatureDependency
 
 final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
-    
+
     private let fetchTopicsUseCase: any FetchTopicsUseCase
     private let reportTopicUseCase: any ReportTopicUseCase
-    private let voteTopicUseCase: any GenerateVoteUseCase
-    private let revoteTopicUseCase: any RevoteUseCase
+    let voteTopicUseCase: any GenerateVoteUseCase
+    let revoteTopicUseCase: any RevoteUseCase
     
     init(
         fetchTopicsUseCase: any FetchTopicsUseCase,
@@ -34,16 +34,16 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         super.init()
     }
 
-    var topics: [TopicDetailItemViewModel] = []
+    var topics: [TopicItemViewModel] = []
     
     var currentTopic: TopicDetailItemViewModel {
-        topics[currentIndexPath.row]
+        .init(topic: topics[currentIndexPath.row].topic)
     }
     
     var willMovePage: AnyPublisher<IndexPath, Never>{ $currentIndexPath.filter{ _ in self.topics.count > 0 }.eraseToAnyPublisher() }
     
-    let successVote: PassthroughSubject<Choice.Option, Never> = PassthroughSubject()
-    let failVote: PassthroughSubject<Void, Never> = PassthroughSubject()
+    let successVote: PassthroughSubject<(Index,Choice.Option), Never> = PassthroughSubject()
+    let failVote: PassthroughSubject<Index, Never> = PassthroughSubject()
     let reloadTopics: PassthroughSubject<Void, Never> = PassthroughSubject()
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
     let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
@@ -84,7 +84,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
                     defer {
                         self.reloadTopics.send(())
                     }
-                    self.topics = topics.map{ TopicDetailItemViewModel.init(topic: $0) }
+                    self.topics = topics.map{ TopicItemViewModel.init($0) }
                 }
                 else if let error = result.error {
                     self.errorHandler.send(error)
@@ -135,7 +135,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         //MARK: helper method
         
         func remainTime() -> Int {
-            guard let deadline = topics[currentIndexPath.row].deadline else {
+            guard let deadline = topics[currentIndexPath.row].topic.deadline else {
                 return 0
             }
             return deadline - UTCTime.current
@@ -161,54 +161,10 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         }
     }
     
-    func vote(_ option: Choice.Option) {
-        voteTopicUseCase
-            .execute(
-                topicId: topics[currentIndexPath.row].id,
-                request: .init(
-                    choiceOption: option,
-                    votedAt: UTCTime.current
-                )
-            )
-            .sink{ [weak self] result in
-                guard let self = self else { return }
-                if result.isSuccess, let comment = result.data {
-                    self.topics[self.currentIndexPath.row].votedOption = option
-                    self.successVote.send(option)
-                    //TODO: 댓글 1개 미리보기
-                }
-                else {
-                    if let error = result.error {
-                        self.errorHandler.send(error)
-                    }
-                    self.failVote.send(())
-                }
-            }.store(in: &cancellable)
-    }
-    
-    func revote(_ option: Choice.Option) {
-        revoteTopicUseCase
-            .execute(topicId: topics[currentIndexPath.row].id, request: .init(modifiedOption: option, modifiedAt: UTCTime.current))
-            .sink{ [weak self] result in
-                guard let self = self else { return }
-                if result.isSuccess {
-                    self.topics[self.currentIndexPath.row].votedOption = option
-                    self.successVote.send(option)
-                }
-                else {
-                    if let error = result.error {
-                        self.errorHandler.send(error)
-                    }
-                    self.failVote.send(())
-                }
-            }
-            .store(in: &cancellable)
-    }
-    
     //MARK: - Topic Bottom Sheet View Model
     
     var canRevote: Bool {
-        topics[currentIndexPath.row].isVoted
+        topics[currentIndexPath.row].topic.selectedOption != nil
     }
     
     func hideTopic(index: Int) {

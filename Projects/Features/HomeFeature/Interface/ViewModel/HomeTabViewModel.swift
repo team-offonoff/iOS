@@ -12,20 +12,13 @@ import Domain
 import TopicFeatureInterface
 import FeatureDependency
 
-public protocol HomeTabViewModel: AnyObject, TopicPageControlViewModel, TimerControlViewModel, TopicVoteViewModel, TopicBottomSheetViewModel, ErrorHandleable {
+public protocol HomeTabViewModel: AnyObject, TopicPageControlViewModel, TimerControlViewModel, VoteTopicViewModel, RevoteTopicViewModel, TopicBottomSheetViewModel, ErrorHandleable {
     var currentTopic: TopicDetailItemViewModel { get }
     func viewDidLoad()
 }
 
-public protocol TopicVoteViewModel {
-    var successVote: PassthroughSubject<Choice.Option, Never> { get }
-    var failVote: PassthroughSubject<Void, Never> { get }
-    func vote(_ option: Choice.Option)
-    func revote(_ option: Choice.Option)
-}
-
 public protocol TopicPageControlViewModel {
-    var topics: [TopicDetailItemViewModel] { get }
+    var topics: [TopicItemViewModel] { get }
     var canMovePrevious: Bool { get }
     var canMoveNext: Bool { get }
     var willMovePage: AnyPublisher<IndexPath, Never> { get }
