@@ -15,4 +15,5 @@ public protocol TopicRepository: Repository{
     func report(topicId: Int) -> NetworkResultPublisher<Any?>
     func vote(topicId: Int, request: GenerateVoteUseCaseRequestValue) -> NetworkResultPublisher<(Topic, Comment?)?>
     func revote(topicId: Int, request: RevoteUseCaseRequestValue) -> NetworkResultPublisher<(Topic, Comment?)?>
+    func fetchCommentPreview(topicId: Int) -> NetworkResultPublisher<Comment?>
 }
