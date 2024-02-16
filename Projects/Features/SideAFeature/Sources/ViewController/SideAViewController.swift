@@ -157,7 +157,8 @@ extension SideAViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension SideAViewController: VoteDelegate {
-    func vote(_ option: Choice.Option, index: Int) {
+    func vote(_ option: Choice.Option, index: Int?) {
+        guard let index = index else { return }
         viewModel.vote(option, index: index)
     }
 }
