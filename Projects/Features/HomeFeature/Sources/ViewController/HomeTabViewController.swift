@@ -56,7 +56,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         setDelegate()
         moveAlarm()
         addButtonFrameTarget()
-        addRevoteNotification()
+        previousVisibility()
         
         func setDelegate(){
             mainView.scrollFrame.setDelegate(to: self)
@@ -82,18 +82,8 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
                 }.store(in: &cancellables)
         }
         
-        func addRevoteNotification() {
-            NotificationCenter.default.publisher(for: Notification.Name(Topic.Action.revote.identifier), object: viewModel)
-                .receive(on: DispatchQueue.main)
-                .sink{ [weak self] _ in
-                    guard let self = self else { return }
-                    // 1. 토스트 메시지 보여주기
-                    ToastMessage.shared.register(message: "다시 선택하면, 해당 토픽에 작성한 댓글이 삭제돼요")
-                    // 2. 선택지 다시 보여주기
-                    self.currentTopicCell?.clearVote()
-                    
-                }
-                .store(in: &cancellables)
+        func previousVisibility() {
+            mainView.scrollFrame.buttonFrame.previousButton.isHidden = true
         }
     }
     
@@ -107,6 +97,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         bindVoteSuccess()
         bindImageExpandNotification()
         bindFailVote()
+        bindRevoteNotification()
         
         func bindError() {
             viewModel.errorHandler
@@ -179,6 +170,20 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
                 .sink{ [weak self] index in
                     guard let self = self else { return }
                     self.currentTopicCell?.failVote()
+                }
+                .store(in: &cancellables)
+        }
+        
+        func bindRevoteNotification() {
+            NotificationCenter.default.publisher(for: Notification.Name(Topic.Action.revote.identifier), object: viewModel)
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] _ in
+                    guard let self = self else { return }
+                    // 1. 토스트 메시지 보여주기
+                    ToastMessage.shared.register(message: "다시 선택하면, 해당 토픽에 작성한 댓글이 삭제돼요")
+                    // 2. 선택지 다시 보여주기
+                    self.currentTopicCell?.clearVote()
+                    
                 }
                 .store(in: &cancellables)
         }
