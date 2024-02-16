@@ -231,7 +231,7 @@ open class TopicDetailCollectionViewCell: BaseCollectionViewCell{
                 
                 func initializeChoiceView() {
                     choiceStackView.isHidden = true
-                    choiceStackView.center.x = center.x
+                    choiceStackView.frame.origin = originalPoint
                     choiceStackView.alpha = 1
                 }
             }
