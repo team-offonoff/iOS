@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ABKit
 import CommentFeatureInterface
 import Domain
 import Data
@@ -64,5 +65,10 @@ public class DefaultCommentCoordinator: CommentCoordinator {
     public func startOthersBottomSheet(index: Int) {
         guard let viewModel = commentViewModel else { return }
         commentBottomSheet?.present(OthersCommnetBottomSheetViewController(index: index, viewModel: viewModel), animated: true)
+    }
+    
+    public func startDeleteBottomSheet(index: Int) {
+        guard let viewModel = commentViewModel else { return }
+        commentBottomSheet?.present(DeleteBottomSheetViewController(title: "내가 작성한 댓글을 삭제합니다.", index: index, viewModel: viewModel), animated: true)
     }
 }

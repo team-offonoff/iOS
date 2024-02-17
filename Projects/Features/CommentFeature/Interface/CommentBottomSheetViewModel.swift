@@ -7,12 +7,13 @@
 //
 
 import Foundation
+import ABKit
 import Domain
 import Core
 import FeatureDependency
 import Combine
 
-public typealias CommentBottomSheetViewModel = CommentBottomSheetViewModelInput & CommentBottomSheetViewModelOutput & ErrorHandleable & WritersCommentBottomSheetViewModel & OthersCommentBottomSheetViewModel
+public typealias CommentBottomSheetViewModel = CommentBottomSheetViewModelInput & CommentBottomSheetViewModelOutput & ErrorHandleable & WritersCommentBottomSheetViewModel & OthersCommentBottomSheetViewModel & DeleteBottomSheetViewModel
 public typealias WritersCommentBottomSheetViewModel = WritersCommentBottomSheetViewModelInput & WritersCommentBottomSheetViewModelOutput
 public typealias OthersCommentBottomSheetViewModel = OthersCommentBottomSheetViewModelInput & OthersCommentBottomSheetViewModelOutput
 
@@ -38,12 +39,10 @@ public protocol CommentBottomSheetViewModelOutput {
 
 public protocol WritersCommentBottomSheetViewModelInput {
     func modifyComment(at index: Int, content: String)
-    func delete(at index: Int)
 }
 
 public protocol WritersCommentBottomSheetViewModelOutput {
     var modifyItem: PassthroughSubject<Index, Never> { get }
-    var deleteItem: PassthroughSubject<Index, Never> { get }
 }
 
 public protocol OthersCommentBottomSheetViewModelInput {

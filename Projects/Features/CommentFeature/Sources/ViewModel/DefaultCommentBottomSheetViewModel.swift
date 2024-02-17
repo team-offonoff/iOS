@@ -174,8 +174,8 @@ extension DefaultCommentBottomSheetViewModel {
             .store(in: &cancellable)
     }
     
-    
-    public func delete(at index: Int) {
+    public func delete(at index: Int?) {
+        guard let index = index else { return }
         deleteCommentUseCase
             .execute(commentId: comments[index].id)
             .sink{ [weak self] result in

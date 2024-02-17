@@ -173,6 +173,17 @@ public final class CommentBottomSheetViewController: UIViewController {
             }
             .store(in: &cancellable)
         
+        NotificationCenter.default.publisher(for: Notification.Name(Comment.Action.delete.identifier))
+            .sink{ [weak self] noti in
+                print(noti)
+                guard let self = self, let index = noti.userInfo?["Index"] as? Int else { return }
+                defer {
+                    self.focusIndex = index
+                }
+                self.coordinator?.startDeleteBottomSheet(index: index)
+            }
+            .store(in: &cancellable)
+        
         //MARK: view model output
         
         viewModel.reloadData = {
