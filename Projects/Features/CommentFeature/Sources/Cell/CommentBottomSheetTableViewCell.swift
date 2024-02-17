@@ -149,6 +149,7 @@ final class CommentContentTableViewCell: BaseTableViewCell {
     }
     
     func fill(_ comment: CommentListItemViewModel) {
+        moreButton.isHidden = !comment.isWriter
         nicknameLabel.text = comment.writer.nickname
         dateLabel.text = comment.elapsedTime
         choiceLabel.textColor = (comment.selectedOption.option?.content.color ?? Color.subNavy).withAlphaComponent(0.6)

@@ -45,19 +45,23 @@ final class CommentInputView: BaseView {
     private let defaultTextViewHeight: CGFloat = 36
     private let textView: UITextView = {
        let textView = UITextView()
-        textView.backgroundColor = Color.black.withAlphaComponent(0.1)
-        textView.textColor = Color.black.withAlphaComponent(0.4)
+        textView.textColor = Color.black
         textView.font = Pretendard.regular14.font
         textView.layer.cornerRadius = 10
+        textView.layer.borderWidth = 1
+        textView.layer.borderColor = Color.black.cgColor
         textView.showsVerticalScrollIndicator = false
         textView.textContainerInset = UIEdgeInsets(top: 8, left: 15, bottom: 8, right: 15)
         return textView
     }()
     private let sendButton: UIButton = {
         let button = UIButton()
-        button.setTitle("send", for: .normal)
-        button.setTitleColor(Color.black, for: .normal)
-        button.setTitleColor(Color.black40, for: .disabled)
+        button.isEnabled = false
+        button.setImage(Image.sendEnabled, for: .normal)
+        button.setImage(Image.sendDisabled, for: .disabled)
+        button.snp.makeConstraints{
+            $0.width.height.equalTo(36)
+        }
         return button
     }()
     
@@ -76,8 +80,9 @@ final class CommentInputView: BaseView {
         }
         textView.snp.makeConstraints{
             $0.top.equalToSuperview().offset(10)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.leading.equalToSuperview().offset(20)
             $0.bottom.equalToSuperview().inset(32)
+            $0.trailing.equalToSuperview().inset(65)
             $0.height.equalTo(defaultTextViewHeight)
         }
         placeholderLabel.snp.makeConstraints{
@@ -85,8 +90,8 @@ final class CommentInputView: BaseView {
             $0.leading.equalToSuperview().offset(15)
         }
         sendButton.snp.makeConstraints{
-            $0.trailing.equalToSuperview().inset(10)
-            $0.centerY.equalTo(textView)
+            $0.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalTo(textView)
         }
     }
     

@@ -14,4 +14,5 @@ public protocol CommentCoordinator: Coordinator {
     func startCommentBottomSheet(topicId: Int, choices: [Choice.Option: Choice])
     func startWritersBottomSheet(index: Int)
     func startOthersBottomSheet(index: Int)
+    func startDeleteBottomSheet(index: Int)
 }

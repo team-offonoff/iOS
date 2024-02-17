@@ -131,6 +131,10 @@ public final class CommentBottomSheetViewController: UIViewController {
         }
     }
     
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        cancelInput()
+    }
+    
     @objc private func cancelInput() {
         view.endEditing(true)
     }
@@ -170,6 +174,17 @@ public final class CommentBottomSheetViewController: UIViewController {
                 }
                 self.commentInputView.inputState = .modify
                 self.commentInputView.fill(text: self.viewModel.comments[index].content)
+            }
+            .store(in: &cancellable)
+        
+        NotificationCenter.default.publisher(for: Notification.Name(Comment.Action.delete.identifier))
+            .sink{ [weak self] noti in
+                print(noti)
+                guard let self = self, let index = noti.userInfo?["Index"] as? Int else { return }
+                defer {
+                    self.focusIndex = index
+                }
+                self.coordinator?.startDeleteBottomSheet(index: index)
             }
             .store(in: &cancellable)
         
@@ -375,13 +390,12 @@ extension CommentBottomSheetViewController: TapDelegate {
             viewModel.toggleDislikeState(at: index)
             
         case Comment.Action.tapEtc.identifier:
-            if viewModel.isWriterItem(at: index) {
+//            if viewModel.isWriterItem(at: index) {
                 coordinator?.startWritersBottomSheet(index: index)
-            }
-            else {
-                coordinator?.startOthersBottomSheet(index: index)
-            }
-            
+//            }
+//            else {
+//                coordinator?.startOthersBottomSheet(index: index)
+//            }
         default:
             fatalError()
         }
