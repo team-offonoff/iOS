@@ -35,7 +35,6 @@ extension TopicDetailCollectionViewCell {
         }()
         private let induceWriteCommentLabel: UILabel = {
            let label = UILabel()
-            label.text = "선택 후 가장 먼저 댓글을 작성해 보세요!"
             label.setTypo(Pretendard.regular14)
             label.textColor = Color.white60
             return label
@@ -110,6 +109,7 @@ extension TopicDetailCollectionViewCell {
         
         ///댓글 개수가 0인 경우
         public func empty(isVoted: Bool) {
+            induceWriteCommentLabel.text = isVoted ? "가장 먼저 댓글을 작성해 보세요!" : "선택 후 가장 먼저 댓글을 작성해 보세요!"
             induceWriteCommentLabel.isHidden = false
             chatCountFrame.isHidden = true
             contentCell.isHidden = true
