@@ -131,6 +131,10 @@ public final class CommentBottomSheetViewController: UIViewController {
         }
     }
     
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        cancelInput()
+    }
+    
     @objc private func cancelInput() {
         view.endEditing(true)
     }
