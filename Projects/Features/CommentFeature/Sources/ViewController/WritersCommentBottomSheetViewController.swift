@@ -18,7 +18,7 @@ public final class WritersCommentBottomSheetViewController: ActionBottomSheetVie
     public init(index: Int, viewModel: any WritersCommentBottomSheetViewModel) {
         self.index = index
         self.viewModel = viewModel
-        super.init(actions: [Comment.Action.modify, Comment.Action.delete])
+        super.init(actions: [Comment.Action.delete])
     }
     
     required init?(coder: NSCoder) {
@@ -28,19 +28,6 @@ public final class WritersCommentBottomSheetViewController: ActionBottomSheetVie
     private let index: Int
     private let viewModel: any WritersCommentBottomSheetViewModel
     
-    public override func initialize() {
-        
-    }
-    
-    public override func bind() {
-        viewModel.deleteItem
-            .receive(on: DispatchQueue.main)
-            .sink{ [weak self] _ in
-                self?.dismiss(animated: true)
-            }
-            .store(in: &cancellable)
-    }
-    
     public override func tap(action: BottomSheetAction) {
         switch action {
         case Comment.Action.modify:
@@ -48,8 +35,10 @@ public final class WritersCommentBottomSheetViewController: ActionBottomSheetVie
             dismiss(animated: true)
             
         case Comment.Action.delete:
-            viewModel.delete(at: index)
-        
+            dismiss(animated: true) { [weak self] in
+                guard let self = self else { return }
+                NotificationCenter.default.post(name: Notification.Name(Comment.Action.delete.identifier), object: self.viewModel, userInfo: ["Index": self.index])
+            }
         default:    fatalError()
         }
     }

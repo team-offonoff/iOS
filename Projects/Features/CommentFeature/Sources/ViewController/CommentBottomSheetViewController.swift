@@ -386,13 +386,12 @@ extension CommentBottomSheetViewController: TapDelegate {
             viewModel.toggleDislikeState(at: index)
             
         case Comment.Action.tapEtc.identifier:
-            if viewModel.isWriterItem(at: index) {
+//            if viewModel.isWriterItem(at: index) {
                 coordinator?.startWritersBottomSheet(index: index)
-            }
-            else {
-                coordinator?.startOthersBottomSheet(index: index)
-            }
-            
+//            }
+//            else {
+//                coordinator?.startOthersBottomSheet(index: index)
+//            }
         default:
             fatalError()
         }
