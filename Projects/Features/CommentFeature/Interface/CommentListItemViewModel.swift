@@ -29,7 +29,7 @@ public struct CommentListItemViewModel {
             guard let votedOption = comment.votedOption else {
                 return (nil, "작성자")
             }
-            return (votedOption, "\(votedOption.content.title).\(options[votedOption]!.content.text)")
+            return (votedOption, "\(votedOption.content.title). \(options[votedOption]!.content.text!)")
         }
     }
     
