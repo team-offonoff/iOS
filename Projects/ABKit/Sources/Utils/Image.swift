@@ -70,7 +70,8 @@ public struct Image{
     public static let chatDislike = UIImage.load(name: "chat_dislike")
     public static let chatLikeActivate = UIImage.load(name: "chat_like_activate")
     public static let chatDislikeActivate = UIImage.load(name: "chat_dislike_activate")
-    
+    public static let sendEnabled = UIImage.load(name: "send_enabled")
+    public static let sendDisabled = UIImage.load(name: "send_disabled")
     
     //MARK: Home
 
