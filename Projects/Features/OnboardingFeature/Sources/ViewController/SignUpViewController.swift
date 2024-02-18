@@ -45,7 +45,7 @@ public final class SignUpViewController: BaseViewController<BaseHeaderView, Sign
         }
         
         func setNicknameLimitCount() {
-            mainView.nicknameView.contentView.limitCount = viewModel.nicknameLimitCount
+            mainView.nicknameView.contentView.limitCount = Regex.nickname.limitCount
         }
     }
 

@@ -12,6 +12,7 @@ import UIKit
 import MyPageFeatureInterface
 import FeatureDependency
 import Domain
+import Core
 
 final class ModifyUserInformationViewController: BaseViewController<NavigateHeaderView, ModifyUserInformationView, DefaultMyPageCoordinator> {
     
@@ -48,7 +49,7 @@ final class ModifyUserInformationViewController: BaseViewController<NavigateHead
         }
         
         func nicknameLimitCount() {
-            mainView.nicknameView.contentView.limitCount = viewModel.nicknameLimitCount
+            mainView.nicknameView.contentView.limitCount = Regex.nickname.limitCount
         }
     }
     

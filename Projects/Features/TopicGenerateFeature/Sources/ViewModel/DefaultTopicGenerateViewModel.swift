@@ -70,7 +70,6 @@ final class DefaultTopicGenerateViewModel: BaseViewModel, TopicGenerateViewModel
     let contentValidation: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
 
     let recommendKeywords: [String] = ["스포츠", "연예방송", "일상다반사", "게임", "일상다반사"]
-    let limitCount: TopicGenerateTextLimitCount = TopicGenerateTextLimitCount()
     
     func otherTopicSide() -> Topic.Side {
         Topic.Side.allCases.filter{ $0 != topicSide.value }.first!

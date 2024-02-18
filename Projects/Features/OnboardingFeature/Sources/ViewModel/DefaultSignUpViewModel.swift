@@ -33,7 +33,6 @@ public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
     public let birthdayValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
     
     public let jobs: [Job] = Job.allCases
-    public let nicknameLimitCount: Int = 8
     public let birthdayLimitCount: Int = 8
     
     public var moveNext: (() -> Void)?

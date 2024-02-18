@@ -47,7 +47,6 @@ public protocol ModifyUserInformationViewModelInput {
 }
 
 public protocol ModifyUserInformationViewModelOutput {
-    var nicknameLimitCount: Int { get }
     var nicknameVerification: PassthroughSubject<Verification, Never> { get }
     var jobSubject: PassthroughSubject<Job, Never> { get }
     var canMove: CurrentValueSubject<Bool, Never> { get }

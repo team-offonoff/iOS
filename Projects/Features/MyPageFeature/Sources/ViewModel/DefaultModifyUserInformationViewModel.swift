@@ -28,8 +28,6 @@ final class DefaultModifyUserInformationViewModel: BaseViewModel, ModifyUserInfo
     let canMove: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
-    let nicknameLimitCount: Int = 8
-    
     var successRegister: (() -> Void)?
     
     private var requestValue: ModifyMemberInformationUseCaseRequestValue?
