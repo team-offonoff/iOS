@@ -12,6 +12,7 @@ import FeatureDependency
 import Combine
 import Domain
 import UIKit
+import Core
 
 fileprivate struct ChoiceContentPublisherStorage {
     
@@ -78,14 +79,15 @@ final class DefaultTopicGenerateViewModel: BaseViewModel, TopicGenerateViewModel
     //MARK: Input
     
     private func validation(title: String) -> (Bool, String?) {
-        if title.count > 0 && title.count <= limitCount.title { //특수문자 조건 추가
+        print(title, Regex.validate(data: title, pattern: .topicTitle))
+        if Regex.validate(data: title, pattern: .topicTitle) {
             return (true, nil)
         }
         return (false, "* 특수문자는 !@#$%^()만 사용하실 수 있습니다.")
     }
     
     private func validation(option: String) -> (Bool, String?) {
-        if option.count > 0 && option.count <= limitCount.textOption { //특수문자 조건 추가
+        if Regex.validate(data: option, pattern: .choiceContent) {
             return (true, nil)
         }
         return (false, "* 특수문자는 !@#$%^()만 사용하실 수 있습니다.")
@@ -140,7 +142,7 @@ final class DefaultTopicGenerateViewModel: BaseViewModel, TopicGenerateViewModel
                 self.sideBKeywordValidation.send(keywordValidation())
                 
                 func keywordValidation() -> (Bool, String?) {
-                    if keyword.count > 0 && keyword.count <= self.limitCount.keyword {
+                    if Regex.validate(data: keyword, pattern: .topicKeyword) {
                         return (true, nil)
                     }
                     return (false, "* 한글, 영문, 숫자만 사용하실 수 있습니다.")

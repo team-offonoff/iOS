@@ -44,15 +44,10 @@ final class DefaultModifyUserInformationViewModel: BaseViewModel, ModifyUserInfo
                 self.nicknameVerification.send(verification())
                 
                 func verification() -> Verification {
-                    if nickname.count > self.nicknameLimitCount || nickname.count == 0 {
-                        return .init(data: nickname, isValid: false, errorMessage: "* 글자 수 초과")
-                    }
-                    else if !Regex.validate(data: nickname, pattern: .nickname) {
-                        return .init(data: nickname, isValid: false, errorMessage: "* 한글, 영문, 숫자만 가능해요.")
-                    }
-                    else {
+                    if Regex.validate(data: nickname, pattern: .nickname) {
                         return .init(data: nickname, isValid: true, errorMessage: nil)
                     }
+                    return .init(data: nickname, isValid: false, errorMessage: "* 한글, 영문, 숫자만 가능해요.")
                 }
             }
             .store(in: &cancellable)

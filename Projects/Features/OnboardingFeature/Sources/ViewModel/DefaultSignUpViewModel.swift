@@ -53,19 +53,13 @@ extension DefaultSignUpViewModel {
                 self.nicknameValidation.send(validation())
                 
                 func validation() -> (Bool, String?) {
-                    if nickname.count > self.nicknameLimitCount || nickname.count == 0 {
-                        return (false, "* 글자 수 초과")
-                    }
-                    else if !Regex.validate(data: nickname, pattern: .nickname) {
-                        return (false, "* 한글, 영문, 숫자만 가능해요.")
-                    }
-                    else {
+                    if Regex.validate(data: nickname, pattern: .nickname) {
                         return (true, nil)
                     }
+                    return (false, "* 한글, 영문, 숫자만 가능해요.")
                 }
             }
             .store(in: &cancellable)
-        
         
         input.birthdayEditingEnd
             .sink{ [weak self] birthday in
