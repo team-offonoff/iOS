@@ -22,12 +22,16 @@ public enum Regex {
 
 extension Regex {
     
-    public struct RegexConfiguration {
-        fileprivate let expression: String
-        public let limitCount: Int
+    public var limitCount: Int {
+        configuration.limitCount
     }
     
-    public var configuration: RegexConfiguration {
+    fileprivate struct RegexConfiguration {
+        fileprivate let expression: String
+        fileprivate let limitCount: Int
+    }
+    
+    fileprivate var configuration: RegexConfiguration {
         switch self {
         case .nickname:
             return .init(expression: "^[0-9a-zA-Z가-힣]{1,8}$", limitCount: 8)
