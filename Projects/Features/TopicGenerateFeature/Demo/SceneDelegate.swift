@@ -7,8 +7,8 @@
 //
 
 import UIKit
-import TopicFeatureInterface
-import TopicFeature
+import TopicGenerateFeatureInterface
+import TopicGenerateFeature
 import FeatureDependency
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {

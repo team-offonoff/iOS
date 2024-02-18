@@ -157,12 +157,15 @@ open class ABTextFieldView: BaseStackView {
     private func bindTextCount() {
         countLabel.text = "\(0)/\(limitCount!)"
         textField.publisher(for: .editingChanged)
-            .sink{ [weak self] in
+            .sink{ [weak self] text in
                 
                 guard let self = self, let limitCount = self.limitCount else { return }
                 
+                let limitString = String(text.prefix(limitCount))
+                
                 self.state = .editing
-                self.countLabel.text = "\($0.count)/\(limitCount)"
+                self.textField.text = limitString
+                self.countLabel.text = "\(limitString.count)/\(limitCount)"
             }
             .store(in: &cancellable)
     }

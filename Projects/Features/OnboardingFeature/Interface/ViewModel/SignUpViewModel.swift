@@ -37,7 +37,6 @@ public struct SignUpViewModelInputValue {
 }
 
 public protocol SignUpViewModelOutput {
-    var nicknameLimitCount: Int { get }
     var birthdayLimitCount: Int { get }
     ///닉네임의 유효성과 닉네임이 유효하지 않은 경우의 에러 메시지를 방출
     var nicknameValidation: PassthroughSubject<(Bool, String?), Never> { get }

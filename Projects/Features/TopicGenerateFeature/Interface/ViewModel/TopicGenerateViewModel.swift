@@ -58,19 +58,8 @@ public protocol TopicGenerateBSideViewModelOutput {
 public protocol TopicGenerateViewModelOutput {
     var topicSide: CurrentValueSubject<Topic.Side, Never> { get }
     var recommendKeywords: [String] { get }
-    var limitCount: TopicGenerateTextLimitCount { get }
     func otherTopicSide() -> Topic.Side
     var successRegister: (() -> Void)? { get set }
-}
-
-public struct TopicGenerateTextLimitCount {
-    
-    public init() { }
-    
-    public let title: Int = 20
-    public let keyword: Int = 6
-    public let textOption: Int = 25
-    public let imageComment: Int = 12
 }
 
 public struct TopicGenerateContentViewModelInputValue {

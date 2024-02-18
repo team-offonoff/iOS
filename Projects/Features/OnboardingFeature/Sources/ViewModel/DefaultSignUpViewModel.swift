@@ -33,7 +33,6 @@ public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
     public let birthdayValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
     
     public let jobs: [Job] = Job.allCases
-    public let nicknameLimitCount: Int = 8
     public let birthdayLimitCount: Int = 8
     
     public var moveNext: (() -> Void)?
@@ -53,19 +52,13 @@ extension DefaultSignUpViewModel {
                 self.nicknameValidation.send(validation())
                 
                 func validation() -> (Bool, String?) {
-                    if nickname.count > self.nicknameLimitCount || nickname.count == 0 {
-                        return (false, "* 글자 수 초과")
-                    }
-                    else if !Regex.validate(data: nickname, pattern: .nickname) {
-                        return (false, "* 한글, 영문, 숫자만 가능해요.")
-                    }
-                    else {
+                    if Regex.validate(data: nickname, pattern: .nickname) {
                         return (true, nil)
                     }
+                    return (false, "* 한글, 영문, 숫자만 가능해요.")
                 }
             }
             .store(in: &cancellable)
-        
         
         input.birthdayEditingEnd
             .sink{ [weak self] birthday in

@@ -74,7 +74,7 @@ final class BsideTopicGenerateViewController: BaseViewController<TopicGenerateHe
         }
         
         func limitCount() {
-            mainView.textContentView.setLimitCount(viewModel.limitCount.textOption)
+            mainView.textContentView.setLimitCount(Regex.choiceContent.limitCount)
         }
         
         func addSwitchTarget() {

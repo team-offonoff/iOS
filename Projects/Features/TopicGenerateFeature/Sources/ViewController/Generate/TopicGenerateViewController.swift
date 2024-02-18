@@ -12,6 +12,7 @@ import ABKit
 import TopicGenerateFeatureInterface
 import FeatureDependency
 import Domain
+import Core
 
 final class TopicGenerateViewController: BaseViewController<TopicGenerateHeaderView, BaseView, DefaultTopicGenerateCoordinator> {
     
@@ -74,12 +75,12 @@ final class TopicGenerateViewController: BaseViewController<TopicGenerateHeaderV
             .store(in: &cancellables)
         
         func setLimitCount() {
-            aSideView.titleSection.contentView.limitCount = viewModel.limitCount.title
-            aSideView.optionsSection.contentView.aTextField.limitCount = viewModel.limitCount.textOption
-            aSideView.optionsSection.contentView.bTextField.limitCount = viewModel.limitCount.textOption
+            aSideView.titleSection.contentView.limitCount = Regex.topicTitle.limitCount
+            aSideView.optionsSection.contentView.aTextField.limitCount = Regex.choiceContent.limitCount
+            aSideView.optionsSection.contentView.bTextField.limitCount = Regex.choiceContent.limitCount
             
-            bSideView.titleSection.contentView.limitCount = viewModel.limitCount.title
-            bSideView.keywordSection.contentView.limitCount = viewModel.limitCount.keyword
+            bSideView.titleSection.contentView.limitCount = Regex.topicTitle.limitCount
+            bSideView.keywordSection.contentView.limitCount = Regex.topicKeyword.limitCount
         }
         
         func setHeaderViewTopicSide() {
