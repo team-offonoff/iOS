@@ -20,6 +20,19 @@ public final class DefaultMemberRepository: MemberRepository {
     
     private let basePath = "members"
     
+    public func fetchProfile() -> NetworkResultPublisher<Profile?> {
+        
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = path(basePath) + path("profile")
+        
+        guard let urlRequest = urlComponents?.toURLRequest(method: .get) else {
+            fatalError("url parsing error")
+        }
+        
+        return dataTask(request: urlRequest, responseType: FetchProfileResponseDTO.self)
+        
+    }
+    
     public func modifyProfile(request: ModifyMemberInformationUseCaseRequestValue) -> NetworkResultPublisher<Any?> {
         
         var urlComponents = networkService.baseUrlComponents

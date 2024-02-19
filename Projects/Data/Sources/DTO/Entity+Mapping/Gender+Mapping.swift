@@ -17,4 +17,8 @@ extension Gender {
         case .woman:    return "FEMALE"
         }
     }
+    
+    static func toDomain(_ dto: String) -> Gender? {
+        Gender.allCases.first(where: { $0.toDTO() == dto })
+    }
 }
