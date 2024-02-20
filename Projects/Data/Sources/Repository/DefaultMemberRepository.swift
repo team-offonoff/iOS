@@ -52,7 +52,7 @@ public final class DefaultMemberRepository: MemberRepository {
         }
     }
     
-    public func modifyProfile(image: UIImage) async -> NetworkResultPublisher<Any?> {
+    public func modifyProfile(image: UIImage) async -> NetworkResultPublisher<String?> {
         
         var urlComponents = networkService.baseUrlComponents
         urlComponents?.path = path(basePath) + path("profile") + path("image")
@@ -66,7 +66,7 @@ public final class DefaultMemberRepository: MemberRepository {
             guard let urlRequest = urlComponents?.toURLRequest(method: .put, httpBody: requestBody) else {
                 fatalError("url parsing error")
             }
-            return dataTask(request: urlRequest)
+            return dataTask(request: urlRequest, responseType: ModifyProfileImageDTO.self)
         }
         catch NetworkServiceError.IMAGE_UPLOAD_FAIL {
             print("image upload 실패")
@@ -76,7 +76,7 @@ public final class DefaultMemberRepository: MemberRepository {
             fatalError()
         }
         
-        func makeDTO() async throws -> ModifyProfileImageRequestDTO {
+        func makeDTO() async throws -> ModifyProfileImageDTO {
             .init(imageUrl: try await presignedImageRepository.upload(bucket: .profile, request: image))
         }
     }

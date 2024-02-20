@@ -81,8 +81,7 @@ final class DefaultMyPageViewModel: BaseViewModel, MyPageViewModel {
         Task {
             await modifyProfileImageUseCase.execute(request: image)
                 .sink{ [weak self] result in
-                    if result.isSuccess { //, let urlString = result.data, let url = URL(string: urlString) {
-//                        self?.profileImage.send(url)
+                    if result.isSuccess{
                         self?.profileImage.send(image)
                     }
                     else if let error = result.error {

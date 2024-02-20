@@ -11,7 +11,7 @@ import UIKit
 import Combine
 
 public protocol ModifyProfileImageUseCase: UseCase {
-    func execute(request image: UIImage) async -> NetworkResultPublisher<Any?>
+    func execute(request image: UIImage) async -> NetworkResultPublisher<String?>
 }
 
 public final class DefaultModifyProfileImageUseCase: ModifyProfileImageUseCase {
@@ -22,7 +22,7 @@ public final class DefaultModifyProfileImageUseCase: ModifyProfileImageUseCase {
         self.repository = repository
     }
     
-    public func execute(request image: UIImage) async -> NetworkResultPublisher<Any?> {
+    public func execute(request image: UIImage) async -> NetworkResultPublisher<String?> {
         await repository.modifyProfile(image: image)
     }
 }
