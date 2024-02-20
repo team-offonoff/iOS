@@ -10,7 +10,8 @@ import Foundation
 import UIKit
 
 public protocol MemberRepository: Repository{
+    func fetchProfile() -> NetworkResultPublisher<Profile?>
     func modifyProfile(request: ModifyMemberInformationUseCaseRequestValue) -> NetworkResultPublisher<Any?>
-    func modifyProfile(image: UIImage) async -> NetworkResultPublisher<Any?>
+    func modifyProfile(image: UIImage) async -> NetworkResultPublisher<String?>
     func deleteProfileImage() -> NetworkResultPublisher<Any?>
 }

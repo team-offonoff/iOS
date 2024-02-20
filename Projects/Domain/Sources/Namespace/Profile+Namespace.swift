@@ -1,5 +1,5 @@
 //
-//  Profile.swift
+//  Profile+Namespace.swift
 //  Domain
 //
 //  Created by 박소윤 on 2024/01/16.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum Profile {
+extension Profile {
     public enum Image {
         public enum Action: CaseIterable, Identifiable {
             case gallery

@@ -11,6 +11,7 @@ import UIKit
 import ABKit
 import TopicFeature
 import TopicFeatureInterface
+import Domain
 
 final class SideBTopicDetailItemCell: TopicDetailCollectionViewCell {
     
@@ -72,8 +73,8 @@ final class SideBTopicDetailItemCell: TopicDetailCollectionViewCell {
         }
     }
     
-    override func binding(data: TopicDetailItemViewModel) {
-        super.binding(data: data)
+    override func binding(data: TopicDetailItemViewModel, comment: Comment?) {
+        super.binding(data: data, comment: nil)
         etcGroup.titleLabel.text = data.keyword
     }
 }

@@ -8,9 +8,10 @@
 
 import Foundation
 import FeatureDependency
+import Domain
 
 public protocol MyPageCoordinator: Coordinator {
-    func startModifyInformation()
+    func startModifyInformation(profile: Profile)
     func startProfileImageActionBottomSheet()
     func startDeleteProfileImageBottomSheet()
     func startTerm()

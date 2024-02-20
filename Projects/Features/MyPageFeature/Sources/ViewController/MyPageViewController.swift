@@ -27,6 +27,10 @@ final class MyPageViewController: BaseViewController<HeaderView, MyPageView, Def
     
     private let viewModel: any MyPageViewModel
     
+    override func viewWillAppear(_ animated: Bool) {
+        viewModel.fetchProfile()
+    }
+    
     override func initialize() {
         
         addGalleryNotificationObserver()
@@ -68,7 +72,8 @@ final class MyPageViewController: BaseViewController<HeaderView, MyPageView, Def
         switch recognizer.view {
             
         case mainView.modifyInformationSection:
-            coordinator?.startModifyInformation()
+            guard let profile = viewModel.profile else { return }
+            coordinator?.startModifyInformation(profile: profile)
             
         case mainView.termSection:
             coordinator?.startTerm()
@@ -94,6 +99,13 @@ final class MyPageViewController: BaseViewController<HeaderView, MyPageView, Def
                 else {
                     self?.mainView.profileImageView.image = Image.profilePlaceholder
                 }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.successFetchProfile
+            .receive(on: DispatchQueue.main)
+            .sink{ [weak self] _ in
+                self?.mainView.nicknameLabel.text = self?.viewModel.profile?.nickname
             }
             .store(in: &cancellables)
     }

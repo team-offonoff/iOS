@@ -34,13 +34,13 @@ extension Regex {
     fileprivate var configuration: RegexConfiguration {
         switch self {
         case .nickname:
-            return .init(expression: "^[0-9a-zA-Z가-힣]{1,8}$", limitCount: 8)
+            return .init(expression: "^[0-9a-zA-Zㄱ-ㅎ가-힣]{1,8}$", limitCount: 8)
         case .topicTitle:
-            return .init(expression: "^[0-9a-zA-Z가-힣!@#$%^()]{1,20}$", limitCount: 20)
+            return .init(expression: "^[0-9a-zA-Zㄱ-ㅎ가-힣!@#$%^()]{1,20}$", limitCount: 20)
         case .topicKeyword:
-            return .init(expression: "^[0-9a-zA-Z가-힣]{1,6}$", limitCount: 6)
+            return .init(expression: "^[0-9a-zA-Zㄱ-ㅎ가-힣]{1,6}$", limitCount: 6)
         case .choiceContent:
-            return .init(expression: "^[0-9a-zA-Z가-힣!@#$%^()]{1,25}$", limitCount: 25)
+            return .init(expression: "^[0-9a-zA-Zㄱ-ㅎ가-힣!@#$%^()]{1,25}$", limitCount: 25)
         }
     }
 }

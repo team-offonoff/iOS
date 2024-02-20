@@ -11,6 +11,7 @@ import UIKit
 import ABKit
 import FeatureDependency
 import Domain
+import SideBFeatureInterface
 
 final class SideBTopicDetailViewController: BaseViewController<NavigateHeaderView, SideBTopicDetailView, DefaultSideBCoordinator> {
     
@@ -36,7 +37,7 @@ final class SideBTopicDetailViewController: BaseViewController<NavigateHeaderVie
     override func initialize() {
         guard let index = viewModel.topicIndex else { return }
         mainView.topicCell.delegate = self
-        mainView.topicCell.binding(data: .init(topic: viewModel.topics[index].topic))
+        mainView.topicCell.binding(data: .init(topic: viewModel.topics[index].topic), comment: nil)
     }
     
     override func bind() {

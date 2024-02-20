@@ -47,6 +47,7 @@ public protocol ModifyUserInformationViewModelInput {
 }
 
 public protocol ModifyUserInformationViewModelOutput {
+    var profile: Profile { get }
     var nicknameVerification: PassthroughSubject<Verification, Never> { get }
     var jobSubject: PassthroughSubject<Job, Never> { get }
     var canMove: CurrentValueSubject<Bool, Never> { get }

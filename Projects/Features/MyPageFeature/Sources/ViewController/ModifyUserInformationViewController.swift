@@ -35,6 +35,7 @@ final class ModifyUserInformationViewController: BaseViewController<NavigateHead
 
         jobMenu()
         nicknameLimitCount()
+        profile()
         
         func jobMenu() {
             mainView.jobView.contentView.menu = {
@@ -50,6 +51,12 @@ final class ModifyUserInformationViewController: BaseViewController<NavigateHead
         
         func nicknameLimitCount() {
             mainView.nicknameView.contentView.limitCount = Regex.nickname.limitCount
+        }
+        
+        
+        func profile() {
+            mainView.birthInformationView.informationLabel.text = viewModel.profile.birth
+            mainView.genderInformationView.informationLabel.text = viewModel.profile.gender?.rawValue
         }
     }
     

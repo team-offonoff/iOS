@@ -10,15 +10,19 @@ import Foundation
 import Combine
 import UIKit
 import FeatureDependency
+import Domain
 
 public typealias MyPageViewModel = MyPageViewModelInput & MyPageViewModelOutput & DeleteProfileImageViewModel & ErrorHandleable
 
 public protocol MyPageViewModelInput {
+    func fetchProfile()
     func modifyImage(_ image: UIImage)
     func logout()
 }
 
 public protocol MyPageViewModelOutput {
+    var successFetchProfile: PassthroughSubject<Void, Never> { get }
+    var profile: Profile? { get set }
     var profileImage: CurrentValueSubject<Any?, Never> { get }
 }
 
