@@ -72,7 +72,8 @@ final class MyPageViewController: BaseViewController<HeaderView, MyPageView, Def
         switch recognizer.view {
             
         case mainView.modifyInformationSection:
-            coordinator?.startModifyInformation()
+            guard let profile = viewModel.profile else { return }
+            coordinator?.startModifyInformation(profile: profile)
             
         case mainView.termSection:
             coordinator?.startTerm()

@@ -16,13 +16,18 @@ import Core
 
 final class DefaultModifyUserInformationViewModel: BaseViewModel, ModifyUserInformationViewModel {
 
-    init(modifyInformationUseCase: any ModifyMemberInformationUseCase) {
+    init(
+        profile: Profile,
+        modifyInformationUseCase: any ModifyMemberInformationUseCase
+    ) {
+        self.profile = profile
         self.modifyInformationUseCase = modifyInformationUseCase
         super.init()
     }
     
     private let modifyInformationUseCase: any ModifyMemberInformationUseCase
     
+    let profile: Profile
     let nicknameVerification: PassthroughSubject<Verification, Never> = PassthroughSubject()
     let jobSubject: PassthroughSubject<Job, Never> = PassthroughSubject()
     let canMove: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
