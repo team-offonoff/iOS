@@ -29,7 +29,7 @@ final class SideATopicTableViewCell: BaseTableViewCell {
         let label = UILabel()
         label.textColor = Color.white
         label.setTypo(Pretendard.medium18)
-        label.numberOfLines = 0
+        label.numberOfLines = 2
         return label
     }()
     private let etcButton: UIButton = {
@@ -67,7 +67,7 @@ final class SideATopicTableViewCell: BaseTableViewCell {
         }
         titleLabel.snp.makeConstraints{
             $0.top.leading.equalToSuperview()
-            $0.trailing.lessThanOrEqualTo(etcButton).inset(10)
+            $0.trailing.lessThanOrEqualTo(etcButton).inset(77)
         }
         etcButton.snp.makeConstraints{
             $0.trailing.equalToSuperview()
