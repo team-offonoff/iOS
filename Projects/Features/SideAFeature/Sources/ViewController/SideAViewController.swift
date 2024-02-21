@@ -35,7 +35,7 @@ final class SideAViewController: BaseViewController<SideTabHeaderView, SideAView
             mainView.tableView.dataSource = self
         }
         
-        headerView?.progressPublisher = viewModel.fetchTopicQuery.status
+        headerView?.progressPublisher = viewModel.fetchTopicsQuery.status
     }
     
     override func bind() {

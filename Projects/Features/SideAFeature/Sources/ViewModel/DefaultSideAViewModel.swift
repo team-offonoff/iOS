@@ -17,19 +17,19 @@ import Core
 final class DefaultSideAViewModel: BaseViewModel, SideAViewModel {
     
     init(
-        fetchTopicUseCase: any FetchTopicsUseCase,
+        fetchTopicsUseCase: any FetchTopicsUseCase,
         voteTopicUseCase: any GenerateVoteUseCase
     ) {
-        self.fetchTopicUseCase = fetchTopicUseCase
+        self.fetchTopicsUseCase = fetchTopicsUseCase
         self.voteTopicUseCase = voteTopicUseCase
     }
     
-    let fetchTopicUseCase: any FetchTopicsUseCase
+    let fetchTopicsUseCase: any FetchTopicsUseCase
     let voteTopicUseCase: any GenerateVoteUseCase
     
     var topics: [Topic] = []
     var reloadTopics: (() -> Void)?
-    var fetchTopicQuery: FetchTopicQuery = FetchTopicQuery(
+    var fetchTopicsQuery: FetchTopicsQuery = FetchTopicsQuery(
         side: Topic.Side.A,
         status: CurrentValueSubject(.ongoing),
         keywordIdx: nil,
@@ -42,12 +42,12 @@ final class DefaultSideAViewModel: BaseViewModel, SideAViewModel {
     let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     override func bind() {
-        fetchTopicQuery.status?
+        fetchTopicsQuery.status?
             .sink{ [weak self] _ in
                 defer {
                     self?.fetchTopics()
                 }
-                self?.fetchTopicQuery.pageInfo = .init(page: 0, last: false)
+                self?.fetchTopicsQuery.pageInfo = .init(page: 0, last: false)
             }
             .store(in: &cancellable)
     }

@@ -1,5 +1,5 @@
 //
-//  FetchTopicViewModel.swift
+//  FetchTopicsViewModel.swift
 //  TopicFeatureInterface
 //
 //  Created by 박소윤 on 2024/02/10.
@@ -12,7 +12,7 @@ import Combine
 import FeatureDependency
 import Core
 
-public struct FetchTopicQuery {
+public struct FetchTopicsQuery {
     
     public init(
         side: Topic.Side?,
@@ -35,27 +35,27 @@ public struct FetchTopicQuery {
     public let sort: String?
 }
 
-public protocol FetchTopicViewModel: BaseViewModel, ErrorHandleable {
+public protocol FetchTopicsViewModel: BaseViewModel, ErrorHandleable {
     var topics: [Topic] { get set }
-    var fetchTopicQuery: FetchTopicQuery { get set }
-    var fetchTopicUseCase: any FetchTopicsUseCase { get }
+    var fetchTopicsQuery: FetchTopicsQuery { get set }
+    var fetchTopicsUseCase: any FetchTopicsUseCase { get }
     var reloadTopics: (() -> Void)? { get set }
     func fetchTopics()
     func fetchNextPage()
     func hasNextPage() -> Bool
 }
 
-extension FetchTopicViewModel {
+extension FetchTopicsViewModel {
     
     public func fetchTopics() {
-        fetchTopicUseCase
+        fetchTopicsUseCase
             .execute(
                 requestQuery: .init(
-                    side: fetchTopicQuery.side,
-                    status: fetchTopicQuery.status?.value,
+                    side: fetchTopicsQuery.side,
+                    status: fetchTopicsQuery.status?.value,
                     keyword: nil,//fetchTopicQuery.keywordIdx,
-                    paging: fetchTopicQuery.pageInfo,
-                    sort: fetchTopicQuery.sort)
+                    paging: fetchTopicsQuery.pageInfo,
+                    sort: fetchTopicsQuery.sort)
             )
             .sink{ [weak self] result in
                 guard let self = self, let (paging, topics) = result.data else { return }
@@ -63,7 +63,7 @@ extension FetchTopicViewModel {
                     defer {
                         self.reloadTopics?()
                     }
-                    self.fetchTopicQuery.pageInfo = paging
+                    self.fetchTopicsQuery.pageInfo = paging
                     if paging.page == 0 {
                         self.topics = topics
                     }
@@ -84,12 +84,12 @@ extension FetchTopicViewModel {
         fetchTopics()
         
         func updateNextPage() {
-            fetchTopicQuery.pageInfo?.page += 1
+            fetchTopicsQuery.pageInfo?.page += 1
         }
     }
     
     public func hasNextPage() -> Bool {
-        guard let pageInfo = fetchTopicQuery.pageInfo else { return false }
+        guard let pageInfo = fetchTopicsQuery.pageInfo else { return false }
         return !pageInfo.last
     }
 }

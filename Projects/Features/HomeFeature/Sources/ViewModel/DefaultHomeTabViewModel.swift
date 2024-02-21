@@ -16,7 +16,7 @@ import FeatureDependency
 
 final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
 
-    let fetchTopicUseCase: any FetchTopicsUseCase
+    let fetchTopicsUseCase: any FetchTopicsUseCase
     private let reportTopicUseCase: any ReportTopicUseCase
     let voteTopicUseCase: any GenerateVoteUseCase
     let revoteTopicUseCase: any RevoteUseCase
@@ -29,7 +29,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         revoteTopicUseCase: any RevoteUseCase,
         fetchCommentPreviewUseCase: any FetchCommentPreviewUseCase
     ) {
-        self.fetchTopicUseCase = fetchTopicsUseCase
+        self.fetchTopicsUseCase = fetchTopicsUseCase
         self.reportTopicUseCase = reportTopicUseCase
         self.voteTopicUseCase = voteTopicUseCase
         self.revoteTopicUseCase = revoteTopicUseCase
@@ -38,7 +38,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     }
 
     var topics: [Topic] = []
-    var fetchTopicQuery: FetchTopicQuery = .init(
+    var fetchTopicsQuery: FetchTopicsQuery = .init(
         side: nil,
         status: CurrentValueSubject(.ongoing),
         keywordIdx: nil,

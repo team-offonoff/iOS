@@ -37,7 +37,7 @@ public final class DefaultSideACoordinator: SideACoordinator {
     public func start() {
         let viewController = SideAViewController(
             viewModel: DefaultSideAViewModel(
-                fetchTopicUseCase: DefaultFetchTopicsUseCase(repository: topicRepository),
+                fetchTopicsUseCase: DefaultFetchTopicsUseCase(repository: topicRepository),
                 voteTopicUseCase: DefaultGenerateVoteUseCase(repository: topicRepository)
             )
         )
