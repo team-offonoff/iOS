@@ -29,7 +29,7 @@ extension TopicItemViewModel: SideATopicItemViewModel {
         topic.title
     }
     public var id: Int {
-        topic.id!
+        topic.id
     }
     public var commentCount: String {
         "\(topic.commentCount)"

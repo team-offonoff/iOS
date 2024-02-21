@@ -36,7 +36,7 @@ extension TopicItemViewModel: SideBTopicItemViewModel {
         topic.title
     }
     public var id: Int {
-        topic.id!
+        topic.id
     }
     public var voteCount: String {
         "\(ABFormat.count(topic.voteCount)) 명"

@@ -28,7 +28,7 @@ public struct TopicDetailItemViewModel {
 extension TopicDetailItemViewModel {
     
     public init(topic: Topic) {
-        self.id = topic.id!
+        self.id = topic.id
         self.title = topic.title
         self.nickname = topic.author?.nickname ?? ""
         self.profileUrl = topic.author?.profileImageUrl
