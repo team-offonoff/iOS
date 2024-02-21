@@ -50,7 +50,7 @@ extension TopicItemViewModel: SideATopicItemViewModel {
         }
     }
     
-    public func state(of option: Choice.Option) -> OptionState {
+    public func state(of option: Choice.Option) -> Choice.State {
         guard let votedOption = topic.selectedOption else {
             return .none
         }
@@ -77,11 +77,4 @@ extension TopicItemViewModel: SideATopicItemViewModel {
             return topic.choices[option]!.content.text ?? "" //+ " (\(choices[option]!.voteCount)명)"
         }
     }
-    
-}
-
-public enum OptionState {
-    case none
-    case select
-    case unselect
 }
