@@ -163,7 +163,7 @@ extension SideBViewController: UITableViewDelegate, UITableViewDataSource {
         
         func topicCell() -> UITableViewCell {
             let cell = tableView.dequeueReusableCell(for: indexPath, cellType: SideBTopicItemCell.self)
-//            cell.fill(topic: viewModel.topics[indexPath.row])
+            cell.fill(topic: .init(viewModel.topics[indexPath.row]))
             return cell
         }
         

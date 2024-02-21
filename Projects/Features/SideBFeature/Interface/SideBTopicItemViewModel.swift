@@ -11,17 +11,13 @@ import TopicFeatureInterface
 import Domain
 import Core
 
-public protocol SideBTopicItemViewModel {
-    var keyword: String { get }
-    var elapsedTime: String { get }
-    var isVoted: Bool { get }
-    var title: String { get }
-    var voteCount: String { get }
-    var commentCount: String { get }
-    func content(of option: Choice.Option) -> (Topic.ContentType, Any)
-}
-
-extension TopicItemViewModel: SideBTopicItemViewModel {
+public struct SideBTopicItemViewModel {
+    
+    public init(_ topic: Topic){
+        self.topic = topic
+    }
+    
+    private let topic: Topic
 
     public var keyword: String {
         topic.keyword?.name ?? ""
