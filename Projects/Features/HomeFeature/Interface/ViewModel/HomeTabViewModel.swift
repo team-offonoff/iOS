@@ -12,9 +12,8 @@ import Domain
 import TopicFeatureInterface
 import FeatureDependency
 
-public protocol HomeTabViewModel: AnyObject, TopicPageControlViewModel, TimerControlViewModel, VoteTopicViewModel, RevoteTopicViewModel, TopicBottomSheetViewModel, FetchCommentPreviewViewModel, ErrorHandleable {
+public protocol HomeTabViewModel: AnyObject, TopicPageControlViewModel, TimerControlViewModel, FetchTopicViewModel, VoteTopicViewModel, RevoteTopicViewModel, TopicBottomSheetViewModel, FetchCommentPreviewViewModel, ErrorHandleable {
     var currentTopic: TopicDetailItemViewModel { get }
-    func viewDidLoad()
 }
 
 public protocol TopicPageControlViewModel {
@@ -22,7 +21,7 @@ public protocol TopicPageControlViewModel {
     var canMovePrevious: Bool { get }
     var canMoveNext: Bool { get }
     var willMovePage: AnyPublisher<IndexPath, Never> { get }
-    var reloadTopics: PassthroughSubject<Void, Never> { get }
+    var reloadTopics: (() -> Void)? { get set }
     func moveNextTopic()
     func movePreviousTopic()
 }

@@ -53,6 +53,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
     
     override func initialize() {
         
+        viewModel.fetchTopics()
         setDelegate()
         moveAlarm()
         addButtonFrameTarget()
