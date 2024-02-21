@@ -94,21 +94,24 @@ public final class VoteResultView: BaseView {
     
     func fill(_ topic: TopicDetailItemViewModel) {
         
-//        isHidden = 토픽 종료 ? false : true
-        isHidden = true
+        guard topic.isEnd, let winnerOption = topic.winnerOption, let loserOption = topic.loserOption else {
+            isHidden = true
+            return
+        }
         
-        win.contentView.backgroundColor = Choice.Option.A.content.color
-        win.contentView.layer.cornerRadius = 148/2
-        win.contentView.layer.maskedCorners = Choice.Option.A.content.corenrMask
-        win.optionLabel.text = Choice.Option.A.content.title
-        win.contentLabel.text = "ㄴㄴ 학원 안다니면 한계가 있음"
-        win.voteAndPercentageLabel.text = "(520명) 60%"
+        isHidden = false
         
-        explainLabel.text = "내가 고른 선택지가 이겼어요!"
+        win.contentView.backgroundColor = winnerOption.content.color
+        win.contentView.layer.maskedCorners = winnerOption.content.corenrMask
+        win.optionLabel.text = winnerOption.content.title
+        win.contentLabel.text = topic.choices[winnerOption]?.content.text
+        win.voteAndPercentageLabel.text = "(\(topic.choices[winnerOption]!.voteCount ?? 0)명) \(topic.percentage(of: winnerOption))%"
         
-        lose.contentView.backgroundColor = Choice.Option.B.content.color.withAlphaComponent(0.2)
-        lose.contentLabel.text = "ㅇㅇ 콜로소만 들어도 가능 (382명)"
-        lose.percentageLabel.text = "60%"
+        explainLabel.text = topic.resultExplainText
+        
+        lose.contentView.backgroundColor = loserOption.content.color.withAlphaComponent(0.2)
+        lose.contentLabel.text = topic.choices[loserOption]?.content.text
+        lose.percentageLabel.text = "\(topic.percentage(of: loserOption))%"
     }
     
 }
@@ -117,6 +120,7 @@ extension VoteResultView {
     class Win {
         let contentView: UIView = {
             let view = UIView()
+            view.layer.cornerRadius = 148/2
             view.layer.masksToBounds = true
             return view
         }()

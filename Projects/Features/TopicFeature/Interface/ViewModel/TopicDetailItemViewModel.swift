@@ -23,6 +23,11 @@ public struct TopicDetailItemViewModel {
     public let voteCount: String
     public var votedOption: Choice.Option?
     public let choices: [Choice.Option: Choice]
+    public let isEnd: Bool
+    public let isVoted: Bool
+    public let winnerOption: Choice.Option?
+    public let loserOption: Choice.Option?
+    public let resultExplainText: String?
 }
 
 extension TopicDetailItemViewModel {
@@ -40,10 +45,21 @@ extension TopicDetailItemViewModel {
         self.votedOption = topic.selectedOption
         self.choices = topic.choices
         self.isCommentEmpty = topic.commentCount == 0
+        self.isEnd = (topic.deadline ?? 0) < UTCTime.current
+        self.isVoted = votedOption != nil
+        self.winnerOption = .A
+        self.loserOption = .B
+        self.resultExplainText = winnerOption == topic.selectedOption ? "내가 고른 선택지가 이겼어요!" : "내가 고른 선택지가 아쉽게 떨어졌어요"
     }
     
-    public var isVoted: Bool {
-        votedOption != nil
+    public func percentage(of option: Choice.Option) -> Int {
+        switch option {
+        case .A:        return aPercentage()
+        case .B:        return 100 - aPercentage()
+        }
+        func aPercentage() -> Int {
+            55
+        }
     }
 }
 
