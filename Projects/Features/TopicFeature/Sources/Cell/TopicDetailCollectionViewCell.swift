@@ -18,16 +18,6 @@ import Combine
 open class TopicDetailCollectionViewCell: BaseCollectionViewCell{
     
     public weak var delegate: (VoteDelegate & TopicBottomSheetDelegate & ChatBottomSheetDelegate)?
-    private var cancellable: Set<AnyCancellable> = []
-    
-    // 스와이프 제스처 관련 프로퍼티
-    private enum SwipeState {
-        case choiceA
-        case choiceB
-        case normal
-    }
-    private var state: SwipeState = .normal
-    private var originalPoint: CGPoint = CGPoint()
     
     public let topicGroup: TopicGroup = TopicGroup()
     public let userGroup: UserGroup = UserGroup()
@@ -38,6 +28,17 @@ open class TopicDetailCollectionViewCell: BaseCollectionViewCell{
     public let profileStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 8)
     public let choiceStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 15)
     public let informationStackView: UIStackView = UIStackView(axis: .horizontal, spacing: 7)
+    
+    // 스와이프 제스처 관련 프로퍼티
+    private enum SwipeState {
+        case choiceA
+        case choiceB
+        case normal
+    }
+    private var state: SwipeState = .normal
+    private var originalPoint: CGPoint = CGPoint()
+    
+    private var cancellable: Set<AnyCancellable> = []
     
     public override func prepareForReuse() {
         choiceGroup.aChoiceView.removeContent()
@@ -50,7 +51,7 @@ open class TopicDetailCollectionViewCell: BaseCollectionViewCell{
     
     public override func hierarchy() {
 
-        baseView.addSubviews([etcGroup.titleLabel, topicGroup.titleLabel, profileStackView, choiceGroup.swipeableView, choiceGroup.completeView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.etcButton, chat])
+        baseView.addSubviews([etcGroup.titleLabel, topicGroup.titleLabel, profileStackView, choiceGroup.swipeableView, choiceGroup.completeView, choiceGroup.voteResultView, topicGroup.timer, choiceGroup.slideExplainView, informationStackView, etcGroup.etcButton, chat])
         
         choiceGroup.swipeableView.addSubviews([choiceStackView])
         
@@ -256,6 +257,7 @@ open class TopicDetailCollectionViewCell: BaseCollectionViewCell{
         
         choiceGroup.aChoiceView.fill(data.choices[.A]!)
         choiceGroup.bChoiceView.fill(data.choices[.B]!)
+        choiceGroup.voteResultView.fill(data)
         topicGroup.titleLabel.text = data.title
         topicGroup.sideLabel.text = data.side
         topicGroup.keywordLabel.text = data.keyword
@@ -356,6 +358,7 @@ extension TopicDetailCollectionViewCell {
         public let completeView: ChoiceCompleteView = ChoiceCompleteView()
         public let aChoiceView = ChoiceView(option: .A)
         public let bChoiceView = ChoiceView(option: .B)
+        public let voteResultView = VoteResultView()
         public lazy var slideExplainView: UIView = {
             let view = UIView()
             view.addSubviews([leftSlideImageView, rightSlideImageView, slideExplainLabel])

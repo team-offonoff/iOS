@@ -33,6 +33,10 @@ public struct Image{
     
     public static let profilePlaceholder = UIImage.load(name: "profile_placeholder")
     
+    public static let winnerCrown = UIImage.load(name: "winner_crown")
+    public static let winMark = UIImage.load(name: "win_mark")
+    public static let loseMark = UIImage.load(name: "lose_mark")
+    
     //MARK: Alarm
     public static let alarmChat = UIImage.load(name: "alarm_chat")
     public static let alarmCount = UIImage.load(name: "alarm_count")
