@@ -28,7 +28,7 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
         self.reportTopicUseCase = reportTopicUseCase
     }
     
-    var topics: [TopicItemViewModel] = []
+    var topics: [Topic] = []
     let keywords: [String] = ["전체", "AB Test", "카피라이팅", "UIUX", "커리어", "디자인", "개발"]
     
     let fetchTopicUseCase: any FetchTopicsUseCase
@@ -94,7 +94,7 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
         //MARK: helper method
         
         func remainTime() -> Int {
-            guard let detailIdx = topicIndex, let deadline = topics[detailIdx].topic.deadline else {
+            guard let detailIdx = topicIndex, let deadline = topics[detailIdx].deadline else {
                 return 0
             }
             return deadline - UTCTime.current
@@ -122,7 +122,7 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
     
     var canRevote: Bool {
         guard let index = topicIndex else { return false }
-        return topics[index].isVoted
+        return topics[index].selectedOption != nil
     }
     
     func hideTopic(index: Int) {
@@ -131,7 +131,7 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
     
     func reportTopic(index: Int) {
         reportTopicUseCase
-            .execute(topicId: topics[index].topic.id!)
+            .execute(topicId: topics[index].id)
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {

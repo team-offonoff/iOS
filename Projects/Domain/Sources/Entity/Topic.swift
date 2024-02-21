@@ -54,4 +54,5 @@ public struct Topic {
     public let author: Author?
     public let createdAt: Int
     public let selectedOption: Choice.Option?
+    public var commentPreview: Comment?
 }

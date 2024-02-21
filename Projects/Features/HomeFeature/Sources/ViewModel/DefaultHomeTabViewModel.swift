@@ -37,17 +37,22 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         super.init()
     }
 
-    var topics: [TopicItemViewModel] = []
+    var topics: [Topic] = []
+    var fetchTopicQuery: FetchTopicQuery = .init(
+        side: nil,
+        status: CurrentValueSubject(.ongoing),
+        keywordIdx: nil,
+        pageInfo: nil,
+        sort: "voteCount,desc"
+    )
     
     var currentTopic: TopicDetailItemViewModel {
-        .init(topic: topics[currentIndexPath.row].topic)
+        .init(topic: topics[currentIndexPath.row])
     }
-    
     var willMovePage: AnyPublisher<IndexPath, Never>{ $currentIndexPath.filter{ _ in self.topics.count > 0 }.eraseToAnyPublisher() }
     
     let successVote: PassthroughSubject<(Index,Choice.Option), Never> = PassthroughSubject()
     let failVote: PassthroughSubject<Index, Never> = PassthroughSubject()
-    let reloadTopics: PassthroughSubject<Void, Never> = PassthroughSubject()
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
     let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     let successTopicAction: PassthroughSubject<Topic.Action, Never> = PassthroughSubject()
@@ -139,7 +144,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         //MARK: helper method
         
         func remainTime() -> Int {
-            guard let deadline = topics[currentIndexPath.row].topic.deadline else {
+            guard let deadline = topics[currentIndexPath.row].deadline else {
                 return 0
             }
             return deadline - UTCTime.current
@@ -168,7 +173,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     //MARK: - Topic Bottom Sheet View Model
     
     var canRevote: Bool {
-        topics[currentIndexPath.row].topic.selectedOption != nil
+        topics[currentIndexPath.row].selectedOption != nil
     }
     
     func hideTopic(index: Int) {

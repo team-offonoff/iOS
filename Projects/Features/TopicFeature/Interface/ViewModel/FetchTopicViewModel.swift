@@ -36,7 +36,7 @@ public struct FetchTopicQuery {
 }
 
 public protocol FetchTopicViewModel: BaseViewModel, ErrorHandleable {
-    var topics: [TopicItemViewModel] { get set}
+    var topics: [Topic] { get set }
     var fetchTopicQuery: FetchTopicQuery { get set }
     var fetchTopicUseCase: any FetchTopicsUseCase { get }
     var reloadTopics: (() -> Void)? { get set }
@@ -65,10 +65,10 @@ extension FetchTopicViewModel {
                     }
                     self.fetchTopicQuery.pageInfo = paging
                     if paging.page == 0 {
-                        self.topics = topics.map{ .init($0) }
+                        self.topics = topics
                     }
                     else {
-                        self.topics.append(contentsOf: topics.map{ .init($0) })
+                        self.topics.append(contentsOf: topics)
                     }
                 }
                 else if let error = result.error {

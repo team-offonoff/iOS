@@ -18,7 +18,7 @@ public protocol HomeTabViewModel: AnyObject, TopicPageControlViewModel, TimerCon
 }
 
 public protocol TopicPageControlViewModel {
-    var topics: [TopicItemViewModel] { get }
+    var topics: [Topic] { get }
     var canMovePrevious: Bool { get }
     var canMoveNext: Bool { get }
     var willMovePage: AnyPublisher<IndexPath, Never> { get }

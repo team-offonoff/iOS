@@ -37,7 +37,7 @@ final class SideBTopicDetailViewController: BaseViewController<NavigateHeaderVie
     override func initialize() {
         guard let index = viewModel.topicIndex else { return }
         mainView.topicCell.delegate = self
-        mainView.topicCell.binding(data: .init(topic: viewModel.topics[index].topic), comment: nil)
+        mainView.topicCell.binding(data: .init(topic: viewModel.topics[index]), comment: nil)
     }
     
     override func bind() {
@@ -112,7 +112,7 @@ extension SideBTopicDetailViewController: VoteDelegate, ChatBottomSheetDelegate,
     
     func vote(_ option: Choice.Option, index: Int?) {
         guard let index = viewModel.topicIndex else { return }
-        if viewModel.topics[index].isVoted {
+        if viewModel.topics[index].selectedOption != nil {
             viewModel.revote(option, index: index)
         }
         else {

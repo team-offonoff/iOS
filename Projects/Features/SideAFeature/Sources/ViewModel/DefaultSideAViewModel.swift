@@ -27,7 +27,7 @@ final class DefaultSideAViewModel: BaseViewModel, SideAViewModel {
     let fetchTopicUseCase: any FetchTopicsUseCase
     let voteTopicUseCase: any GenerateVoteUseCase
     
-    var topics: [TopicItemViewModel] = []
+    var topics: [Topic] = []
     var reloadTopics: (() -> Void)?
     var fetchTopicQuery: FetchTopicQuery = FetchTopicQuery(
         side: Topic.Side.A,

@@ -13,7 +13,7 @@ import Combine
 import Core
 
 public protocol FetchCommentPreviewViewModel: BaseViewModel, ErrorHandleable {
-    var topics: [TopicItemViewModel] { get set }
+    var topics: [Topic] { get set }
     var fetchCommentPreviewUseCase: any FetchCommentPreviewUseCase { get }
     var reloadItem: PassthroughSubject<Index, Never> { get }
     func fetchCommentPreview(index: Int)
