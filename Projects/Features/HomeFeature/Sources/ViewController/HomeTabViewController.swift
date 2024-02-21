@@ -85,12 +85,12 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         
         func previousVisibility() {
             mainView.scrollFrame.buttonFrame.previousButton.isHidden = true
+            mainView.scrollFrame.buttonFrame.nextButton.isHidden = true
         }
     }
     
     override func bind() {
         
-        viewModel.viewDidLoad()
         bindError()
         bindReloadTopics()
         bindMoveTopic()
@@ -111,17 +111,17 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         }
         
         func bindReloadTopics(){
-            viewModel.reloadTopics
-                .receive(on: RunLoop.main)
-                .sink{ [weak self] _ in
-                    self?.mainView.scrollFrame.reloadTopics()
+            viewModel.reloadTopics = {
+                DispatchQueue.main.async {
+                    self.mainView.scrollFrame.reloadTopics()
+                    self.setMoveButtonVisibility()
                 }
-                .store(in: &cancellables)
+            }
         }
         
         func bindMoveTopic(){
             viewModel.willMovePage
-                .receive(on: RunLoop.main)
+                .receive(on: DispatchQueue.main)
                 .sink{ [weak self] indexPath in
                     self?.mainView.scrollFrame.move(to: indexPath)
                     setMoveButtonVisibility()
@@ -201,6 +201,11 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
                 }
                 .store(in: &cancellables)
         }
+    }
+    
+    private func setMoveButtonVisibility(){
+        mainView.scrollFrame.buttonFrame.previousButton.isHidden = !viewModel.canMovePrevious
+        mainView.scrollFrame.buttonFrame.nextButton.isHidden = !viewModel.canMoveNext
     }
 }
 
