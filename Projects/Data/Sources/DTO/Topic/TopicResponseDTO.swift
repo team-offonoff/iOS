@@ -35,6 +35,7 @@ struct TopicResponseDTO: Decodable {
         let choiceId: Int
         let content: ContentResponseDTO? //TODO: null 해제 필요
         let choiceOption: String
+        let voteCount: Int?
         
         struct ContentResponseDTO: Decodable {
             let text: String?
@@ -88,7 +89,8 @@ extension TopicResponseDTO.ChoiceResponseDTO: Domainable {
             id: choiceId,
             //TODO: null 해제 필요
             content: content?.toDomain() ?? .init(text: "choice is null", imageURL: nil),
-            option: Choice.Option.toDomain(choiceOption)!
+            option: Choice.Option.toDomain(choiceOption)!,
+            voteCount: voteCount
         )
     }
 }

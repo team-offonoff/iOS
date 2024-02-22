@@ -12,7 +12,7 @@ import Core
 public struct Topic {
     
     public init(
-        id: Int?,
+        id: Int,
         side: Topic.Side,
         title: String,
         deadline: Int?,
@@ -42,7 +42,7 @@ public struct Topic {
         self.selectedOption = selectedOption
     }
     
-    public let id: Int?
+    public let id: Int
     public let side: Side
     public let title: String
     public let deadline: Int?
@@ -54,4 +54,5 @@ public struct Topic {
     public let author: Author?
     public let createdAt: Int
     public let selectedOption: Choice.Option?
+    public var commentPreview: Comment?
 }

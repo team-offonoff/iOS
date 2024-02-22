@@ -19,7 +19,7 @@ public struct TopicItemViewModel {
     
     public var commentPreview: Comment?
     public var id: Int {
-        topic.id!
+        topic.id
     }
     public var choices: [Choice.Option: Choice] {
         topic.choices

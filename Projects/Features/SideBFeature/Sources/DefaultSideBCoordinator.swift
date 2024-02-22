@@ -35,7 +35,7 @@ public final class DefaultSideBCoordinator: SideBCoordinator {
     private let topicRepository: any TopicRepository = DefaultTopicRepository()
     private let commentRepository: any CommentRepository = DefaultCommentRepository()
     private lazy var sideBViewModel: any SideBViewModel = DefaultSideBViewModel(
-        fetchTopicUseCase: DefaultFetchTopicsUseCase(repository: topicRepository),
+        fetchTopicsUseCase: DefaultFetchTopicsUseCase(repository: topicRepository),
         voteTopicUseCase: DefaultGenerateVoteUseCase(repository: topicRepository),
         revoteTopicUseCase: DefaultRevoteUseCase(repository: topicRepository),
         reportTopicUseCase: DefaultReportTopicUseCase(repository: topicRepository)

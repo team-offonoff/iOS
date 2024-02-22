@@ -28,7 +28,7 @@ final class SideBViewController: BaseViewController<SideTabHeaderView, SideBView
     
     override func viewDidAppear(_ animated: Bool) {
         // 처음 뷰가 보여질 때, 0번째 인덱스 select 상태로 만들기
-        if let keywordIdx = viewModel.fetchTopicQuery.keywordIdx?.value, mainView.keywordCollectionView.indexPathsForSelectedItems?.isEmpty == true {
+        if let keywordIdx = viewModel.fetchTopicsQuery.keywordIdx?.value, mainView.keywordCollectionView.indexPathsForSelectedItems?.isEmpty == true {
             mainView.keywordCollectionView.selectItem(at: .init(row: keywordIdx), animated: false, scrollPosition: .left)
         }
     }
@@ -46,7 +46,7 @@ final class SideBViewController: BaseViewController<SideTabHeaderView, SideBView
             mainView.keywordCollectionView.dataSource = self
         }
         
-        headerView?.progressPublisher = viewModel.fetchTopicQuery.status
+        headerView?.progressPublisher = viewModel.fetchTopicsQuery.status
     }
     
     override func bind() {
@@ -163,7 +163,7 @@ extension SideBViewController: UITableViewDelegate, UITableViewDataSource {
         
         func topicCell() -> UITableViewCell {
             let cell = tableView.dequeueReusableCell(for: indexPath, cellType: SideBTopicItemCell.self)
-            cell.fill(topic: viewModel.topics[indexPath.row])
+            cell.fill(topic: .init(viewModel.topics[indexPath.row]))
             return cell
         }
         
@@ -187,7 +187,7 @@ extension SideBViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(for: indexPath, cellType: KeywordItemCell.self)
-        cell.isCellSelected = viewModel.fetchTopicQuery.keywordIdx?.value == indexPath.row
+        cell.isCellSelected = viewModel.fetchTopicsQuery.keywordIdx?.value == indexPath.row
         cell.fill(title: viewModel.keywords[indexPath.row])
         return cell
     }
@@ -198,7 +198,7 @@ extension SideBViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         defer {
-            viewModel.fetchTopicQuery.keywordIdx?.send(indexPath.row)
+            viewModel.fetchTopicsQuery.keywordIdx?.send(indexPath.row)
         }
         let cell = collectionView.cellForItem(at: indexPath, cellType: KeywordItemCell.self)
         cell?.isCellSelected = true

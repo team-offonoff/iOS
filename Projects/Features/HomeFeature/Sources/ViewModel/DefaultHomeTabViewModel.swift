@@ -16,7 +16,7 @@ import FeatureDependency
 
 final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
 
-    private let fetchTopicsUseCase: any FetchTopicsUseCase
+    let fetchTopicsUseCase: any FetchTopicsUseCase
     private let reportTopicUseCase: any ReportTopicUseCase
     let voteTopicUseCase: any GenerateVoteUseCase
     let revoteTopicUseCase: any RevoteUseCase
@@ -37,17 +37,23 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         super.init()
     }
 
-    var topics: [TopicItemViewModel] = []
+    var topics: [Topic] = []
+    var fetchTopicsQuery: FetchTopicsQuery = .init(
+        side: nil,
+        status: CurrentValueSubject(.ongoing),
+        keywordIdx: nil,
+        pageInfo: nil,
+        sort: "voteCount,desc"
+    )
     
     var currentTopic: TopicDetailItemViewModel {
-        .init(topic: topics[currentIndexPath.row].topic)
+        .init(topic: topics[currentIndexPath.row])
     }
-    
     var willMovePage: AnyPublisher<IndexPath, Never>{ $currentIndexPath.filter{ _ in self.topics.count > 0 }.eraseToAnyPublisher() }
+    var reloadTopics: (() -> Void)?
     
     let successVote: PassthroughSubject<(Index,Choice.Option), Never> = PassthroughSubject()
     let failVote: PassthroughSubject<Index, Never> = PassthroughSubject()
-    let reloadTopics: PassthroughSubject<Void, Never> = PassthroughSubject()
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
     let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     let successTopicAction: PassthroughSubject<Topic.Action, Never> = PassthroughSubject()
@@ -71,28 +77,6 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         willMovePage
             .sink{ [weak self] _ in
                 self?.startTimer()
-            }
-            .store(in: &cancellable)
-    }
-    
-    func viewDidLoad() {
-        bindTopics()
-    }
-    
-    private func bindTopics() {
-        fetchTopicsUseCase
-            .execute(requestQuery: .init(side: nil, status: nil, keyword: nil, paging: nil, sort: nil))
-            .sink{ [weak self] result in
-                guard let self = self else { return }
-                if result.isSuccess, let (_, topics) = result.data {
-                    defer {
-                        self.reloadTopics.send(())
-                    }
-                    self.topics = topics.map{ TopicItemViewModel.init($0) }
-                }
-                else if let error = result.error {
-                    self.errorHandler.send(error)
-                }
             }
             .store(in: &cancellable)
     }
@@ -139,7 +123,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
         //MARK: helper method
         
         func remainTime() -> Int {
-            guard let deadline = topics[currentIndexPath.row].topic.deadline else {
+            guard let deadline = topics[currentIndexPath.row].deadline else {
                 return 0
             }
             return deadline - UTCTime.current
@@ -168,7 +152,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     //MARK: - Topic Bottom Sheet View Model
     
     var canRevote: Bool {
-        topics[currentIndexPath.row].topic.selectedOption != nil
+        topics[currentIndexPath.row].selectedOption != nil
     }
     
     func hideTopic(index: Int) {

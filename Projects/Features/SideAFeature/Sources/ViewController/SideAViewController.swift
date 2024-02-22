@@ -35,7 +35,7 @@ final class SideAViewController: BaseViewController<SideTabHeaderView, SideAView
             mainView.tableView.dataSource = self
         }
         
-        headerView?.progressPublisher = viewModel.fetchTopicQuery.status
+        headerView?.progressPublisher = viewModel.fetchTopicsQuery.status
     }
     
     override func bind() {
@@ -144,7 +144,7 @@ extension SideAViewController: UITableViewDelegate, UITableViewDataSource {
         func topicCell() -> UITableViewCell {
             let cell = tableView.dequeueReusableCell(for: indexPath, cellType: SideATopicTableViewCell.self)
             cell.delegate = self
-            cell.fill(topic: viewModel.topics[indexPath.row])
+            cell.fill(topic: .init(viewModel.topics[indexPath.row]))
             return cell
         }
         

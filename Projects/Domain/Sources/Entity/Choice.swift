@@ -27,14 +27,17 @@ public struct Choice {
     public init(
         id: Int,
         content: Choice.Content,
-        option: Choice.Option
+        option: Choice.Option,
+        voteCount: Int?
     ) {
         self.id = id
         self.content = content
         self.option = option
+        self.voteCount = voteCount
     }
     
     public let id: Int
     public let content: Content
     public let option: Choice.Option
+    public let voteCount: Int?
 }

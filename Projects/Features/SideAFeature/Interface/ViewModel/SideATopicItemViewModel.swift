@@ -12,29 +12,20 @@ import FeatureDependency
 import Domain
 import Core
 
-public protocol SideATopicItemViewModel {
-    var title: String { get }
-    var commentCount: String { get }
-    var isVoted: Bool { get }
-    var elapsedTime: String { get }
-    func tag() -> Topic.Tag?
-    func state(of option: Choice.Option) -> OptionState
-    func percentage(of option: Choice.Option) -> Int
-    func content(of option: Choice.Option) -> String
-}
-
-extension TopicItemViewModel: SideATopicItemViewModel {
-
+public struct SideATopicItemViewModel {
+    
+    public init(_ topic: Topic) {
+        self.topic = topic
+    }
+    
+    private let topic: Topic
+    
     public var title: String {
         topic.title
     }
-    public var id: Int {
-        topic.id!
-    }
-    public var commentCount: String {
+    public var commentCount: String{
         "\(topic.commentCount)"
     }
-    
     public var isVoted: Bool {
         topic.selectedOption != nil
     }
@@ -50,7 +41,7 @@ extension TopicItemViewModel: SideATopicItemViewModel {
         }
     }
     
-    public func state(of option: Choice.Option) -> OptionState {
+    public func state(of option: Choice.Option) -> Choice.State {
         guard let votedOption = topic.selectedOption else {
             return .none
         }
@@ -58,12 +49,10 @@ extension TopicItemViewModel: SideATopicItemViewModel {
     }
     
     public func percentage(of option: Choice.Option) -> Int {
-        
         switch option {
         case .A:        return aPercentage()
         case .B:        return 100 - aPercentage()
         }
-        
         func aPercentage() -> Int {
             55
         }
@@ -77,11 +66,4 @@ extension TopicItemViewModel: SideATopicItemViewModel {
             return topic.choices[option]!.content.text ?? "" //+ " (\(choices[option]!.voteCount)명)"
         }
     }
-    
-}
-
-public enum OptionState {
-    case none
-    case select
-    case unselect
 }

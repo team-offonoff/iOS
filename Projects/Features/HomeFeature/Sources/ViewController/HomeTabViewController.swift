@@ -53,6 +53,7 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
     
     override func initialize() {
         
+        viewModel.fetchTopics()
         setDelegate()
         moveAlarm()
         addButtonFrameTarget()
@@ -84,12 +85,12 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         
         func previousVisibility() {
             mainView.scrollFrame.buttonFrame.previousButton.isHidden = true
+            mainView.scrollFrame.buttonFrame.nextButton.isHidden = true
         }
     }
     
     override func bind() {
         
-        viewModel.viewDidLoad()
         bindError()
         bindReloadTopics()
         bindMoveTopic()
@@ -110,17 +111,17 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
         }
         
         func bindReloadTopics(){
-            viewModel.reloadTopics
-                .receive(on: RunLoop.main)
-                .sink{ [weak self] _ in
-                    self?.mainView.scrollFrame.reloadTopics()
+            viewModel.reloadTopics = {
+                DispatchQueue.main.async {
+                    self.mainView.scrollFrame.reloadTopics()
+                    self.setMoveButtonVisibility()
                 }
-                .store(in: &cancellables)
+            }
         }
         
         func bindMoveTopic(){
             viewModel.willMovePage
-                .receive(on: RunLoop.main)
+                .receive(on: DispatchQueue.main)
                 .sink{ [weak self] indexPath in
                     self?.mainView.scrollFrame.move(to: indexPath)
                     setMoveButtonVisibility()
@@ -195,11 +196,16 @@ final class HomeTabViewController: BaseViewController<HeaderView, HomeTabView, D
                 .sink{ [weak self] index in
                     guard let self = self else { return }
                     if index == self.viewModel.topicIndex {
-                        self.currentTopicCell?.binding(data: .init(topic: self.viewModel.topics[index].topic), comment: self.viewModel.topics[index].commentPreview)
+                        self.currentTopicCell?.binding(data: .init(topic: self.viewModel.topics[index]), comment: self.viewModel.topics[index].commentPreview)
                     }
                 }
                 .store(in: &cancellables)
         }
+    }
+    
+    private func setMoveButtonVisibility(){
+        mainView.scrollFrame.buttonFrame.previousButton.isHidden = !viewModel.canMovePrevious
+        mainView.scrollFrame.buttonFrame.nextButton.isHidden = !viewModel.canMoveNext
     }
 }
 
@@ -213,7 +219,7 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(for: indexPath, cellType: TopicDetailCollectionViewCell.self)
         cell.delegate = self
-        cell.binding(data: .init(topic: viewModel.topics[indexPath.row].topic), comment: viewModel.topics[indexPath.row].commentPreview)
+        cell.binding(data: .init(topic: viewModel.topics[indexPath.row]), comment: viewModel.topics[indexPath.row].commentPreview)
         return cell
     }
     
@@ -224,7 +230,7 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         currentTopicCell = cell as? TopicDetailCollectionViewCell
         //댓글 프리뷰가 없는 경우, API 요청하기
-        if viewModel.topics[indexPath.row].topic.commentCount > 0 && viewModel.topics[indexPath.row].commentPreview == nil {
+        if viewModel.topics[indexPath.row].commentCount > 0 && viewModel.topics[indexPath.row].commentPreview == nil {
             viewModel.fetchCommentPreview(index: indexPath.row)
         }
     }

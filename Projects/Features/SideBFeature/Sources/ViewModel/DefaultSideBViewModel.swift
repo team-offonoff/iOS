@@ -17,26 +17,26 @@ import Core
 final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
 
     init(
-        fetchTopicUseCase: any FetchTopicsUseCase,
+        fetchTopicsUseCase: any FetchTopicsUseCase,
         voteTopicUseCase: any GenerateVoteUseCase,
         revoteTopicUseCase: any RevoteUseCase,
         reportTopicUseCase: any ReportTopicUseCase
     ) {
-        self.fetchTopicUseCase = fetchTopicUseCase
+        self.fetchTopicsUseCase = fetchTopicsUseCase
         self.voteTopicUseCase = voteTopicUseCase
         self.revoteTopicUseCase = revoteTopicUseCase
         self.reportTopicUseCase = reportTopicUseCase
     }
     
-    var topics: [TopicItemViewModel] = []
+    var topics: [Topic] = []
     let keywords: [String] = ["전체", "AB Test", "카피라이팅", "UIUX", "커리어", "디자인", "개발"]
     
-    let fetchTopicUseCase: any FetchTopicsUseCase
+    let fetchTopicsUseCase: any FetchTopicsUseCase
     let voteTopicUseCase: any GenerateVoteUseCase
     let revoteTopicUseCase: any RevoteUseCase
     private let reportTopicUseCase: any ReportTopicUseCase
     
-    var fetchTopicQuery: FetchTopicQuery = .init(side: .B, status: CurrentValueSubject(.ongoing), keywordIdx: CurrentValueSubject(0), pageInfo: .init(page: 0, last: false), sort: "createdAt,desc")
+    var fetchTopicsQuery: FetchTopicsQuery = .init(side: .B, status: CurrentValueSubject(.ongoing), keywordIdx: CurrentValueSubject(0), pageInfo: .init(page: 0, last: false), sort: "createdAt,desc")
     var reloadTopics: (() -> Void)?
     var topicIndex: Int?
     
@@ -55,7 +55,7 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
         
         func bindQuery() {
             
-            guard let status = fetchTopicQuery.status, let keywordIdx = fetchTopicQuery.keywordIdx else { return }
+            guard let status = fetchTopicsQuery.status, let keywordIdx = fetchTopicsQuery.keywordIdx else { return }
             
             status
                 .combineLatest(keywordIdx)
@@ -63,7 +63,7 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
                     defer {
                         self?.fetchTopics()
                     }
-                    self?.fetchTopicQuery.pageInfo = .init(page: 0, last: false)
+                    self?.fetchTopicsQuery.pageInfo = .init(page: 0, last: false)
                 }
                 .store(in: &cancellable)
         }
@@ -94,7 +94,7 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
         //MARK: helper method
         
         func remainTime() -> Int {
-            guard let detailIdx = topicIndex, let deadline = topics[detailIdx].topic.deadline else {
+            guard let detailIdx = topicIndex, let deadline = topics[detailIdx].deadline else {
                 return 0
             }
             return deadline - UTCTime.current
@@ -122,7 +122,7 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
     
     var canRevote: Bool {
         guard let index = topicIndex else { return false }
-        return topics[index].isVoted
+        return topics[index].selectedOption != nil
     }
     
     func hideTopic(index: Int) {
@@ -131,7 +131,7 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
     
     func reportTopic(index: Int) {
         reportTopicUseCase
-            .execute(topicId: topics[index].topic.id!)
+            .execute(topicId: topics[index].id)
             .sink{ [weak self] result in
                 guard let self = self else { return }
                 if result.isSuccess {

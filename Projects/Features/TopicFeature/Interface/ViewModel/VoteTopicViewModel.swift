@@ -13,7 +13,7 @@ import Combine
 import Core
 
 public protocol VoteTopicViewModel: BaseViewModel, ErrorHandleable {
-    var topics: [TopicItemViewModel] { get set }
+    var topics: [Topic] { get set }
     var successVote: PassthroughSubject<(Index, Choice.Option), Never> { get }
     var failVote: PassthroughSubject<Index, Never> { get }
     var voteTopicUseCase: any GenerateVoteUseCase { get }
@@ -33,7 +33,7 @@ extension VoteTopicViewModel {
                     defer {
                         self.successVote.send((index, option))
                     }
-                    self.topics[index] = .init(topic)
+                    self.topics[index] = topic
                     self.topics[index].commentPreview = comment
                 }
                 else {
