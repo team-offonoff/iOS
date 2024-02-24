@@ -131,7 +131,7 @@ public final class DefaultTopicRepository: TopicRepository {
     public func hide(topicId: Int, request: HideTopicUseCaseRequestValue) -> NetworkResultPublisher<Any?> {
         
         var urlComponents = networkService.baseUrlComponents
-        urlComponents?.path = basePath + path(topicId) + path("vote") + path("hide")
+        urlComponents?.path = basePath + path(topicId) + path("hide")
         urlComponents?.queryItems = [
             .init(name: "hide", value: toString(true))
         ]
