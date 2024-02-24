@@ -19,18 +19,21 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     let fetchTopicsUseCase: any FetchTopicsUseCase
     private let reportTopicUseCase: any ReportTopicUseCase
     let voteTopicUseCase: any GenerateVoteUseCase
+    let hideTopicUseCase: any HideTopicUseCase
     let revoteTopicUseCase: any RevoteUseCase
     let fetchCommentPreviewUseCase: any FetchCommentPreviewUseCase
     
     init(
         fetchTopicsUseCase: any FetchTopicsUseCase,
         reportTopicUseCase: any ReportTopicUseCase,
+        hideTopicUseCase: any HideTopicUseCase,
         voteTopicUseCase: any GenerateVoteUseCase,
         revoteTopicUseCase: any RevoteUseCase,
         fetchCommentPreviewUseCase: any FetchCommentPreviewUseCase
     ) {
         self.fetchTopicsUseCase = fetchTopicsUseCase
         self.reportTopicUseCase = reportTopicUseCase
+        self.hideTopicUseCase = hideTopicUseCase
         self.voteTopicUseCase = voteTopicUseCase
         self.revoteTopicUseCase = revoteTopicUseCase
         self.fetchCommentPreviewUseCase = fetchCommentPreviewUseCase

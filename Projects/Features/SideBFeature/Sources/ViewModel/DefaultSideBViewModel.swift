@@ -15,15 +15,16 @@ import Combine
 import Core
 
 final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
-
     init(
         fetchTopicsUseCase: any FetchTopicsUseCase,
         voteTopicUseCase: any GenerateVoteUseCase,
+        hideTopicUseCase: any HideTopicUseCase,
         revoteTopicUseCase: any RevoteUseCase,
         reportTopicUseCase: any ReportTopicUseCase
     ) {
         self.fetchTopicsUseCase = fetchTopicsUseCase
         self.voteTopicUseCase = voteTopicUseCase
+        self.hideTopicUseCase = hideTopicUseCase
         self.revoteTopicUseCase = revoteTopicUseCase
         self.reportTopicUseCase = reportTopicUseCase
     }
@@ -33,6 +34,7 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
     
     let fetchTopicsUseCase: any FetchTopicsUseCase
     let voteTopicUseCase: any GenerateVoteUseCase
+    let hideTopicUseCase: any HideTopicUseCase
     let revoteTopicUseCase: any RevoteUseCase
     private let reportTopicUseCase: any ReportTopicUseCase
     
@@ -123,10 +125,6 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
     var canRevote: Bool {
         guard let index = topicIndex else { return false }
         return topics[index].selectedOption != nil
-    }
-    
-    func hideTopic(index: Int) {
-        print("hide")
     }
     
     func reportTopic(index: Int) {
