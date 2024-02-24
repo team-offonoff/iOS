@@ -12,7 +12,7 @@ import FeatureDependency
 import Domain
 import Combine
 
-public typealias TopicGenerateViewModel = TopicGenerateViewModelInput & TopicGenerateViewModelOutput & TopicGenerateASideViewModel & TopicGenerateBSideViewModel & ErrorHandleable
+public typealias TopicGenerateViewModel = TopicGenerateViewModelInput & TopicGenerateViewModelOutput & TopicGenerateASideViewModel & TopicGenerateBSideViewModel
 
 public typealias TopicGenerateASideViewModel = TopicGenerateASideViewModelInput & TopicGenerateASideViewModelOutput
 

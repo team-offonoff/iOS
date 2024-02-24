@@ -98,7 +98,7 @@ public final class VoteResultView: BaseView {
             isHidden = true
             return
         }
-        
+
         isHidden = false
         
         win.contentView.backgroundColor = winnerOption.content.color

@@ -46,4 +46,4 @@ public protocol SignUpViewModelOutput {
 //    var failSignUp: PassthroughSubject<Void, Never> { get }
 }
 
-public typealias SignUpViewModel = SignUpViewModelInput & SignUpViewModelOutput & ErrorHandleable
+public typealias SignUpViewModel = BaseViewModel & SignUpViewModelInput & SignUpViewModelOutput

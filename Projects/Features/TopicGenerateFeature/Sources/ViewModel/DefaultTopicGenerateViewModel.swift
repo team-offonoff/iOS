@@ -65,7 +65,6 @@ final class DefaultTopicGenerateViewModel: BaseViewModel, TopicGenerateViewModel
     let moveNextInput: PassthroughSubject<Void, Never> = PassthroughSubject()
     let cansideBRegister: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     
-    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     let canRegister: PassthroughSubject<Bool, Never> = PassthroughSubject()
     let contentValidation: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
 

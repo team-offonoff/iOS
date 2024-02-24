@@ -12,7 +12,7 @@ import UIKit
 import FeatureDependency
 import Domain
 
-public typealias MyPageViewModel = MyPageViewModelInput & MyPageViewModelOutput & DeleteProfileImageViewModel & ErrorHandleable
+public typealias MyPageViewModel = MyPageViewModelInput & MyPageViewModelOutput & DeleteProfileImageViewModel
 
 public protocol MyPageViewModelInput {
     func fetchProfile()

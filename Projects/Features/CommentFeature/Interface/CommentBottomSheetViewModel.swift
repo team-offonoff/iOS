@@ -13,7 +13,7 @@ import Core
 import FeatureDependency
 import Combine
 
-public typealias CommentBottomSheetViewModel = CommentBottomSheetViewModelInput & CommentBottomSheetViewModelOutput & ErrorHandleable & WritersCommentBottomSheetViewModel & OthersCommentBottomSheetViewModel & DeleteBottomSheetViewModel
+public typealias CommentBottomSheetViewModel = CommentBottomSheetViewModelInput & CommentBottomSheetViewModelOutput & WritersCommentBottomSheetViewModel & OthersCommentBottomSheetViewModel & DeleteBottomSheetViewModel
 public typealias WritersCommentBottomSheetViewModel = WritersCommentBottomSheetViewModelInput & WritersCommentBottomSheetViewModelOutput
 public typealias OthersCommentBottomSheetViewModel = OthersCommentBottomSheetViewModelInput & OthersCommentBottomSheetViewModelOutput
 

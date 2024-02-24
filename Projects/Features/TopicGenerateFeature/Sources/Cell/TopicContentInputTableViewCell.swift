@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import ABKit
-import TopicFeatureInterface
 import FeatureDependency
 import Domain
 import Combine

@@ -25,7 +25,7 @@ public struct Verification {
     public let errorMessage: String?
 }
 
-public typealias ModifyUserInformationViewModel = ModifyUserInformationViewModelInput & ModifyUserInformationViewModelOutput & ErrorHandleable
+public typealias ModifyUserInformationViewModel = BaseViewModel &  ModifyUserInformationViewModelInput & ModifyUserInformationViewModelOutput
 
 public struct ModifyUserInformationViewModelInputValue {
     

@@ -12,7 +12,7 @@ import Domain
 import TopicFeatureInterface
 import FeatureDependency
 
-public protocol HomeTabViewModel: AnyObject, TopicPageControlViewModel, TimerControlViewModel, FetchTopicsViewModel, VoteTopicViewModel, RevoteTopicViewModel, TopicBottomSheetViewModel, FetchCommentPreviewViewModel, ErrorHandleable {
+public protocol HomeTabViewModel: AnyObject, TopicPageControlViewModel, TimerControlViewModel, FetchTopicsViewModel, VoteTopicViewModel, RevoteTopicViewModel, TopicBottomSheetViewModel, FetchCommentPreviewViewModel {
     var currentTopic: TopicDetailItemViewModel { get }
 }
 

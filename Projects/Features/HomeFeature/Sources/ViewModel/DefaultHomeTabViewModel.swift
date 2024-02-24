@@ -58,7 +58,6 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     let successVote: PassthroughSubject<(Index,Choice.Option), Never> = PassthroughSubject()
     let failVote: PassthroughSubject<Index, Never> = PassthroughSubject()
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
-    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     let successTopicAction: PassthroughSubject<Topic.Action, Never> = PassthroughSubject()
     let reloadItem: PassthroughSubject<Index, Never> = PassthroughSubject()
     
@@ -156,10 +155,6 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     
     var canRevote: Bool {
         topics[currentIndexPath.row].selectedOption != nil
-    }
-    
-    func hideTopic(index: Int) {
-        print("hide topic")
     }
     
     func reportTopic(index: Int) {

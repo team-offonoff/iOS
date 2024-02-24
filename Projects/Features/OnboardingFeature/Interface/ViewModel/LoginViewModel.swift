@@ -32,4 +32,4 @@ public protocol LoginViewModelOutput {
     var moveTermsBottomSheet: (() -> Void)? { get set }
 }
 
-public typealias LoginViewModel = LoginViewModelInput & LoginViewModelOutput & ErrorHandleable
+public typealias LoginViewModel = LoginViewModelInput & LoginViewModelOutput
