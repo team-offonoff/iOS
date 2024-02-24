@@ -128,6 +128,28 @@ public final class DefaultTopicRepository: TopicRepository {
         return dataTask(request: urlRequest, responseType: PagingContentResponseDTO<TopicResponseDTO>.self)
     }
     
+    public func hide(topicId: Int, request: HideTopicUseCaseRequestValue) -> NetworkResultPublisher<Any?> {
+        
+        var urlComponents = networkService.baseUrlComponents
+        urlComponents?.path = basePath + path(topicId) + path("vote") + path("hide")
+        urlComponents?.queryItems = [
+            .init(name: "hide", value: toString(true))
+        ]
+        
+        guard let requestBody = try? JSONEncoder().encode(makeDTO()),
+              let urlRequest = urlComponents?.toURLRequest(method: .post, httpBody: requestBody) else {
+            fatalError("json encoding or url parsing error")
+        }
+    
+        return dataTask(request: urlRequest)
+        
+        func makeDTO() -> HideTopicRequestDTO {
+            .init(
+                memberId: request.memberId
+            )
+        }
+    }
+    
     public func report(topicId: Int) -> NetworkResultPublisher<Any?> {
         
         var urlComponents = networkService.baseUrlComponents
