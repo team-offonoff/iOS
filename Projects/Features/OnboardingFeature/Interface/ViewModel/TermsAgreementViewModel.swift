@@ -11,7 +11,7 @@ import Combine
 import FeatureDependency
 import Domain
 
-public typealias TermsAgreementViewModel = TermsAgreementViewModelInput & TermsAgreementViewModelOutput & ErrorHandleable
+public typealias TermsAgreementViewModel = TermsAgreementViewModelInput & TermsAgreementViewModelOutput
 
 public protocol TermsAgreementViewModelInput {
     func toggleAll()

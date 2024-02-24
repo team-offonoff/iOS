@@ -14,7 +14,7 @@ import FeatureDependency
 import Domain
 import Core
 
-final class DefaultModifyUserInformationViewModel: BaseViewModel, ModifyUserInformationViewModel {
+final class DefaultModifyUserInformationViewModel: ModifyUserInformationViewModel {
 
     init(
         profile: Profile,
@@ -31,7 +31,6 @@ final class DefaultModifyUserInformationViewModel: BaseViewModel, ModifyUserInfo
     let nicknameVerification: PassthroughSubject<Verification, Never> = PassthroughSubject()
     let jobSubject: PassthroughSubject<Job, Never> = PassthroughSubject()
     let canMove: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
-    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     var successRegister: (() -> Void)?
     

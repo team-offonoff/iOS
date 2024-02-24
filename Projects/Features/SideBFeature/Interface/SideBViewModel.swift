@@ -9,7 +9,8 @@
 import Foundation
 import TopicFeatureInterface
 import Combine
+import FeatureDependency
 
-public protocol SideBViewModel: TopicBottomSheetViewModel, FetchTopicsViewModel, TopicTimerViewModel, VoteTopicViewModel, RevoteTopicViewModel {
+public protocol SideBViewModel: BaseViewModel, TopicBottomSheetViewModel, FetchTopicsViewModel, TopicTimerViewModel, VoteTopicViewModel, RevoteTopicViewModel {
     var keywords: [String] { get }
 }

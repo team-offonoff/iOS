@@ -19,18 +19,21 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     let fetchTopicsUseCase: any FetchTopicsUseCase
     private let reportTopicUseCase: any ReportTopicUseCase
     let voteTopicUseCase: any GenerateVoteUseCase
+    let hideTopicUseCase: any HideTopicUseCase
     let revoteTopicUseCase: any RevoteUseCase
     let fetchCommentPreviewUseCase: any FetchCommentPreviewUseCase
     
     init(
         fetchTopicsUseCase: any FetchTopicsUseCase,
         reportTopicUseCase: any ReportTopicUseCase,
+        hideTopicUseCase: any HideTopicUseCase,
         voteTopicUseCase: any GenerateVoteUseCase,
         revoteTopicUseCase: any RevoteUseCase,
         fetchCommentPreviewUseCase: any FetchCommentPreviewUseCase
     ) {
         self.fetchTopicsUseCase = fetchTopicsUseCase
         self.reportTopicUseCase = reportTopicUseCase
+        self.hideTopicUseCase = hideTopicUseCase
         self.voteTopicUseCase = voteTopicUseCase
         self.revoteTopicUseCase = revoteTopicUseCase
         self.fetchCommentPreviewUseCase = fetchCommentPreviewUseCase
@@ -55,7 +58,6 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     let successVote: PassthroughSubject<(Index,Choice.Option), Never> = PassthroughSubject()
     let failVote: PassthroughSubject<Index, Never> = PassthroughSubject()
     let timerSubject: PassthroughSubject<TimerInfo, Never> = PassthroughSubject()
-    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     let successTopicAction: PassthroughSubject<Topic.Action, Never> = PassthroughSubject()
     let reloadItem: PassthroughSubject<Index, Never> = PassthroughSubject()
     
@@ -153,10 +155,6 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
     
     var canRevote: Bool {
         topics[currentIndexPath.row].selectedOption != nil
-    }
-    
-    func hideTopic(index: Int) {
-        print("hide topic")
     }
     
     func reportTopic(index: Int) {

@@ -35,7 +35,6 @@ final class DefaultMyPageViewModel: BaseViewModel, MyPageViewModel {
     let profileImage: CurrentValueSubject<Any?, Never> = CurrentValueSubject(nil)
     let successFetchProfile: PassthroughSubject<Void, Never> = PassthroughSubject()
     let successDelete: PassthroughSubject<Void, Never> = PassthroughSubject()
-    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     //MARK: Input
     

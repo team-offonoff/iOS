@@ -13,7 +13,7 @@ import FeatureDependency
 import Domain
 import Core
 
-public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
+public final class DefaultSignUpViewModel: SignUpViewModel {
     
     public init(
         signUpUseCase: any GenerateProfileUseCase
@@ -28,7 +28,6 @@ public final class DefaultSignUpViewModel: BaseViewModel, SignUpViewModel {
     
     public let jobSubject: PassthroughSubject<Job, Never> = PassthroughSubject()
     public let canMove: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
-    public let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     public let nicknameValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
     public let birthdayValidation: PassthroughSubject<(Bool, String?), Never> = PassthroughSubject()
     

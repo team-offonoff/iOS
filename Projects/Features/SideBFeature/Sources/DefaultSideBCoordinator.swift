@@ -37,6 +37,7 @@ public final class DefaultSideBCoordinator: SideBCoordinator {
     private lazy var sideBViewModel: any SideBViewModel = DefaultSideBViewModel(
         fetchTopicsUseCase: DefaultFetchTopicsUseCase(repository: topicRepository),
         voteTopicUseCase: DefaultGenerateVoteUseCase(repository: topicRepository),
+        hideTopicUseCase: DefaultHideTopicUseCase(repository: topicRepository),
         revoteTopicUseCase: DefaultRevoteUseCase(repository: topicRepository),
         reportTopicUseCase: DefaultReportTopicUseCase(repository: topicRepository)
     )

@@ -12,4 +12,4 @@ import Combine
 import TopicFeatureInterface
 import FeatureDependency
 
-public typealias SideAViewModel = FetchTopicsViewModel & VoteTopicViewModel
+public typealias SideAViewModel = BaseViewModel & FetchTopicsViewModel & VoteTopicViewModel

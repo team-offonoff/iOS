@@ -98,6 +98,11 @@ open class TopicDetailCollectionViewCell: BaseCollectionViewCell{
             $0.top.equalTo(profileStackView.snp.bottom).offset(42)
             $0.leading.trailing.equalToSuperview().inset(28)
         }
+        
+        choiceGroup.voteResultView.snp.makeConstraints{
+            $0.top.equalTo(topicGroup.titleLabel.snp.bottom).offset(50)
+            $0.leading.trailing.equalToSuperview()
+        }
 
         topicGroup.timer.snp.makeConstraints{
             $0.top.equalTo(choiceGroup.swipeableView.snp.bottom).offset(7)

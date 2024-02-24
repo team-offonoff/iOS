@@ -38,7 +38,7 @@ public class DefaultHomeCoordinator: HomeCoordinator {
         
         return DefaultHomeTabViewModel(
             fetchTopicsUseCase: getFetchTopicsUseCase(),
-            reportTopicUseCase: getReportTopicUseCase(),
+            reportTopicUseCase: getReportTopicUseCase(), hideTopicUseCase: DefaultHideTopicUseCase(repository: topicRepository),
             voteTopicUseCase: getVoteTopicUseCase(),
             revoteTopicUseCase: getRevoteTopicUseCase(),
             fetchCommentPreviewUseCase: getFetchCommentPreviewUseCase()

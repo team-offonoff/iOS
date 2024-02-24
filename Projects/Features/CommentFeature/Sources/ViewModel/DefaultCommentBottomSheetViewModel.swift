@@ -57,7 +57,6 @@ public final class DefaultCommentBottomSheetViewModel: BaseViewModel, CommentBot
     public var generateItem: PassthroughSubject<Void, Never> = PassthroughSubject()
     public let modifyItem: PassthroughSubject<Index, Never> = PassthroughSubject()
     public let deleteItem: PassthroughSubject<Index, Never> = PassthroughSubject()
-    public let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     public func isWriterItem(at index: Int) -> Bool {
         comments[index].writer.id == UserManager.shared.memberId

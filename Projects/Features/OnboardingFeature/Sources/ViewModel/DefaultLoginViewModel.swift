@@ -30,7 +30,6 @@ public final class DefaultLoginViewModel: BaseViewModel, LoginViewModel {
     public var moveTermsBottomSheet: (() -> Void)?
     
     @Published private var kakaoUser: (oauthToken: KakaoSDKAuth.OAuthToken?, user: KakaoSDKUser.User?) = (nil, nil)
-    public let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     private let loginUseCase: any LoginUseCase
     
     public override func bind(){

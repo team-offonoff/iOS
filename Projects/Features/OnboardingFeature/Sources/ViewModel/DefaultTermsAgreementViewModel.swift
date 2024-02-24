@@ -27,7 +27,6 @@ final class DefaultTermsAgreementViewModel: BaseViewModel, TermsAgreementViewMod
     let privacySubject: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     let marketingSubject: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
     let canMove: CurrentValueSubject<Bool, Never> = CurrentValueSubject(false)
-    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     var successRegister: (() -> Void)?
     

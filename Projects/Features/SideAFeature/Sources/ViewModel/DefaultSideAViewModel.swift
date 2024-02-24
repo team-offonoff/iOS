@@ -14,7 +14,7 @@ import Domain
 import Combine
 import Core
 
-final class DefaultSideAViewModel: BaseViewModel, SideAViewModel {
+final class DefaultSideAViewModel: SideAViewModel {
     
     init(
         fetchTopicsUseCase: any FetchTopicsUseCase,
@@ -39,7 +39,6 @@ final class DefaultSideAViewModel: BaseViewModel, SideAViewModel {
     
     let successVote: PassthroughSubject<(Index, Choice.Option), Never> = PassthroughSubject()
     let failVote: PassthroughSubject<Index, Never> = PassthroughSubject()
-    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     override func bind() {
         fetchTopicsQuery.status?
