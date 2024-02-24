@@ -46,7 +46,6 @@ final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
     let successVote: PassthroughSubject<(Index, Choice.Option), Never> = PassthroughSubject()
     let failVote: PassthroughSubject<Index, Never> = PassthroughSubject()
     let successTopicAction: PassthroughSubject<Topic.Action, Never> = PassthroughSubject()
-    let errorHandler: PassthroughSubject<ErrorContent, Never> = PassthroughSubject()
     
     private var timer: Timer?
     private let hourUnit: Int = 60*60
