@@ -15,14 +15,18 @@ import HomeFeature
 import TopicGenerateFeature
 import TopicFeature
 import MyPageFeature
+import SideAFeatureInterface
+import SideBFeatureInterface
+import SideAFeature
+import SideBFeature
 
 public class DefaultTabCoordinator: TabCoordinator {
     
     private let window: UIWindow?
     private let tabBarController: TabBarController
     private let homeTabNavigationController: UINavigationController
-    private let abTabNavigationController: UINavigationController
-    private let newTabNavigationController: UINavigationController
+    private let aSideTabNavigationController: UINavigationController
+    private let bSideTabNavigationController: UINavigationController
     private let userTabNavigationController: UINavigationController
     
     required public init(
@@ -31,8 +35,8 @@ public class DefaultTabCoordinator: TabCoordinator {
         self.window = window
         self.tabBarController = TabBarController()
         self.homeTabNavigationController = UINavigationController()
-        self.abTabNavigationController = UINavigationController()
-        self.newTabNavigationController = UINavigationController()
+        self.aSideTabNavigationController = UINavigationController()
+        self.bSideTabNavigationController = UINavigationController()
         self.userTabNavigationController = UINavigationController()
     }
     
@@ -44,8 +48,8 @@ public class DefaultTabCoordinator: TabCoordinator {
         tabBarController.coordinator = self
         setTabBarViewControllers()
         startHome()
-        startAB()
-        startNew()
+        startAside()
+        startBside()
         startUser()
     }
     
@@ -53,8 +57,8 @@ public class DefaultTabCoordinator: TabCoordinator {
         
         let tabs: [UINavigationController] = [
             homeTabNavigationController,
-            abTabNavigationController,
-            newTabNavigationController,
+            aSideTabNavigationController,
+            bSideTabNavigationController,
             userTabNavigationController
         ]
         
@@ -68,14 +72,16 @@ public class DefaultTabCoordinator: TabCoordinator {
         homeCoordinator.start()
     }
     
-    private func startAB() {
-//        let abCoordinator: HomeCoordinator = DefaultHomeCoordinator(navigationController: abTabNavigationController)
-//        abCoordinator.start()
+    private func startAside() {
+        let aSideCoordinator: SideACoordinator = DefaultSideACoordinator(navigationController: aSideTabNavigationController)
+        coordinators.append(aSideCoordinator)
+        aSideCoordinator.start()
     }
     
-    private func startNew(){
-//        let newCoordinator: HomeCoordinator = DefaultHomeCoordinator(navigationController: newTabNavigationController)
-//        newCoordinator.start()
+    private func startBside(){
+        let bSideCoordinator: SideBCoordinator = DefaultSideBCoordinator(navigationController: bSideTabNavigationController)
+        coordinators.append(bSideCoordinator)
+        bSideCoordinator.start()
     }
     
     private func startUser(){
