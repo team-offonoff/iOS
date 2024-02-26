@@ -15,27 +15,32 @@ import Combine
 import Core
 
 final class DefaultSideBViewModel: BaseViewModel, SideBViewModel {
+    
     init(
         fetchTopicsUseCase: any FetchTopicsUseCase,
         voteTopicUseCase: any GenerateVoteUseCase,
         hideTopicUseCase: any HideTopicUseCase,
         revoteTopicUseCase: any RevoteUseCase,
-        reportTopicUseCase: any ReportTopicUseCase
+        reportTopicUseCase: any ReportTopicUseCase,
+        fetchCommentPreviewUseCase: any FetchCommentPreviewUseCase
     ) {
         self.fetchTopicsUseCase = fetchTopicsUseCase
         self.voteTopicUseCase = voteTopicUseCase
         self.hideTopicUseCase = hideTopicUseCase
         self.revoteTopicUseCase = revoteTopicUseCase
         self.reportTopicUseCase = reportTopicUseCase
+        self.fetchCommentPreviewUseCase = fetchCommentPreviewUseCase
     }
     
     var topics: [Topic] = []
     let keywords: [String] = ["전체", "AB Test", "카피라이팅", "UIUX", "커리어", "디자인", "개발"]
+    let reloadItem: PassthroughSubject<Core.Index, Never> = PassthroughSubject()
     
     let fetchTopicsUseCase: any FetchTopicsUseCase
     let voteTopicUseCase: any GenerateVoteUseCase
     let hideTopicUseCase: any HideTopicUseCase
     let revoteTopicUseCase: any RevoteUseCase
+    let fetchCommentPreviewUseCase: any FetchCommentPreviewUseCase
     private let reportTopicUseCase: any ReportTopicUseCase
     
     var fetchTopicsQuery: FetchTopicsQuery = .init(side: .B, status: CurrentValueSubject(.ongoing), keywordIdx: CurrentValueSubject(0), pageInfo: .init(page: 0, last: false), sort: "createdAt,desc")

@@ -39,7 +39,8 @@ public final class DefaultSideBCoordinator: SideBCoordinator {
         voteTopicUseCase: DefaultGenerateVoteUseCase(repository: topicRepository),
         hideTopicUseCase: DefaultHideTopicUseCase(repository: topicRepository),
         revoteTopicUseCase: DefaultRevoteUseCase(repository: topicRepository),
-        reportTopicUseCase: DefaultReportTopicUseCase(repository: topicRepository)
+        reportTopicUseCase: DefaultReportTopicUseCase(repository: topicRepository),
+        fetchCommentPreviewUseCase: DefaultFetchCommentPreviewUseCase(repository: topicRepository)
     )
     
     public func start() {
