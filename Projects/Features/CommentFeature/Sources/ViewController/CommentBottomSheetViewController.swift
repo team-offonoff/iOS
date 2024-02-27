@@ -69,6 +69,12 @@ public final class CommentBottomSheetViewController: UIViewController {
         tableView.separatorStyle = .none
         tableView.registers(cellTypes: [CommentContentTableViewCell.self, LoadingTableViewCell.self])
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tableViewBottomInset, right: 0)
+        tableView.backgroundView = CommentEmptyView()
+        tableView.backgroundView?.snp.makeConstraints{
+            $0.width.equalToSuperview()
+            $0.centerX.equalToSuperview()
+            $0.top.equalToSuperview().offset(168)
+        }
         return tableView
     }()
     
@@ -197,6 +203,7 @@ public final class CommentBottomSheetViewController: UIViewController {
                 }
                 self.headerView.fill(self.viewModel.commentsCountTitle)
                 self.tableView.reloadData()
+                self.tableView.backgroundView?.isHidden = !self.viewModel.comments.isEmpty
             }
         }
         
