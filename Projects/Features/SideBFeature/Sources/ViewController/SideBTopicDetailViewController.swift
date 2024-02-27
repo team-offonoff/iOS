@@ -38,6 +38,7 @@ final class SideBTopicDetailViewController: BaseViewController<NavigateHeaderVie
         guard let index = viewModel.topicIndex else { return }
         mainView.topicCell.delegate = self
         mainView.topicCell.binding(data: .init(topic: viewModel.topics[index]), comment: nil)
+        viewModel.fetchCommentPreview(index: index)
     }
     
     override func bind() {
@@ -46,6 +47,7 @@ final class SideBTopicDetailViewController: BaseViewController<NavigateHeaderVie
         bindVoteSuccess()
         bindFailVote()
         addRevoteNotification()
+        bindComment()
         
         func bindTimer(){
             viewModel.timerSubject
@@ -86,6 +88,16 @@ final class SideBTopicDetailViewController: BaseViewController<NavigateHeaderVie
                     // 2. 선택지 다시 보여주기
                     self.mainView.topicCell.clearVote()
                     
+                }
+                .store(in: &cancellables)
+        }
+        
+        func bindComment() {
+            viewModel.reloadItem
+                .receive(on: DispatchQueue.main)
+                .sink{ [weak self] index in
+                    guard let self = self else { return }
+                    self.mainView.topicCell.binding(data: .init(topic: self.viewModel.topics[index]), comment: self.viewModel.topics[index].commentPreview)
                 }
                 .store(in: &cancellables)
         }

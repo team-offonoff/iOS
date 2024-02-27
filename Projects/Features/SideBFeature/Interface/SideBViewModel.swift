@@ -11,6 +11,6 @@ import TopicFeatureInterface
 import Combine
 import FeatureDependency
 
-public protocol SideBViewModel: BaseViewModel, TopicBottomSheetViewModel, FetchTopicsViewModel, TopicTimerViewModel, VoteTopicViewModel, RevoteTopicViewModel {
+public protocol SideBViewModel: BaseViewModel, TopicBottomSheetViewModel, FetchTopicsViewModel, TopicTimerViewModel, VoteTopicViewModel, RevoteTopicViewModel, FetchCommentPreviewViewModel {
     var keywords: [String] { get }
 }
