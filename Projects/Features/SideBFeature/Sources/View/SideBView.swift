@@ -37,11 +37,17 @@ final class SideBView: BaseView {
     
     let emptyView: SideTabEmptyView = SideTabEmptyView()
     
+    private let logo: UIImageView = UIImageView(image: Image.sideBbackground)
+    
     override func hierarchy() {
-        addSubviews([keywordCollectionView, tableView, emptyView])
+        addSubviews([logo, keywordCollectionView, tableView, emptyView])
     }
     
     override func layout() {
+        logo.snp.makeConstraints{
+            $0.top.equalToSuperview().offset(64)
+            $0.leading.equalToSuperview().offset(-20)
+        }
         keywordCollectionView.snp.makeConstraints{
             $0.top.equalToSuperview().offset(21)
             $0.height.equalTo(32)

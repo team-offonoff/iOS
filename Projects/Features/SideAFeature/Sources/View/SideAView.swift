@@ -23,12 +23,19 @@ final class SideAView: BaseView {
     
     let emptyView: SideTabEmptyView = SideTabEmptyView()
     
+    private let logo: UIImageView = UIImageView(image: Image.sideAbackground)
+    
     override func hierarchy() {
+        addSubview(logo)
         addSubview(tableView)
         addSubview(emptyView)
     }
     
     override func layout() {
+        logo.snp.makeConstraints{
+            $0.top.equalToSuperview().offset(64)
+            $0.trailing.equalToSuperview().offset(20)
+        }
         tableView.snp.makeConstraints{
             $0.top.leading.trailing.bottom.equalToSuperview()
         }
