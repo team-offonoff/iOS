@@ -21,13 +21,20 @@ final class SideAView: BaseView {
         return tableView
     }()
     
+    let emptyView: SideTabEmptyView = SideTabEmptyView()
+    
     override func hierarchy() {
         addSubview(tableView)
+        addSubview(emptyView)
     }
     
     override func layout() {
         tableView.snp.makeConstraints{
             $0.top.leading.trailing.bottom.equalToSuperview()
+        }
+        emptyView.snp.makeConstraints{
+            $0.top.bottom.equalTo(tableView)
+            $0.leading.trailing.equalToSuperview()
         }
     }
 }

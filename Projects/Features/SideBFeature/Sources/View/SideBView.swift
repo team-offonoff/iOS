@@ -35,8 +35,10 @@ final class SideBView: BaseView {
         return tableView
     }()
     
+    let emptyView: SideTabEmptyView = SideTabEmptyView()
+    
     override func hierarchy() {
-        addSubviews([keywordCollectionView, tableView])
+        addSubviews([keywordCollectionView, tableView, emptyView])
     }
     
     override func layout() {
@@ -48,6 +50,10 @@ final class SideBView: BaseView {
         tableView.snp.makeConstraints{
             $0.top.equalTo(keywordCollectionView.snp.bottom)
             $0.leading.trailing.bottom.equalToSuperview()
+        }
+        emptyView.snp.makeConstraints{
+            $0.top.bottom.equalTo(tableView)
+            $0.leading.trailing.equalToSuperview()
         }
     }
 }
