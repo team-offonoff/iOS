@@ -13,3 +13,9 @@ public protocol Coordinator: AnyObject {
     init(window: UIWindow?)
     func start()
 }
+
+extension Coordinator {
+    public var sceneDelegate: UISceneDelegate? {
+        UIApplication.shared.connectedScenes.first?.delegate
+    }
+}

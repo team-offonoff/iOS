@@ -79,7 +79,7 @@ final class MyPageViewController: BaseViewController<HeaderView, MyPageView, Def
             coordinator?.startTerm()
             
         case mainView.logoutSection:
-            break
+            coordinator?.startLogout()
             
         default:
             return

@@ -25,9 +25,6 @@ public class DefaultOnboardingCoordinator: OnboardingCoordinator {
     }
     
     private var window: UIWindow?
-    private var sceneDelegate: UISceneDelegate? {
-        UIApplication.shared.connectedScenes.first?.delegate
-    }
     
     private let navigationController: UINavigationController
     private let authRepository: AuthRepository = DefaultAuthRepository()
