@@ -31,6 +31,9 @@ public struct Image{
     public static let sideAHeader = UIImage.load(name: "side_a_header")
     public static let sideBHeader = UIImage.load(name: "side_b_header")
     
+    public static let sideAbackground = UIImage.load(name: "side_a_background")
+    public static let sideBbackground = UIImage.load(name: "side_b_background")
+    
     public static let profilePlaceholder = UIImage.load(name: "profile_placeholder")
     
     public static let winnerCrown = UIImage.load(name: "winner_crown")

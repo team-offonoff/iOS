@@ -57,6 +57,7 @@ final class SideBViewController: BaseViewController<SideTabHeaderView, SideBView
         func reloadTopics() {
             viewModel.reloadTopics = {
                 DispatchQueue.main.async {
+                    self.mainView.emptyView.isHidden = !self.viewModel.topics.isEmpty
                     self.mainView.tableView.reloadData()
                 }
             }

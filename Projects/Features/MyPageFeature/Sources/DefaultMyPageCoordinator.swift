@@ -59,4 +59,8 @@ public final class DefaultMyPageCoordinator: MyPageCoordinator {
         let viewController = TermListViewController()
         navigationController.pushViewController(viewController, animated: true)
     }
+    
+    public func startLogout() {
+        (sceneDelegate as? MyPageSceneDelegate)?.sceneMoveToOnboarding()
+    }
 }

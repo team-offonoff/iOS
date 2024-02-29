@@ -15,4 +15,5 @@ public protocol MyPageCoordinator: Coordinator {
     func startProfileImageActionBottomSheet()
     func startDeleteProfileImageBottomSheet()
     func startTerm()
+    func startLogout()
 }
