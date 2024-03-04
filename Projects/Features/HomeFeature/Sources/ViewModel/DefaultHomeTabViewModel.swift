@@ -42,7 +42,7 @@ final class DefaultHomeTabViewModel: BaseViewModel, HomeTabViewModel {
 
     var topics: [Topic] = []
     var fetchTopicsQuery: FetchTopicsQuery = .init(
-        side: nil,
+        side: .B,
         status: CurrentValueSubject(.ongoing),
         keywordIdx: nil,
         pageInfo: nil,
